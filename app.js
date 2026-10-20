@@ -33,9 +33,10 @@ async function buscarPreparada(q, extra) {
     .sort((a, b) => b[0] - a[0]);
   return { mejor: puntuadas[0] && puntuadas[0][0] >= .5 ? puntuadas[0] : null, sugerencias: puntuadas.slice(0, 4).map(x => x[1]) };
 }
+let ELEGIDA = null;   // consulta elegida en el catálogo (se carga tal cual, sin buscar la más parecida)
 async function preguntarEstatico(q, extra) {
   setSteps(0); await sleep(500);
-  const { mejor, sugerencias } = await buscarPreparada(q, extra);
+  const { mejor, sugerencias } = ELEGIDA ? { mejor: [1, ELEGIDA] } : await buscarPreparada(q, extra); ELEGIDA = null;
   if (!mejor) throw Object.assign(new Error("NO_PREPARADA"), { sugerencias });
   setSteps(1); await sleep(450);
   setSteps(2); for (let k = 10; k <= 100; k += 15) { $("#stProg").textContent = ` · ${k} de 100 perfiles`; await sleep(90); }
@@ -162,11 +163,11 @@ function assignAnswers() {
 const ordered = list => list.slice().sort((a, b) => (a.ans - b.ans) || (a.u - b.u));
 const shuffled = list => list.slice().sort((a, b) => a.u * 7 % 1 - b.u * 7 % 1);
 function layout(view, sorted, instant = false) {
-  LAYOUT = view; SORTED = sorted;
+  layout.prev = LAYOUT; LAYOUT = view; SORTED = sorted;
   const now = performance.now() / 1000, stag = instant ? 0 : .45;
   const set = (p, x, y) => { p.tx = SX + x; p.ty = SY + y; p.at = now + (instant ? 0 : Math.random() * stag); if (instant) { p.x = p.tx; p.y = p.ty; } };
-  if (view === "cloud") { P.forEach(p => p.at = now + Math.random() * .25); return; }
-  if (view === "map" && RES) layoutCasillas(sorted, set);
+  if (view === "cloud") { P.forEach(p => p.at = now + Math.random() * .25); renderPanelCcaa(); return; }
+  if (view === "map" && RES) { if (W < 600) { layout.mapa = null; layoutClasificacion(sorted, set); } else { layout.casillas = null; layoutMapa(set, instant); } }
   else if (view === "map") { const B = mapBox(); P.forEach(p => set(p, B.x + p.mx * B.w, B.y + p.my * B.h)); }
   if (view === "hemi") {
     const pt = PADT(), cxh = W / 2, R1 = Math.max(60, Math.min(W / 2 - 30, H - pt - 50)), cyh = pt + R1 + 6, R0 = R1 * .36;
@@ -194,31 +195,134 @@ function layout(view, sorted, instant = false) {
     groups.forEach((g, b) => { const L = sorted ? ordered(g) : shuffled(g), cxa = pad + (b + .5) * cw, filas = Math.max(1, Math.ceil(g.length / cols)), dy = alto / filas;
       L.forEach((p, i) => { const row = Math.floor(i / cols), col = i % cols; set(p, cxa + (col - (cols - 1) / 2) * d, base - d / 2 - row * dy); }); });
   }
+  renderPanelCcaa();
 }
-/* Comunidades: cada comunidad es una casilla del mismo tamaño, colocada como en el mapa de España.
-   Dentro, sus personas forman una barra de puntos ordenada por respuesta. */
-const CASILLAS = { GA: [0, 0], AS: [1, 0], CB: [2, 0], PV: [3, 0], NA: [4, 0], CL: [2, 1], RI: [3, 1], AR: [4, 1], CT: [5, 1],
-  EX: [1, 2], MD: [2, 2], CM: [3, 2], VC: [4, 2], IB: [5, 2], CN: [0, 3], AN: [2, 3], MC: [3, 3] };
+/* Comunidades: mapa de España hecho con una rejilla de puntos y las fronteras reales (mapa_ccaa.js). Cada comunidad se colorea
+   según cuánto se aparta de la media de España; al pulsarla, sus personas sintéticas aparecen sobre el mapa con su respuesta
+   y el panel de la derecha muestra su reparto completo. */
 const CORTO = { CL: "C. y León", CM: "C.-La Mancha", VC: "C. Valenciana", PV: "País Vasco", IB: "Baleares" };
-function layoutCasillas(sorted, set) {
-  if (W < 600) return layoutClasificacion(sorted, set);
-  const top = PADT() + 30, pad = W < 600 ? 8 : 24, gap = W < 600 ? 5 : 9;
-  const tw = (W - 2 * pad) / 6, th = Math.min(tw * .82, (H - top - 30) / 4), x0 = (W - tw * 6) / 2, y0 = top + (H - top - 30 - th * 4) / 2;
-  layout.casillas = {};
-  for (const [id, [c, f]] of Object.entries(CASILLAS)) {
-    const t = { x: x0 + c * tw + gap / 2, y: y0 + f * th + gap / 2, w: tw - gap, h: th - gap };
-    layout.casillas[id] = t;
-    const g = P.filter(p => p.per && p.per.ccaa === id), L = sorted ? ordered(g) : shuffled(g);
-    const bx = t.x + 9, bw = t.w - 18, by = t.y + t.h * .56, bh = t.h * .32, K = Math.max(2, Math.min(7, Math.floor(bh / 4))), cols = Math.max(1, Math.ceil(L.length / K));
-    const dx = bw / cols, dy = bh / (K - 1);
-    L.forEach((p, i) => { set(p, bx + (Math.floor(i / K) + .5) * dx, by + (i % K) * dy); p.rCasilla = clamp(Math.min(dx, dy) * .42, .8, 3); });
-    t.barra = { x: bx, y: by - 2, w: bw, h: bh + 4 };
-  }
+let SELREG = null, HOVREG = null;   // comunidad elegida y comunidad bajo el cursor
+const REJ = {}; MAPA_CCAA.pts.forEach(([x, y, id, b]) => (REJ[id] = REJ[id] || []).push([x, y, b]));
+const panelW = () => clamp(W * .3, 250, 330);
+const CAJA = {}; for (const [id, pts] of Object.entries(REJ)) CAJA[id] = [Math.min(...pts.map(q => q[0])), Math.min(...pts.map(q => q[1])), Math.max(...pts.map(q => q[0])), Math.max(...pts.map(q => q[1]))];
+const CENTRO = {}; for (const [id, pts] of Object.entries(REJ)) CENTRO[id] = [pts.reduce((a, q) => a + q[0], 0) / pts.length, pts.reduce((a, q) => a + q[1], 0) / pts.length];
+function mapaArea() { const pad = 20, top = 46; return { x: pad, y: top, w: W - panelW() - 3 * pad, h: H - top - 34 }; }
+function mapaBox() { const A = mapaArea(), h = Math.min(A.h, A.w / MAPA_CCAA.ar), w = h * MAPA_CCAA.ar; return { x: A.x + (A.w - w) / 2, y: A.y + (A.h - h) / 2, w, h }; }
+// caja del mapa ampliada para que la comunidad elegida llene el área (como mucho ×7, para Madrid o La Rioja)
+function zoomBox(B, id) {
+  const A = mapaArea(), [x0, y0, x1, y1] = CAJA[id], m = MAPA_CCAA.paso * B.w * 1.5, bw = (x1 - x0) * B.w + 2 * m, bh = (y1 - y0) * B.h + 2 * m + 40;
+  const k = clamp(Math.min(A.w / bw, A.h / bh) * .92, 1, 7), w = B.w * k, h = B.h * k;
+  return { x: A.x + A.w / 2 - (x0 + x1) / 2 * w, y: A.y + A.h / 2 + 16 - (y0 + y1) / 2 * h, w, h };
 }
+// caja actual: durante el zoom se interpola entre la caja anterior y la nueva
+const ZOOM_MS = 650;
+function cajaActual() {
+  const M = layout.mapa, k = RM ? 1 : clamp((performance.now() - M.t0) / ZOOM_MS, 0, 1), e = 1 - (1 - k) ** 3;
+  return k >= 1 ? M.B : { x: M.de.x + (M.B.x - M.de.x) * e, y: M.de.y + (M.B.y - M.de.y) * e, w: M.de.w + (M.B.w - M.de.w) * e, h: M.de.h + (M.B.h - M.de.h) * e };
+}
+function layoutMapa(set, instant) {
+  const B0 = mapaBox(), B = SELREG && REJ[SELREG] ? zoomBox(B0, SELREG) : B0, paso = MAPA_CCAA.paso * B.w, R = rng(31);
+  const de = !instant && layout.mapa && layout.prev === "map" ? cajaActual() : B;
+  REG.forEach(reg => {
+    const pts = REJ[reg.id] || [], m = pts.length; if (!m) return;
+    const g = P.filter(p => p.per && (RI[p.per.ccaa] != null ? p.per.ccaa : "MD") === reg.id).sort((a, b) => a.u - b.u), n = g.length;
+    const elegida = reg.id === SELREG, rp = elegida ? clamp(paso * Math.sqrt(m / Math.max(n, 1)) * .3, 2.2, 6) : paso * .36;
+    // las personas se reparten por igual sobre los puntos de su comunidad; si hay más personas que puntos, se colocan
+    // en espiral dentro de cada celda (así, con la comunidad ampliada, llenan todo su territorio)
+    const c = Math.ceil(n / m);
+    g.forEach((p, k) => { const q = pts[n <= m ? Math.floor((k + .5) * m / n) : k % m], jj = n <= m ? 0 : Math.floor(k / m);
+      const a = jj * 2.39996 + (k % m) * .7, d = c > 1 ? paso * .46 * Math.sqrt((jj + .5) / c) : 0;
+      set(p, B.x + q[0] * B.w + Math.cos(a) * d, B.y + q[1] * B.h + Math.sin(a) * d); p.rCasilla = elegida ? rp : n > m ? rp * clamp(Math.sqrt(m / n) * 1.15, .6, 1) : rp; });
+  });
+  layout.mapa = { B, de, t0: performance.now(), r0: MAPA_CCAA.paso * B0.w * .36 };
+}
+// comunidad bajo un punto de la pantalla: el punto de la rejilla más cercano (o ninguna si cae en el mar)
+function regionEn(cx0, cy0) {
+  if (!layout.mapa) return null; const B = cajaActual(), x = cx0 - SX - B.x, y = cy0 - SY - B.y, lim = (MAPA_CCAA.paso * B.w * .9) ** 2;
+  let best = null, bd = lim; for (const [px, py, id] of MAPA_CCAA.pts) { const d = (px * B.w - x) ** 2 + (py * B.h - y) ** 2; if (d < bd) { bd = d; best = id; } }
+  return best;
+}
+// la rejilla se pinta en un canvas aparte y solo se repinta cuando cambian el tamaño, el zoom, los datos o la comunidad en foco
+const rejCv = document.createElement("canvas"), rejCx = rejCv.getContext("2d"); let rejClave = "", rejD = null;
+function drawRejilla() {
+  const M = layout.mapa, B = cajaActual(), foco = SELREG || HOVREG, clave = [W, H, DPR, B.x, B.y, B.w, foco, SELREG].join("|");
+  if (clave !== rejClave || rejD !== D) { rejClave = clave; rejD = D;
+    const paso = MAPA_CCAA.paso * B.w, rg = Math.min(paso * .36, M.r0 * 1.6);
+    rejCv.width = W * DPR; rejCv.height = H * DPR; rejCx.setTransform(DPR, 0, 0, DPR, 0, 0); rejCx.clearRect(0, 0, W, H);
+    // con zoom, el resto de España queda de contexto, muy tenue y solo dentro de la zona del mapa
+    const A = mapaArea(); rejCx.save(); rejCx.beginPath(); rejCx.rect(A.x - 10, A.y - 10, A.w + 20, A.h + 20); rejCx.clip();
+    for (const [id, pts] of Object.entries(REJ)) {
+      const c = colorRegion(id), sel = id === SELREG, a = sel ? .1 : SELREG ? .09 : foco && foco !== id ? .22 : .92;
+      rejCx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},${a})`; rejCx.beginPath();
+      // la comunidad elegida es solo el fondo (celdas que se tocan) sobre el que están sus personas
+      for (const [x, y, b] of pts) { const rr = sel ? paso * .56 : b ? rg * .55 : rg, X = B.x + x * B.w, Y = B.y + y * B.h;
+        if (X < -rr || Y < -rr || X > W + rr || Y > H + rr) continue; rejCx.moveTo(X + rr, Y); rejCx.arc(X, Y, rr, 0, 6.283); }
+      rejCx.fill();
+    }
+    // marco del recuadro de Canarias (arriba y a la derecha)
+    const [x0, y0, x1, y1] = MAPA_CCAA.cn, m = paso * 1.2;
+    rejCx.strokeStyle = "rgba(26,31,58,.18)"; rejCx.lineWidth = 1; rejCx.beginPath();
+    rejCx.moveTo(B.x + x0 * B.w - m, B.y + y0 * B.h - m); rejCx.lineTo(B.x + x1 * B.w + m, B.y + y0 * B.h - m); rejCx.lineTo(B.x + x1 * B.w + m, B.y + y1 * B.h + m); rejCx.stroke(); rejCx.restore();
+  }
+  cx.globalAlpha = labelA; cx.drawImage(rejCv, SX, SY, W, H); cx.globalAlpha = 1;
+}
+// color de cada comunidad: coral (o el color de la opción ganadora) si está por encima de la media de España, azul si está por debajo.
+// La intensidad crece con la diferencia; por debajo de 5 pp los colores se mantienen suaves para no exagerar diferencias pequeñas.
+let COLREG = null, COLREG_D = null;
+function colorRegion(id) {
+  if (COLREG_D !== D) { COLREG_D = D; COLREG = {};
+    const lead = D.lead, media = D.share[lead], lc = hex2(optColor(lead)), bajo = optColor(lead) === "#3E7CB1" ? [26, 31, 58] : [62, 124, 177];
+    const difs = REG.map(r => D.reg[r.id] ? D.reg[r.id][lead] - media : 0), mx = Math.max(.05, ...difs.map(Math.abs)), base = [178, 174, 178];
+    const mezcla = (c, k) => base.map((b, j) => Math.round(b + (c[j] - b) * k));
+    REG.forEach((r, i) => { const t = difs[i] / mx; COLREG[r.id] = mezcla(t >= 0 ? lc : bajo, .2 + .8 * Math.abs(t)); }); }
+  return COLREG[id] || [26, 31, 58];
+}
+const nombreReg = id => (REG[RI[id]] || {}).name || id;
+function rankingReg() { const lead = D.lead; return REG.filter(r => D.reg[r.id]).map(r => ({ id: r.id, v: D.reg[r.id][lead] })).sort((a, b) => b.v - a.v); }
+function elegirComunidad(id) { SELREG = id; HOVREG = null; if (id) tone(660, .09, .04); whoosh(!!id); layout("map", true, false); }
+// panel lateral de la vista Comunidades: clasificación (sin elegir) o detalle de la comunidad elegida
+function renderPanelCcaa() {
+  const el = $("#ccp"), on = MODE === "app" && RES && D && !voting && LAYOUT === "map" && layout.mapa;
+  el.classList.toggle("on", !!on); $("#volverMapa").classList.toggle("on", !!(on && SELREG)); if (!on) return;
+  Object.assign(el.style, { width: panelW() + "px", top: "46px", bottom: "30px" });
+  const lead = D.lead, media = D.share[lead], lc = optColor(lead), rank = rankingReg(), hi = rank.length ? rank[0].v : 1;
+  const pocos = id => (nGrupo("ccaa", id) ?? 1e9) < UMBRAL_N, ast = id => pocos(id) ? `<sup title="Menos de ${UMBRAL_N} entrevistas reales">*</sup>` : "";
+  const v = SELREG && D.reg[SELREG];
+  if (!v) {
+    el.innerHTML = `<small class="ey">${shortOpt(lead)} por comunidad</small><p class="hint">Pulsen una comunidad en el mapa o en la lista para ver su reparto completo.</p>
+      <ol class="rank">${rank.map(o => `<li><button type="button" data-id="${o.id}"><span class="nm">${nombreReg(o.id)}${ast(o.id)}</span>
+        <span class="br"><i style="width:${(o.v / hi * 100).toFixed(1)}%;background:${o.v >= media ? lc : "#3E7CB1"}"></i></span><b>${pct(o.v)}</b></button></li>`).join("")}</ol>
+      <p class="nota">España: ${pct(media)}${rank.some(o => pocos(o.id)) ? ` · * menos de ${UMBRAL_N} entrevistas reales` : ""}</p>`;
+    return;
+  }
+  const dif = (v[lead] - media) * 100, pos = rank.findIndex(o => o.id === SELREG) + 1, n = nGrupo("ccaa", SELREG), np = P.filter(p => p.per && p.per.ccaa === SELREG).length;
+  const esp = filtered() ? "España con el filtro" : "España";
+  const signo = x => (x > 0 ? "+" : x < 0 ? "−" : "±") + Math.abs(Math.round(x)) + " pp";
+  const fuente = RES.modo === "evidencia"
+    ? (n != null ? `Basado en ${fmt(n)} entrevistas reales del CIS en ${nombreReg(SELREG)}${pocos(SELREG) ? ": pocas entrevistas, más margen de error" : ""}.` : "Basado en encuestas reales del CIS.")
+    : "Estimación con IA: la diferencia con España sale de la composición de la comunidad (edad, sexo, estudios, ideología), no de entrevistas hechas allí.";
+  el.innerHTML = `<button type="button" class="back">← Todas las comunidades</button>
+    <h4>${nombreReg(SELREG)}${ast(SELREG)}</h4>
+    <div class="big"><b style="color:${lc === "#1A1F3A" ? "#1A1F3A" : lc}">${pct(v[lead])}</b><span>responde ${shortOpt(lead)}</span></div>
+    <p class="vs"><b>${signo(dif)}</b> frente a ${esp} (${pct(media)}) · puesto ${pos} de ${rank.length}</p>
+    <div class="stack">${v.map((s, o) => `<i style="background:${optColor(o)};width:${(s * 100).toFixed(2)}%"></i>`).join("")}</div>
+    <table><tr><th></th><th>${CORTO[SELREG] || nombreReg(SELREG)}</th><th>${filtered() ? "España (filtro)" : "España"}</th></tr>
+      ${RES.opciones.map((o, i) => `<tr><td><i style="background:${optColor(i)}"></i>${o}</td><td class="n">${pct(v[i])}</td><td class="n m">${pct(D.share[i])}</td></tr>`).join("")}</table>
+    <p class="nota">${fuente}</p>
+    <p class="nota">En el mapa, los ${fmt(np)} puntos de ${nombreReg(SELREG)} muestran la respuesta de cada persona sintética.</p>
+    <button type="button" class="filtrar">${F.reg === SELREG ? "Quitar el filtro de comunidad" : `Ver sexo y edad solo en ${CORTO[SELREG] || nombreReg(SELREG)}`}</button>`;
+}
+$("#volverMapa").addEventListener("click", () => elegirComunidad(null));
+$("#ccp").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.id) return elegirComunidad(b.dataset.id);
+  if (b.classList.contains("back")) return elegirComunidad(null);
+  if (b.classList.contains("filtrar")) { F.reg = F.reg === SELREG ? "all" : SELREG; $("#fReg").value = F.reg; refilter(); renderPanelCcaa(); }
+});
 /* En móvil: clasificación de comunidades (una fila por comunidad, de mayor a menor) */
 function layoutClasificacion(sorted, set) {
   const A = RES.agregados, lider = A.total.indexOf(Math.max(...A.total)), top = PADT() + 20, pad = 10;
-  const ids = Object.keys(CASILLAS).filter(id => A.ccaa[id]).sort((a, b) => A.ccaa[b][lider] - A.ccaa[a][lider]);
+  const ids = REG.map(r => r.id).filter(id => A.ccaa[id]).sort((a, b) => A.ccaa[b][lider] - A.ccaa[a][lider]);
   const rh = Math.min(30, (H - top - 26) / ids.length);
   layout.casillas = {};
   ids.forEach((id, i) => {
@@ -227,18 +331,6 @@ function layoutClasificacion(sorted, set) {
     const g = P.filter(p => p.per && p.per.ccaa === id), L = sorted ? ordered(g) : shuffled(g), cols = Math.max(1, Math.ceil(L.length / 2)), dx = bw / cols;
     L.forEach((p, k) => { set(p, bx + (Math.floor(k / 2) + .5) * dx, by + (k % 2) * bh); p.rCasilla = clamp(dx * .42, .7, 2); });
   });
-}
-function drawCasillas(t) {
-  if (!layout.casillas || Object.values(layout.casillas)[0]?.lista) return;
-  const lead = D ? D.lead : 0, media = D ? D.share[lead] : 0, lc = hex2(optColor(lead));
-  for (const [id, c] of Object.entries(layout.casillas)) {
-    const v = D && D.reg[id] ? D.reg[id][lead] : null, dif = v == null ? 0 : v - media, pocos = (nGrupo("ccaa", id) ?? 1e9) < UMBRAL_N;
-    cx.beginPath(); cx.roundRect(SX + c.x, SY + c.y, c.w, c.h, 12);
-    cx.fillStyle = "rgba(255,255,255,.78)"; cx.fill();
-    if (D && labelA > .02) { const a = Math.min(.3, Math.abs(dif) * 2.6) * labelA, col = dif >= 0 ? lc : [62, 124, 177];
-      cx.fillStyle = `rgba(${col[0]},${col[1]},${col[2]},${a.toFixed(3)})`; cx.fill(); }
-    cx.setLineDash(pocos ? [4, 4] : []); cx.strokeStyle = pocos ? "rgba(26,31,58,.35)" : "rgba(26,31,58,.1)"; cx.lineWidth = 1; cx.stroke(); cx.setLineDash([]);
-  }
 }
 function placePeople() { // cada persona sintética se coloca en su comunidad
   const R = rng(99);
@@ -284,6 +376,9 @@ function canariasFrame(B, ox, oy) {
 }
 function colorTarget(p) {
   if (!p.active) return [26, 31, 58, .07];
+  if (p.voted && RES && LAYOUT === "map" && layout.mapa && D && labelA > .5) { // mapa: color de la comunidad; la elegida muestra la respuesta de cada persona
+    if (p.per.ccaa === SELREG) { const c = hex2(optColor(p.ans)); return [c[0], c[1], c[2], .95]; }
+    const c = colorRegion(p.per.ccaa); return [c[0], c[1], c[2], 0]; }
   if (p.voted && RES) { const c = hex2(optColor(p.ans)); return [c[0], c[1], c[2], LAYOUT === "map" && labelA > .5 ? .12 : .93]; }
   if (!RES && p.hue) return p.hue === 1 ? [240, 68, 46, .8] : [255, 138, 31, .8];
   return [26, 31, 58, LAYOUT === "cloud" ? .45 : .32];
@@ -298,8 +393,8 @@ function drawApp(t) {
   cx.save();
   if (!inTransition) { cx.beginPath(); cx.rect(SX, SY, W, H); cx.clip(); }
   const r0 = dotR(), done = D && LAYOUT !== "cloud" && !voting;
-  if (LAYOUT === "map" && RES) drawCasillas(t);
-  else if (LAYOUT === "map") canariasFrame(mapBox(), SX, SY);
+  if (LAYOUT === "map" && RES && layout.mapa && D) drawRejilla();
+  else if (LAYOUT === "map" && !RES) canariasFrame(mapBox(), SX, SY);
   const idle = !RES && LAYOUT === "map", breath = idle && !RM ? Math.exp(-(((t - lastBeat) / .18) ** 2)) : 0;
   const ccx = SX + W / 2, ccy = SY + (H + PADT()) / 2 - 20, CR = Math.min(W, H - PADT()) * .34;
   for (const p of P) {
@@ -313,7 +408,7 @@ function drawApp(t) {
   }
   rings = rings.filter(g => t - g.t < .7);
   rings.forEach(g => { const k = (t - g.t) / .7; cx.strokeStyle = `rgba(${g.c[0]},${g.c[1]},${g.c[2]},${(.55 * (1 - k)).toFixed(3)})`; cx.lineWidth = 1.4; cx.beginPath(); cx.arc(g.p.x, g.p.y, 2 + k * 14, 0, 6.283); cx.stroke(); });
-  if (hover) { cx.strokeStyle = "#1A1F3A"; cx.lineWidth = 2; cx.beginPath(); cx.arc(hover.x, hover.y, r0 * 2.6 + Math.sin(t * 6), 0, 6.283); cx.stroke(); }
+  if (hover && !(LAYOUT === "map" && layout.mapa && hover.per && hover.per.ccaa !== SELREG)) { cx.strokeStyle = "#1A1F3A"; cx.lineWidth = 2; cx.beginPath(); cx.arc(hover.x, hover.y, r0 * 2.6 + Math.sin(t * 6), 0, 6.283); cx.stroke(); }
   labelA += ((done && (SORTED || LAYOUT === "map") ? 1 : 0) - labelA) * .08;
   if (labelA > .02 && D) { cx.translate(SX, SY); drawLabels(); }
   cx.restore();
@@ -336,7 +431,7 @@ function drawLegend(sm) {
   let x = sm ? 10 : 24; const y = 20, size = sm ? 11 : 12.5;
   cx.font = `500 ${size}px "Space Grotesk", sans-serif`;
   RES.opciones.forEach((o, i) => { const etiqueta = o.length > 24 ? o.slice(0, 23) + "…" : o, w = cx.measureText(etiqueta).width;
-    if (x + w + 22 > W - 10) return;
+    if (x + w + 22 > (layout.mapa && LAYOUT === "map" ? W - panelW() - 30 : W - 10)) return;
     cx.globalAlpha = labelA; cx.fillStyle = optColor(i); cx.beginPath(); cx.arc(x + 5, y - 4, 5, 0, 6.283); cx.fill(); cx.globalAlpha = 1;
     txt(etiqueta, x + 15, y, size, "#1A1F3A", "left", 500); x += w + 34; });
 }
@@ -366,7 +461,7 @@ function drawLabels() {
     cx.globalAlpha = labelA * .55; cx.strokeStyle = lc; cx.lineWidth = 2; cx.setLineDash([4, 5]); cx.beginPath(); pts.forEach(([x, y], i) => i ? cx.lineTo(x, y - 6) : cx.moveTo(x, y - 6)); cx.stroke(); cx.setLineDash([]); cx.globalAlpha = 1;
     pts.forEach(([x, y, v]) => { cx.globalAlpha = labelA; cx.fillStyle = lc; cx.beginPath(); cx.arc(x, y - 6, 4, 0, 6.283); cx.fill(); cx.globalAlpha = 1; txt(pct(v), x, y - 16, sm ? 13 : 17, lc, "center", 700); }); }
   drawLegend(sm);
-  if (LAYOUT === "map" && layout.casillas) {
+  if (LAYOUT === "map" && layout.casillas) { // móvil: clasificación
     const media = D.share[lead];
     for (const [id, c] of Object.entries(layout.casillas)) {
       const v = D.reg[id]; if (!v) continue;
@@ -374,27 +469,47 @@ function drawLabels() {
       const B = c.barra; let x = B.x; cx.save(); cx.globalAlpha = labelA; cx.beginPath(); cx.roundRect(B.x, B.y, B.w, B.h, 6); cx.clip();
       v.forEach((sh, o) => { const w = sh * B.w; cx.fillStyle = optColor(o); cx.fillRect(x, B.y, Math.max(0, w - 1.5), B.h); x += w; });
       cx.restore();
-      const pocos = (nGrupo("ccaa", id) ?? 1e9) < UMBRAL_N, nombre = (W < 900 && CORTO[id]) || (REG[RI[id]] || {}).name || id;
-      if (c.lista) {
-        txt(nombre + (pocos ? "*" : ""), c.x, c.y + c.h / 2 + 4, 11.5, "#1A1F3A", "left", 600);
-        txt(pct(v[lead]), c.x + c.w, c.y + c.h / 2 + 5, 13, v[lead] >= media ? lc : "#1A1F3A", "right", 700, "mono");
-        continue;
-      }
-      txt(nombre + (pocos ? "*" : ""), c.x + 9, c.y + (sm ? 14 : 17), sm ? 9 : 11.5, "#1A1F3A", "left", 600);
-      txt(pct(v[lead]), c.x + 9, c.y + c.h * .47, Math.min(sm ? 15 : 26, c.h * .27), v[lead] >= media ? lc : "#1A1F3A", "left", 700);
+      const pocos = (nGrupo("ccaa", id) ?? 1e9) < UMBRAL_N, nombre = CORTO[id] || nombreReg(id);
+      txt(nombre + (pocos ? "*" : ""), c.x, c.y + c.h / 2 + 4, 11.5, "#1A1F3A", "left", 600);
+      txt(pct(v[lead]), c.x + c.w, c.y + c.h / 2 + 5, 13, v[lead] >= media ? lc : "#1A1F3A", "right", 700, "mono");
     }
-    if (sm) txt(`Ordenadas por «${RES.opciones[lead]}» · España ${pct(media)}${REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N) ? " · * pocas entrevistas" : ""}`, W / 2, H - 8, 9.5, "#5A6075", "center", 500, "mono");
-    else txt(`Fondo coral: por encima de la media de España (${pct(media)}) · azul: por debajo${REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N) ? ` · * menos de ${UMBRAL_N} entrevistas reales` : ""}`,
-      W / 2, H - 10, sm ? 9 : 11, "#5A6075", "center", 500, "mono");
+    txt(`Ordenadas por «${RES.opciones[lead]}» · España ${pct(media)}${REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N) ? " · * pocas entrevistas" : ""}`, W / 2, H - 8, 9.5, "#5A6075", "center", 500, "mono");
   }
+  if (LAYOUT === "map" && layout.mapa) { // mapa: porcentaje de cada comunidad sobre su centro
+    const B = cajaActual(), media = D.share[lead], foco = SELREG || HOVREG, rk = rankingReg(), puestas = [];
+    const extremos = rk.length ? [rk[0].id, rk[rk.length - 1].id] : [];
+    const orden = Object.keys(CENTRO).filter(id => D.reg[id] && (!SELREG || id === SELREG)).sort((a, b) => (b === foco) - (a === foco) || extremos.includes(b) - extremos.includes(a) || REJ[b].length - REJ[a].length);
+    for (const id of orden) {
+      const x = B.x + CENTRO[id][0] * B.w, y = SELREG ? Math.max(30, B.y + CAJA[id][1] * B.h - 14) : B.y + CENTRO[id][1] * B.h, v = D.reg[id], pocos = (nGrupo("ccaa", id) ?? 1e9) < UMBRAL_N, f = id === foco, t = pct(v[lead]) + (pocos ? "*" : "");
+      cx.font = `700 ${f ? 13 : 11}px "JetBrains Mono", monospace`; const w = cx.measureText(t).width + 16, h = (f ? 13 : 11) + 13;
+      const caja = [x - w / 2, y - h / 2 - (f ? 22 : 0), x + w / 2, y + h / 2];
+      if (puestas.some(c => caja[0] < c[2] && caja[2] > c[0] && caja[1] < c[3] && caja[3] > c[1])) continue;
+      puestas.push(caja);
+      if (foco && !f) cx.globalAlpha = .6;
+      pillReg(t, x, y, f ? 13 : 11, pocos, f);
+      if (f) txt(nombreReg(id), x, y - 18, 14, "#1A1F3A", "center", 700);
+    }
+    const A = mapaArea(), aviso = REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N) ? ` · * menos de ${UMBRAL_N} entrevistas` : "";
+    if (SELREG) txt(`Cada punto es una persona sintética de ${nombreReg(SELREG)} · pasen el cursor para conocerla`, A.x + A.w / 2, H - 10, 11, "#5A6075", "center", 500, "mono");
+    else if (aviso) txt(aviso.replace(/^ · /, ""), A.x + A.w / 2, H - 10, 11, "#5A6075", "center", 500, "mono");
+  }
+}
+// porcentaje de una comunidad en el mapa: pastilla blanca, con borde discontinuo si hay pocas entrevistas
+function pillReg(t, x, y, size, pocos, foco) {
+  cx.font = `700 ${size}px "JetBrains Mono", monospace`; const w = cx.measureText(t).width + 12, h = size + 9, a = cx.globalAlpha;
+  cx.globalAlpha = a * labelA * .94; cx.fillStyle = foco ? "#1A1F3A" : "#fff"; cx.beginPath(); cx.roundRect(x - w / 2, y - h / 2, w, h, h / 2); cx.fill();
+  if (pocos && !foco) { cx.setLineDash([3, 3]); cx.strokeStyle = "rgba(26,31,58,.45)"; cx.lineWidth = 1; cx.stroke(); cx.setLineDash([]); }
+  cx.globalAlpha = a * labelA; cx.fillStyle = foco ? "#fff" : "#1A1F3A"; cx.textAlign = "center"; cx.textBaseline = "middle"; cx.fillText(t, x, y + .5); cx.textBaseline = "alphabetic"; cx.globalAlpha = 1;
 }
 
 /* ================= interacción con el canvas ================= */
 const tip = $("#tip");
 addEventListener("pointermove", e => {
   mouse.x = e.clientX; mouse.y = e.clientY;
-  if (MODE !== "app" || !RES || LAYOUT === "cloud" || e.clientX < SX || e.clientX > SX + W || e.clientY < SY || e.clientY > SY + H || e.target.closest(".results,.stage-top,.chat,.cfg,.drawer")) { hover = null; tip.classList.remove("on"); return; }
+  if (MODE !== "app" || !RES || LAYOUT === "cloud" || e.clientX < SX || e.clientX > SX + W || e.clientY < SY || e.clientY > SY + H || e.target.closest(".results,.stage-top,.chat,.cfg,.drawer,.ccp,.modal,.volver")) { hover = null; HOVREG = null; document.body.style.cursor = ""; tip.classList.remove("on"); return; }
   let best = null, bd = 144; for (const p of P) { const d = (p.x - e.clientX) ** 2 + (p.y - e.clientY) ** 2; if (d < bd) { bd = d; best = p; } }
+  const enMapa = LAYOUT === "map" && layout.mapa && D && !voting; HOVREG = enMapa ? regionEn(e.clientX, e.clientY) : null; document.body.style.cursor = HOVREG ? "pointer" : "";
+  if (enMapa && (!best || !best.per || best.per.ccaa !== SELREG || !best.active)) { hover = null; tip.classList.remove("on"); return; }
   hover = best; if (!best || !best.per) { tip.classList.remove("on"); hover = null; return; }
   const p = best, ans = p.voted ? RES.opciones[p.ans] : null, c = ans ? optColor(p.ans) : NSC;
   const v = ans && RES.voces && RES.voces[p.ans], quote = v ? v[p.i % v.length] : "Aún no ha respondido.";
@@ -403,7 +518,13 @@ addEventListener("pointermove", e => {
     ${ans ? `<div class="ans"><i style="background:${c}"></i>${ans}</div>` : ""}<q>${quote}</q><div class="fake">Persona sintética · no existe</div>`;
   const tw = 256, x = e.clientX + 18 + tw > VW ? e.clientX - tw - 18 : e.clientX + 18; tip.style.left = x + "px"; tip.style.top = clamp(e.clientY - 40, 8, VH - 200) + "px"; tip.classList.add("on");
 });
-addEventListener("pointerleave", () => { mouse.x = mouse.y = -1e4; hover = null; tip.classList.remove("on"); });
+addEventListener("pointerleave", () => { mouse.x = mouse.y = -1e4; hover = null; HOVREG = null; tip.classList.remove("on"); });
+// pulsar una comunidad del mapa la amplía; pulsar fuera de España vuelve al mapa completo
+addEventListener("click", e => {
+  if (MODE !== "app" || LAYOUT !== "map" || !layout.mapa || !D || voting || e.clientX < SX || e.clientX > SX + W || e.clientY < SY || e.clientY > SY + H || e.target.closest(".results,.stage-top,.chat,.cfg,.drawer,.ccp,.tip,.modal,.volver")) return;
+  const id = regionEn(e.clientX, e.clientY);
+  if (id !== SELREG) elegirComunidad(id);
+});
 
 /* ================= audio ================= */
 let AC = null, MUTE = false;
@@ -422,7 +543,7 @@ async function toApp() {
   const ghost = ask.cloneNode(true); ghost.removeAttribute("id"); ghost.querySelectorAll("[id]").forEach(n => n.removeAttribute("id"));
   Object.assign(ghost.style, { position: "fixed", left: first.left + "px", top: first.top + "px", width: first.width + "px", height: first.height + "px", margin: 0, transform: "none", zIndex: 50, pointerEvents: "none" });
   document.body.appendChild(ghost);
-  inTransition = true; MODE = "app"; document.body.classList.replace("home", "app"); ask.style.opacity = 0; $("#q").placeholder = "Haz otra pregunta…";
+  inTransition = true; MODE = "app"; document.body.classList.replace("home", "app"); ask.style.opacity = 0; $("#q").placeholder = ESTATICO ? "Desactivado (sin LLM)" : "Haz otra pregunta…";
   resize();
   const last = ask.getBoundingClientRect();
   ghost.animate([{ left: first.left + "px", top: first.top + "px", width: first.width + "px", height: first.height + "px", borderRadius: "999px" },
@@ -453,16 +574,9 @@ function renderResults(final) {
   $("#sema").title = c.texto;
   const err = c.error_pp != null ? `±${String(c.error_pp).replace(".", ",")} pp` : "±? pp";
   $("#moe").textContent = filtered() ? `${err} · ${fmt(D.n)} personas en el filtro` : `${err} · n = ${fmt(c.n)}${RES.modo === "evidencia" ? "" : " perfiles"}`;
-  drawSpark(); renderInsight();
-}
-function drawSpark() {
-  const s = RES.serie || [], sv = $("#spark");
-  if (s.length < 2) { sv.innerHTML = `<text x="0" y="20" font-size="9.5" fill="#5A6075" font-family="JetBrains Mono, monospace">${RES.modo === "evidencia" ? "una sola ola del CIS" : "sin serie histórica"}</text>`; return; }
-  const v = s.map(p => p.valor), mn = Math.min(...v) - 3, mx = Math.max(...v) + 3, X = i => 6 + i * (138 / (s.length - 1)), Y = x => 26 - (x - mn) / (mx - mn) * 20, c = optColor(0);
-  const d = v.map((x, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(x).toFixed(1)).join(" ");
-  sv.innerHTML = `<path d="${d} L${X(s.length - 1)} 28 L${X(0)} 28 Z" fill="${c}" opacity=".1"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round"/>
-    ${v.map((x, i) => `<circle cx="${X(i)}" cy="${Y(x)}" r="${i === v.length - 1 ? 3.4 : 1.8}" fill="${i === v.length - 1 ? c : "#A9AEC0"}"><title>${s[i].etiqueta}: ${String(x).replace(".", ",")} %</title></circle>`).join("")}
-    <text x="0" y="34" font-size="8" fill="#5A6075" font-family="JetBrains Mono, monospace">${s[0].etiqueta}</text><text x="150" y="34" font-size="8" fill="#5A6075" text-anchor="end" font-family="JetBrains Mono, monospace">${s[s.length - 1].etiqueta}</text>`;
+  renderPanelCcaa();
+  $("#base").textContent = RES.modo === "evidencia" ? "Basado en encuestas reales del CIS" : RES.modo === "analogia" ? "Estimación con IA, anclada en una pregunta parecida" : "Estimación con IA";
+  renderInsight();
 }
 function facts() {
   const lead = D.lead, f = {};
@@ -514,47 +628,52 @@ const EJEMPLOS = [["¿Te preocupa el cambio climático?"], ["¿Te sientes solo a
 const exampleChips = target => chips(EJEMPLOS.map(([t, q]) => [t, () => ask(q || t)]), target);
 function followChips() { chips([["Ver por comunidades", () => ask("Ver por comunidades")], ["Ver por sexo", () => ask("Ver por sexo")], ["Ver por edad", () => ask("Ver por edad")],
   ...(RES && RES.modo === "evidencia" && (!ESTATICO || (RES._entrada && RES._entrada.comparar)) ? [["LLM sin datos vs pulso", abrirComparacion]] : []),
-  ["¿Cómo lo sabemos?", abrirValidacion], ["Otra pregunta", () => { exampleChips(); $("#q").focus(); }]]); }
+  ["¿Cómo lo sabemos?", abrirValidacion], ["Otra pregunta", () => { if (ESTATICO) return abrirCatalogo(); exampleChips(); $("#q").focus(); }]]); }
 
 /* ================= diseñador de encuesta ================= */
 const TOPICS = ["Vivienda", "Soledad", "Tecnología e IA", "Medio ambiente", "Salud", "Consumo"];
-let curTopic = null, OPTS = ["Sí", "No"], TIPO = "pregunta";
+let curTopic = null, OPTS = ["", ""], TIPO = "pregunta";
 const OPTS_CAMPANA = ["Me convence", "Me es indiferente", "No me convence"];
 function setTipo(t) {
   TIPO = t; segOn($("#fTipo"), $(`#fTipo [data-v="${t}"]`));
   $("#cqLbl").textContent = t === "pregunta" ? "Pregunta" : t === "campana" ? "Mensaje o iniciativa" : "Mensaje A";
   $("#fldB").hidden = t !== "ab"; $("#fldOpts").hidden = t === "ab";
-  if (t === "campana" && !RES?.tipo?.startsWith("campana")) { OPTS = OPTS_CAMPANA.slice(); renderOpts(); }
+  $("#cq").placeholder = t === "pregunta" ? "Por ejemplo: ¿Prohibirías los pisos turísticos en el centro de tu ciudad?" : t === "campana" ? "Por ejemplo: «Cambia a la tarifa verde y ahorra 200 € al año»" : "Por ejemplo: «Ahorra 200 € al año en tu factura»";
+  if (t === "campana") { OPTS = OPTS_CAMPANA.slice(); renderOpts(); }
+  else if (OPTS.join("|") === OPTS_CAMPANA.join("|")) { OPTS = ["", ""]; renderOpts(); }
 }
 function renderTopics() { $("#topics").innerHTML = TOPICS.map(t => `<button type="button" class="${t === curTopic ? "on" : ""}">${t}</button>`).join(""); }
 $("#topics").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; curTopic = b.textContent; $("#topicAuto").textContent = "elegido a mano"; renderTopics(); });
 function renderOpts() {
-  $("#opts").innerHTML = OPTS.map((o, i) => `<div class="opt"><i style="background:${isNS(o) ? NSC : PAL[i % PAL.length]}"></i><input id="opt${i}" value="${o.replace(/"/g, "&quot;")}" aria-label="Opción ${i + 1}"><button type="button" data-i="${i}" aria-label="Quitar opción">×</button></div>`).join("");
+  $("#opts").innerHTML = OPTS.map((o, i) => `<div class="opt"><i style="background:${isNS(o) ? NSC : PAL[i % PAL.length]}"></i><input id="opt${i}" value="${o.replace(/"/g, "&quot;")}" placeholder="Opción ${i + 1}" aria-label="Opción ${i + 1}"><button type="button" data-i="${i}" aria-label="Quitar opción">×</button></div>`).join("");
   $("#addOpt").hidden = OPTS.length >= 4;
 }
 $("#opts").addEventListener("input", e => { const m = e.target.id.match(/^opt(\d)$/); if (m) OPTS[+m[1]] = e.target.value; });
 $("#opts").addEventListener("click", e => { const b = e.target.closest("button"); if (!b || OPTS.length <= 2) return; OPTS.splice(+b.dataset.i, 1); renderOpts(); });
-$("#addOpt").addEventListener("click", () => { OPTS.push("Nueva opción"); renderOpts(); });
+$("#addOpt").addEventListener("click", () => { OPTS.push(""); renderOpts(); $(`#opt${OPTS.length - 1}`).focus(); });
 $("#fReg").innerHTML = `<option value="all">Toda España</option>` + REG.slice().sort((a, b) => a.name.localeCompare(b.name, "es")).map(r => `<option value="${r.id}">${r.name}</option>`).join("");
-function renderYears(disp) { $("#fYear").innerHTML = [2021, 2022, 2023, 2024, 2025, 2026].map(y => { const ok = y === 2026; return `<button type="button" data-v="${y}" class="${ok ? "on" : ""}" ${ok ? "" : `disabled title="${disp && disp.includes(y) ? "Datos de esta ola en la tendencia" : "Sin datos CIS cargados para este año"}"`}>${y}</button>`; }).join(""); }
 function segOn(el, b) { el.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); }
 $("#fReg").addEventListener("change", e => { F.reg = e.target.value; refilter(); });
 $("#fSex").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; segOn($("#fSex"), b); F.sex = b.dataset.v; refilter(); });
 function syncAge() { let a = +$("#aMin").value, b = +$("#aMax").value; if (a > b - 2) { if (document.activeElement === $("#aMin")) a = b - 2; else b = a + 2; $("#aMin").value = a; $("#aMax").value = b; }
   F.aMin = a; F.aMax = b; $("#ageLbl").textContent = `${a} - ${b === 90 ? "90+" : b} años`; $("#ageTr").style.left = ((a - 18) / 72 * 100) + "%"; $("#ageTr").style.right = ((90 - b) / 72 * 100) + "%"; }
 ["aMin", "aMax"].forEach(id => $("#" + id).addEventListener("input", () => { syncAge(); refilter(); }));
+$("#quitarFil").addEventListener("click", () => { F.reg = "all"; $("#fReg").value = "all"; F.sex = "all"; segOn($("#fSex"), $('#fSex [data-v="all"]')); $("#aMin").value = 18; $("#aMax").value = 90; syncAge(); refilter(); });
+function contarFiltros() { const n = (F.reg !== "all") + (F.sex !== "all") + (F.aMin > 18 || F.aMax < 90); $("#nFil").hidden = !n; $("#nFil").textContent = n; }
 let filterT = 0;
-function refilter() { applyFilter(); if (!RES || voting) return; D = displayStats(); renderResults(true); clearTimeout(filterT); filterT = setTimeout(() => { if (LAYOUT !== "map") layout(LAYOUT, true); }, 250); }
+function refilter() { contarFiltros(); applyFilter(); if (!RES || voting) return; D = displayStats(); renderResults(true); clearTimeout(filterT); filterT = setTimeout(() => { if (LAYOUT !== "map") layout(LAYOUT, true); }, 250); }
 const urlPoblacion = n => ESTATICO ? `datos/poblacion_${n}.csv` : `/api/poblacion?n=${n}`;
 if (ESTATICO) $("#fTam").querySelectorAll("button").forEach(b => { if (+b.dataset.v > 25000) { b.disabled = true; b.title = "Disponible en la versión con motor local"; } });
 $("#dlPob").href = urlPoblacion(25000);
 $("#fTam").addEventListener("click", e => { const b = e.target.closest("button"); if (!b || b.disabled) return; segOn($("#fTam"), b);
   $("#tamLbl").textContent = `${fmt(+b.dataset.v)} personas`; $("#dlPob").href = urlPoblacion(b.dataset.v); });
 $("#fTipo").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setTipo(b.dataset.v); });
-$("#launch").addEventListener("click", () => { closePanels(); const q = $("#cq").value.trim(); if (!q || busy) return; const opts = OPTS.map(o => o.trim()).filter(Boolean);
-  if (TIPO === "ab") { const b = $("#cq2").value.trim(); if (!b) return; return ask(`«${q}» vs «${b}»`, null, true, { tipo: "ab", mensajes: [q, b] }); }
-  if (TIPO === "campana") return ask(`Campaña: ${q}`, opts, true, { tipo: "campana", mensajes: [q] });
-  const same = RES && q === RES.pregunta && opts.join("|") === RES.opciones.join("|"); ask(q, same ? null : opts, true); });
+$("#launch").addEventListener("click", () => { const q = $("#cq").value.trim(); if (busy) return; if (!q) return $("#cq").focus();
+  const o = OPTS.map(o => o.trim()).filter(Boolean), opts = o.length >= 2 ? o : null;
+  if (TIPO === "ab") { const b = $("#cq2").value.trim(); if (!b) return $("#cq2").focus(); closePanels(); return ask(`«${q}» vs «${b}»`, null, true, { tipo: "ab", mensajes: [q, b] }); }
+  closePanels();
+  if (TIPO === "campana") return ask(`Campaña: ${q}`, opts || OPTS_CAMPANA.slice(), true, { tipo: "campana", mensajes: [q] });
+  const same = RES && opts && q === RES.pregunta && opts.join("|") === RES.opciones.join("|"); ask(q, same ? null : opts, true); });
 /* atajos en el chat: «Campaña: …» y «mensaje A» vs «mensaje B» */
 function interpretarEntrada(t) {
   const c = t.match(/^campa[ñn]a\s*:\s*(.+)$/i); if (c) return { tipo: "campana", mensajes: [c[1].replace(/^[«"]|[»"]$/g, "")] };
@@ -563,14 +682,24 @@ function interpretarEntrada(t) {
   return null;
 }
 const escritorio = () => innerWidth > 1180;
+// en escritorio «Filtros» es una columna de la rejilla; en pantallas estrechas es un panel lateral que tiene que quedar
+// por encima del fondo oscuro, así que se saca de la rejilla (que crea su propio contexto de apilamiento)
+function colocarFiltros() { const g = $(".grid"), c = $("#cfg"), dest = escritorio() ? g : document.body; if (c.parentNode !== dest) dest.appendChild(c); }
+addEventListener("resize", colocarFiltros); colocarFiltros();
 function openCfg() {
   if (escritorio()) { const abierto = document.body.classList.toggle("cfg-abierto"); $("#cfgBtn").classList.toggle("on", abierto); return; }
   $("#cfg").classList.add("open"); $("#scrim").classList.add("on");
 }
 function closeCfg() { document.body.classList.remove("cfg-abierto"); $("#cfgBtn").classList.remove("on"); closePanels(); }
-function closePanels() { $("#cfg").classList.remove("open"); $("#hist").classList.remove("open"); $("#valid").classList.remove("open"); $("#comp").classList.remove("open"); $("#scrim").classList.remove("on"); }
-$("#cfgBtn").onclick = openCfg; $("#validClose").onclick = () => closePanels(); $("#cfgClose").onclick = closeCfg; $("#scrim").onclick = closePanels; $("#histClose").onclick = closePanels;
-addEventListener("keydown", e => { if (e.key === "Escape") closePanels(); });
+// «Diseña tu encuesta» siempre empieza vacío, como una encuesta nueva
+function abrirDiseno() {
+  closePanels(); setTipo("pregunta"); $("#cq").value = ""; $("#cq2").value = ""; OPTS = ["", ""]; renderOpts();
+  curTopic = null; $("#topicAuto").textContent = "se detecta automáticamente"; renderTopics();
+  $("#diseno").classList.add("open"); $("#scrim").classList.add("on"); setTimeout(() => $("#cq").focus(), 120);
+}
+function closePanels() { $("#catalogo").classList.remove("open"); $("#diseno").classList.remove("open"); $("#cfg").classList.remove("open"); $("#hist").classList.remove("open"); $("#valid").classList.remove("open"); $("#comp").classList.remove("open"); $("#scrim").classList.remove("on"); }
+$("#cfgBtn").onclick = openCfg; $("#disBtn").onclick = abrirDiseno; $("#disClose").onclick = closePanels; $("#validClose").onclick = () => closePanels(); $("#cfgClose").onclick = closeCfg; $("#scrim").onclick = closePanels; $("#histClose").onclick = closePanels;
+addEventListener("keydown", e => { if (e.key === "Escape") { closePanels(); if (SELREG) elegirComunidad(null); } });
 
 /* ================= consultas anteriores ================= */
 $("#histBtn").onclick = async () => {
@@ -687,7 +816,7 @@ async function esperar(job, onProg) {
 function viewReply(v) { const f = facts(), o = shortOpt(D.lead);
   if (v === "sex") return `${o}: mujeres <b>${pct(f.F)}</b>, hombres <b>${pct(f.M)}</b>. Diferencia de ${pp(f.F - f.M)}.`;
   if (v === "age") return `${o}: ${f.ageY.a} años <b>${pct(f.ageY.v)}</b> frente a ${f.ageO.a} años <b>${pct(f.ageO.v)}</b>. Brecha de ${pp(f.ageY.v - f.ageO.v)}.`;
-  if (v === "map") return `Más alto en <b>${f.regHi.r.name}</b> (${pct(f.regHi.v)}), más bajo en ${f.regLo.r.name} (${pct(f.regLo.v)}). Pasa el cursor por el mapa para conocer a cada persona.`;
+  if (v === "map") return `Más alto en <b>${f.regHi.r.name}</b> (${pct(f.regHi.v)}), más bajo en ${f.regLo.r.name} (${pct(f.regLo.v)}). Pulsen una comunidad para ver su reparto completo; con el cursor se conoce a cada persona.`;
   return `En total, ${o} gana con <b>${pct(D.share[D.lead])}</b>.`; }
 
 /* grupo mencionado en la pregunta («los jóvenes», «las mujeres»…): se aplica como filtro */
@@ -699,7 +828,7 @@ function filtroDePregunta(q) {
   else if (/\bhombres\b/.test(s) && !/\bmujeres\b/.test(s)) { f.sex = "M"; f.texto = [f.texto, "hombres"].filter(Boolean).join(", "); }
   return f.texto ? f : null;
 }
-function aplicarFiltro(f) {
+function aplicarFiltro(f) { setTimeout(contarFiltros);
   if (f.aMin) { $("#aMin").value = f.aMin; $("#aMax").value = f.aMax; syncAge(); }
   if (f.sex) { F.sex = f.sex; segOn($("#fSex"), $(`#fSex [data-v="${f.sex}"]`)); }
   applyFilter();
@@ -717,10 +846,10 @@ async function ask(q, opciones = null, fromPanel = false, extra = null) {
   if (MODE === "home") await toApp();
   addUser(q); $("#sugg").innerHTML = "";
   // reinicio visual
-  RES = null; D = null; LIVE = null; labelA = 0; P.forEach(p => { p.voted = false; });
-  if (!fromPanel) { F.reg = "all"; $("#fReg").value = "all"; F.sex = "all"; segOn($("#fSex"), $('#fSex [data-v="all"]')); $("#aMin").value = 18; $("#aMax").value = 90; syncAge(); }
+  RES = null; D = null; LIVE = null; labelA = 0; SELREG = null; renderPanelCcaa(); P.forEach(p => { p.voted = false; });
+  if (!fromPanel) { F.reg = "all"; $("#fReg").value = "all"; F.sex = "all"; segOn($("#fSex"), $('#fSex [data-v="all"]')); $("#aMin").value = 18; $("#aMax").value = 90; syncAge(); contarFiltros(); }
   $("#res").classList.add("wait"); $("#big").textContent = "--"; $("#bigL").textContent = "Esperando respuestas"; $("#stack").innerHTML = ""; $("#legend").innerHTML = "";
-  $("#sema").dataset.l = 0; $("#semaT").textContent = "Confianza"; $("#moe").textContent = "±-- pp · n = --"; $("#spark").innerHTML = "";
+  $("#sema").dataset.l = 0; $("#semaT").textContent = "Confianza"; $("#moe").textContent = "±-- pp · n = --"; $("#base").textContent = "";
   $("#insight").innerHTML = `<small>Lectura rápida</small>Las diferencias entre grupos aparecerán aquí.`;
   $("#qt").textContent = q; $("#eyT").textContent = "Analizando"; $("#stProg").textContent = "";
   $("#steps").style.opacity = 1; setSteps(0);
@@ -760,10 +889,6 @@ async function ask(q, opciones = null, fromPanel = false, extra = null) {
   // llegan los datos: cada punto pasa a ser una persona sintética concreta
   RES = res; P.forEach((p, i) => p.per = RES.personas[i]); placePeople(); applyFilter(); assignAnswers();
   $("#eyT").textContent = (RES.tipo === "ab" ? "Test A/B · " : RES.tipo === "campana" ? "Campaña · " : "") + RES.tema; $("#qt").textContent = RES.pregunta;
-  if (RES.tipo === "ab") { setTipo("ab"); $("#cq").value = RES.mensajes[0]; $("#cq2").value = RES.mensajes[1]; }
-  else if (RES.tipo === "campana") { setTipo("campana"); $("#cq").value = RES.mensajes[0]; }
-  else { setTipo("pregunta"); $("#cq").value = RES.pregunta; } curTopic = RES.tema; $("#topicAuto").textContent = "detectado automáticamente"; renderTopics();
-  OPTS = RES.opciones.slice(); renderOpts(); renderYears(RES.anios_disponibles);
   if (RES._aproximada) await streamBot(`<span class="note">Respondo a la pregunta preparada más parecida: «${RES.pregunta}».</span>`);
   await streamBot(`<span class="note">${MODOS[RES.modo]}${RES.referencia ? ` · CIS ${RES.referencia.estudio} (${RES.referencia.fecha}): «${RES.referencia.texto}»` : ""}</span>`);
   // 2. convocar
@@ -793,20 +918,69 @@ async function ask(q, opciones = null, fromPanel = false, extra = null) {
     (voz && quien ? `<div class="quote">«${voz[0]}»<small>${quien.name}, ${quien.per.edad} · ${(REG[RI[quien.per.ccaa]] || {}).name || ""} · persona sintética</small></div>` : "") +
     (RES.factores && RES.factores.length ? `<div class="factores"><small>Lo que más se asocia</small>${RES.factores.map(f => `<div><i style="background:${f.dif_pp > 0 ? "#F0442E" : "#3E7CB1"}"></i>${f.texto}</div>`).join("")}</div>` : "") +
     (RES.actitudes_usadas && RES.actitudes_usadas.length ? `<span class="note">Perfiles condicionados con sus actitudes CIS sobre: ${RES.actitudes_usadas.join(", ")}.</span>` : "") +
-    (auto ? `<span class="note">Filtro aplicado según la pregunta: ${auto.texto}. Pueden cambiarlo en «Diseña tu encuesta».</span>` : "") +
+    (auto ? `<span class="note">Filtro aplicado según la pregunta: ${auto.texto}. Pueden cambiarlo en «Filtros».</span>` : "") +
     `<span class="note">${RES.confianza.texto}</span>`);
   followChips();
   busy = false; $("#send").disabled = $("#launch").disabled = false;
 }
 
 /* ================= entrada ================= */
-$("#ask").addEventListener("submit", e => { e.preventDefault(); const v = $("#q").value; if (!v.trim()) return; $("#q").value = ""; $("#q").style.height = ""; ask(v); });
+$("#ask").addEventListener("submit", e => { e.preventDefault(); if (ESTATICO) return abrirCatalogo(); const v = $("#q").value; if (!v.trim()) return; $("#q").value = ""; $("#q").style.height = ""; ask(v); });
 $("#q").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#ask").requestSubmit(); } });
 $("#q").addEventListener("input", () => { const q = $("#q"); q.style.height = "auto"; q.style.height = Math.min(120, q.scrollHeight) + "px"; });
 
+/* ================= versión publicada sin LLM: catálogo de preguntas ================= */
+// Sin motor no se pueden responder preguntas nuevas: el chat queda bloqueado y se elige entre las consultas ya calculadas.
+const TEMAS_CAT = ["Vivienda", "Soledad", "Tecnología e IA", "Medio ambiente", "Salud", "Consumo", "Sociedad"];
+const FUENTE_CAT = { evidencia: "Datos reales del CIS", analogia: "IA anclada en el CIS", simulacion: "Simulación con IA" };
+let temaCat = "Todas";
+const tituloCat = e => e.tipo === "ab" ? `«${e.mensajes[0]}» vs «${e.mensajes[1]}»` : e.tipo === "campana" ? `«${e.mensajes[0]}»` : e.pregunta.replace(/^[“"]|[”"]$/g, "");
+async function abrirCatalogo() {
+  closePanels(); $("#catalogo").classList.add("open"); $("#scrim").classList.add("on");
+  const idx = await indice(); $("#catN").textContent = idx.length; renderCatalogo();
+}
+async function renderCatalogo() {
+  const idx = await indice(), b = normTxt($("#catBuscar").value), temas = TEMAS_CAT.filter(t => idx.some(e => e.tema === t));
+  $("#catTemas").innerHTML = ["Todas", ...temas].map(t => `<button type="button" class="${t === temaCat ? "on" : ""}" data-t="${t}">${t}<em>${t === "Todas" ? idx.length : idx.filter(e => e.tema === t).length}</em></button>`).join("");
+  const lista = idx.map((e, i) => ({ e, i })).filter(({ e }) => (temaCat === "Todas" || e.tema === temaCat) && (!b || normTxt(tituloCat(e) + " " + e.tema + " " + { ab: "test a b ab", campana: "campana" }[e.tipo]).includes(b)));
+  if (!lista.length) { $("#catLista").innerHTML = `<p class="cat-vacio">Ninguna pregunta preparada coincide con «${$("#catBuscar").value}». Prueben con otra palabra o elijan un tema.</p>`; return; }
+  const item = ({ e, i }) => `<button type="button" class="qi" data-i="${i}"><span class="sem s-${e.modo}" title="${FUENTE_CAT[e.modo]}"></span>
+    <span class="tx"><b>${tituloCat(e)}</b><small>${FUENTE_CAT[e.modo]} · ${Math.round(e.valor)} % «${e.lider.length > 28 ? e.lider.slice(0, 27) + "…" : e.lider}»</small></span>
+    ${e.tipo !== "pregunta" ? `<span class="tipo">${e.tipo === "ab" ? "Test A/B" : "Campaña"}</span>` : ""}<svg class="ir" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>`;
+  $("#catLista").innerHTML = temaCat !== "Todas" || b ? lista.map(item).join("")
+    : temas.map(t => `<h4>${t}</h4>` + lista.filter(x => x.e.tema === t).map(item).join("")).join("");
+}
+async function elegirPreparada(i) {
+  const e = (await indice())[i]; if (!e || busy) return;
+  closePanels(); ELEGIDA = e; await toApp();
+  ask(e.pregunta, null, false, e.tipo === "pregunta" ? null : { tipo: e.tipo, mensajes: e.mensajes });
+}
+if (ESTATICO) {
+  document.body.classList.add("estatico");
+  $("#q").readOnly = true; $("#q").placeholder = innerWidth < 600 ? "Escribir: desactivado" : "Escribir preguntas nuevas está desactivado en esta versión (sin LLM)";
+  $("#q").addEventListener("click", abrirCatalogo);
+  $("#send").setAttribute("aria-label", "Elegir una pregunta disponible");
+  $("#send").innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="lbl-l">Elegir pregunta</span><span class="lbl-s">Elegir</span>`;
+  $("#disBtn").querySelector(".lbl-l").textContent = "Preguntas disponibles"; $("#disBtn").querySelector(".lbl-s").textContent = "Preguntas";
+  $("#disBtn").onclick = abrirCatalogo; $("#disBtn").querySelector("svg").innerHTML = `<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>`;
+  $(".home-below small").textContent = "Versión de demostración sin LLM · solo preguntas ya calculadas"; $(".home-below small").classList.add("est");
+  $(".badge").classList.add("est"); $(".badge").firstChild.textContent = "Demo sin LLM · preguntas preparadas";
+  $(".hero p").textContent = "1.200 personas sintéticas calibradas con INE y CIS · elijan una pregunta";
+  $("#catClose").onclick = closePanels;
+  $("#catBuscar").addEventListener("input", renderCatalogo);
+  $("#catTemas").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; temaCat = b.dataset.t; renderCatalogo(); });
+  $("#catLista").addEventListener("click", e => { const b = e.target.closest(".qi"); if (b) elegirPreparada(+b.dataset.i); });
+}
+
 /* ================= arranque ================= */
-if (innerWidth < 600) $("#q").placeholder = "Pregunta algo sobre España…";
-resize(); renderTopics(); renderOpts(); syncAge(); renderYears([]);
-exampleChips("#homeChips");
+if (innerWidth < 600 && !ESTATICO) $("#q").placeholder = "Pregunta algo sobre España…";
+resize(); renderTopics(); renderOpts(); syncAge();
+if (ESTATICO) indice().then(idx => {
+  const dest = ["¿Te preocupa el cambio climático?", "¿Tienes miedo a quedarte solo?", "Test A/B: «Ahorra 200 € al año en tu factura»", "¿Prohibirías los pisos turísticos en el centro de tu ciudad?"]
+    .map(t => idx.findIndex(e => e.pregunta.startsWith(t))).filter(i => i >= 0);
+  chips([[`Ver las ${idx.length} preguntas`, abrirCatalogo], ...dest.map(i => [idx[i].tipo === "ab" ? "Test A/B: ahorro o huella de carbono" : idx[i].pregunta, () => elegirPreparada(i)])], "#homeChips");
+  $("#homeChips").firstChild.classList.add("prim");
+  if (/[?&]preguntas\b/.test(location.search)) abrirCatalogo();   // el QR abre directamente el catálogo
+}); else exampleChips("#homeChips");
 requestAnimationFrame(frame);
 (async () => { await sleep(300); await streamBot(`Hola. Soy <b>pulso</b>. Cada punto es una persona sintética de la España real, con actitudes estimadas a partir de encuestas del CIS.`); })();
