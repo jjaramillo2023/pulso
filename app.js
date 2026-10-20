@@ -92,9 +92,8 @@ const P = [];
 /* ================= estado ================= */
 let MODE = "home";          // home | app
 let VIEW = "hemi";          // vista elegida en el control segmentado
-let DIM = "Ideología";      // dimensión de la vista «Grupos»
 let LAYOUT = "map";         // disposición actual de los puntos: map | hemi | sex | age | cloud
-let SORTED = false, labelA = 0, heatA = 0, hover = null, busy = false, rings = [], beats = [];
+let SORTED = false, labelA = 0, hover = null, busy = false, rings = [], beats = [];
 let RES = null, D = null, LIVE = null;  // resultado del motor, estadísticas mostradas, recuento en directo
 const F = { reg: "all", sex: "all", aMin: 18, aMax: 90 };
 let mouse = { x: -1e4, y: -1e4 };
@@ -139,12 +138,6 @@ function displayStats() { // cifras oficiales: agregados ponderados del motor (2
     ["F", "M"].forEach(s => { const g = act.filter(p => p.per.sexo === s); if (g.length) d.sex[s] = acc(g); });
     d.age = AGEB.map((_, b) => acc(act.filter(p => ageBin(p.per.edad) === b)));
   }
-  // vista «Grupos»: agregados del motor o, con filtros (o en consultas antiguas), media sobre la muestra
-  d.grp = {};
-  gruposOrden().forEach(v => {
-    if (!filtered() && A.grupos && A.grupos[DIM] && A.grupos[DIM][v]) d.grp[v] = A.grupos[DIM][v].map(x => x / 100);
-    else { const g = P.filter(p => p.per && p.active && p.per.g && p.per.g[DIM] === v); if (g.length) { const s = new Array(k).fill(0); g.forEach(p => p.per.p.forEach((x, j) => s[j] += x)); d.grp[v] = s.map(x => x / g.length); } }
-  });
   d.lead = d.share.indexOf(Math.max(...d.share));
   return d;
 }
@@ -173,7 +166,8 @@ function layout(view, sorted, instant = false) {
   const now = performance.now() / 1000, stag = instant ? 0 : .45;
   const set = (p, x, y) => { p.tx = SX + x; p.ty = SY + y; p.at = now + (instant ? 0 : Math.random() * stag); if (instant) { p.x = p.tx; p.y = p.ty; } };
   if (view === "cloud") { P.forEach(p => p.at = now + Math.random() * .25); return; }
-  if (view === "map") { const B = mapBox(); P.forEach(p => set(p, B.x + p.mx * B.w, B.y + p.my * B.h)); }
+  if (view === "map" && RES) layoutCasillas(sorted, set);
+  else if (view === "map") { const B = mapBox(); P.forEach(p => set(p, B.x + p.mx * B.w, B.y + p.my * B.h)); }
   if (view === "hemi") {
     const pt = PADT(), cxh = W / 2, R1 = Math.max(60, Math.min(W / 2 - 30, H - pt - 50)), cyh = pt + R1 + 6, R0 = R1 * .36;
     const rows = Math.max(8, Math.round(Math.sqrt(N) * .46)), rs = [];
@@ -191,7 +185,6 @@ function layout(view, sorted, instant = false) {
     ["F", "M"].forEach(sx => { const g = P.filter(p => p.per ? p.per.sexo === sx : (p.i % 2 ? "M" : "F") === sx), L = sorted ? ordered(g) : shuffled(g), n = L.length;
       L.forEach((p, i) => { const q = FIG[Math.floor(i * FIG.length / n)]; set(p, xs[sx] + q[0] * fw, fy + q[1] * fh); }); });
   }
-  if (view === "grp") layoutGrupos(sorted, set);
   if (view === "age") {
     const bajo = H < 460, pt = bajo ? 34 : PADT() + 28, pad = W < 600 ? 14 : 40, cw = (W - 2 * pad) / 5, cols = W < 600 ? 7 : 10;
     const groups = AGEB.map((_, b) => P.filter(p => (p.per ? ageBin(p.per.edad) : p.i % 5) === b)), maxRows = Math.max(...groups.map(g => Math.ceil(g.length / cols)));
@@ -202,20 +195,50 @@ function layout(view, sorted, instant = false) {
       L.forEach((p, i) => { const row = Math.floor(i / cols), col = i % cols; set(p, cxa + (col - (cols - 1) / 2) * d, base - d / 2 - row * dy); }); });
   }
 }
-function gruposOrden() {
-  if (!RES) return [];
-  const presentes = new Set(P.filter(p => p.per && p.per.g && p.per.g[DIM]).map(p => p.per.g[DIM]));
-  const orden = (RES.agregados.grupos_orden && RES.agregados.grupos_orden[DIM]) || [...presentes];
-  return orden.filter(v => presentes.has(v));
+/* Comunidades: cada comunidad es una casilla del mismo tamaño, colocada como en el mapa de España.
+   Dentro, sus personas forman una barra de puntos ordenada por respuesta. */
+const CASILLAS = { GA: [0, 0], AS: [1, 0], CB: [2, 0], PV: [3, 0], NA: [4, 0], CL: [2, 1], RI: [3, 1], AR: [4, 1], CT: [5, 1],
+  EX: [1, 2], MD: [2, 2], CM: [3, 2], VC: [4, 2], IB: [5, 2], CN: [0, 3], AN: [2, 3], MC: [3, 3] };
+const CORTO = { CL: "C. y León", CM: "C.-La Mancha", VC: "C. Valenciana", PV: "País Vasco", IB: "Baleares" };
+function layoutCasillas(sorted, set) {
+  if (W < 600) return layoutClasificacion(sorted, set);
+  const top = PADT() + 30, pad = W < 600 ? 8 : 24, gap = W < 600 ? 5 : 9;
+  const tw = (W - 2 * pad) / 6, th = Math.min(tw * .82, (H - top - 30) / 4), x0 = (W - tw * 6) / 2, y0 = top + (H - top - 30 - th * 4) / 2;
+  layout.casillas = {};
+  for (const [id, [c, f]] of Object.entries(CASILLAS)) {
+    const t = { x: x0 + c * tw + gap / 2, y: y0 + f * th + gap / 2, w: tw - gap, h: th - gap };
+    layout.casillas[id] = t;
+    const g = P.filter(p => p.per && p.per.ccaa === id), L = sorted ? ordered(g) : shuffled(g);
+    const bx = t.x + 9, bw = t.w - 18, by = t.y + t.h * .56, bh = t.h * .32, K = Math.max(2, Math.min(7, Math.floor(bh / 4))), cols = Math.max(1, Math.ceil(L.length / K));
+    const dx = bw / cols, dy = bh / (K - 1);
+    L.forEach((p, i) => { set(p, bx + (Math.floor(i / K) + .5) * dx, by + (i % K) * dy); p.rCasilla = clamp(Math.min(dx, dy) * .42, .8, 3); });
+    t.barra = { x: bx, y: by - 2, w: bw, h: bh + 4 };
+  }
 }
-function layoutGrupos(sorted, set) {
-  const pt = PADT() + 30, sm = W < 600, labelW = sm ? 96 : 160, left = (sm ? 10 : 28) + labelW, right = sm ? 46 : 74, ancho = W - left - right;
-  const vals = gruposOrden(), R = Math.max(1, vals.length), rowH = Math.min((H - pt - 20) / R, 64), K = Math.max(2, Math.floor(rowH * .62 / 6.5));
-  layout.grp = { left, ancho, rowH, pt, vals, labelW };
-  P.forEach(p => { const v = p.per && p.per.g ? p.per.g[DIM] : null, r = vals.indexOf(v); p.enGrupo = r >= 0; });
-  vals.forEach((v, r) => { const g = P.filter(p => p.enGrupo && p.per.g[DIM] === v), L = sorted ? ordered(g) : shuffled(g), cols = Math.max(1, Math.ceil(L.length / K)), dx = ancho / cols, y0 = pt + r * rowH + (rowH - (K - 1) * 6.5) / 2 - 6;
-    L.forEach((p, i) => set(p, left + (Math.floor(i / K) + .5) * dx, y0 + (i % K) * 6.5)); });
-  P.filter(p => !p.enGrupo).forEach(p => set(p, W / 2, H + 30)); // sin dato: fuera de la vista
+/* En móvil: clasificación de comunidades (una fila por comunidad, de mayor a menor) */
+function layoutClasificacion(sorted, set) {
+  const A = RES.agregados, lider = A.total.indexOf(Math.max(...A.total)), top = PADT() + 20, pad = 10;
+  const ids = Object.keys(CASILLAS).filter(id => A.ccaa[id]).sort((a, b) => A.ccaa[b][lider] - A.ccaa[a][lider]);
+  const rh = Math.min(30, (H - top - 26) / ids.length);
+  layout.casillas = {};
+  ids.forEach((id, i) => {
+    const t = { x: pad, y: top + i * rh, w: W - 2 * pad, h: rh, lista: true }, bx = t.x + 98, bw = t.w - 98 - 42, bh = Math.min(12, rh * .45), by = t.y + (rh - bh) / 2;
+    t.barra = { x: bx, y: by, w: bw, h: bh }; layout.casillas[id] = t;
+    const g = P.filter(p => p.per && p.per.ccaa === id), L = sorted ? ordered(g) : shuffled(g), cols = Math.max(1, Math.ceil(L.length / 2)), dx = bw / cols;
+    L.forEach((p, k) => { set(p, bx + (Math.floor(k / 2) + .5) * dx, by + (k % 2) * bh); p.rCasilla = clamp(dx * .42, .7, 2); });
+  });
+}
+function drawCasillas(t) {
+  if (!layout.casillas || Object.values(layout.casillas)[0]?.lista) return;
+  const lead = D ? D.lead : 0, media = D ? D.share[lead] : 0, lc = hex2(optColor(lead));
+  for (const [id, c] of Object.entries(layout.casillas)) {
+    const v = D && D.reg[id] ? D.reg[id][lead] : null, dif = v == null ? 0 : v - media, pocos = (nGrupo("ccaa", id) ?? 1e9) < UMBRAL_N;
+    cx.beginPath(); cx.roundRect(SX + c.x, SY + c.y, c.w, c.h, 12);
+    cx.fillStyle = "rgba(255,255,255,.78)"; cx.fill();
+    if (D && labelA > .02) { const a = Math.min(.3, Math.abs(dif) * 2.6) * labelA, col = dif >= 0 ? lc : [62, 124, 177];
+      cx.fillStyle = `rgba(${col[0]},${col[1]},${col[2]},${a.toFixed(3)})`; cx.fill(); }
+    cx.setLineDash(pocos ? [4, 4] : []); cx.strokeStyle = pocos ? "rgba(26,31,58,.35)" : "rgba(26,31,58,.1)"; cx.lineWidth = 1; cx.stroke(); cx.setLineDash([]);
+  }
 }
 function placePeople() { // cada persona sintética se coloca en su comunidad
   const R = rng(99);
@@ -261,7 +284,7 @@ function canariasFrame(B, ox, oy) {
 }
 function colorTarget(p) {
   if (!p.active) return [26, 31, 58, .07];
-  if (p.voted && RES) { const c = hex2(optColor(p.ans)); return [c[0], c[1], c[2], .93]; }
+  if (p.voted && RES) { const c = hex2(optColor(p.ans)); return [c[0], c[1], c[2], LAYOUT === "map" && labelA > .5 ? .12 : .93]; }
   if (!RES && p.hue) return p.hue === 1 ? [240, 68, 46, .8] : [255, 138, 31, .8];
   return [26, 31, 58, LAYOUT === "cloud" ? .45 : .32];
 }
@@ -275,9 +298,8 @@ function drawApp(t) {
   cx.save();
   if (!inTransition) { cx.beginPath(); cx.rect(SX, SY, W, H); cx.clip(); }
   const r0 = dotR(), done = D && LAYOUT !== "cloud" && !voting;
-  heatA += ((LAYOUT === "map" && done && labelA > 0 ? 1 : 0) - heatA) * .06;
-  if (heatA > .01 && D) { const hc = heatLayer(); cx.globalAlpha = heatA; cx.drawImage(hc.cv, SX + hc.x, SY + hc.y, hc.w, hc.h); cx.globalAlpha = 1; }
-  if (LAYOUT === "map") canariasFrame(mapBox(), SX, SY);
+  if (LAYOUT === "map" && RES) drawCasillas(t);
+  else if (LAYOUT === "map") canariasFrame(mapBox(), SX, SY);
   const idle = !RES && LAYOUT === "map", breath = idle && !RM ? Math.exp(-(((t - lastBeat) / .18) ** 2)) : 0;
   const ccx = SX + W / 2, ccy = SY + (H + PADT()) / 2 - 20, CR = Math.min(W, H - PADT()) * .34;
   for (const p of P) {
@@ -285,7 +307,7 @@ function drawApp(t) {
     if (t >= p.at) { p.x += (p.tx - p.x) * p.k * 1.2; p.y += (p.ty - p.y) * p.k * 1.2; }
     const ct = colorTarget(p); for (let i = 0; i < 4; i++) p.col[i] += (ct[i] - p.col[i]) * .12;
     p.pop *= .9;
-    const r = r0 * p.sz * (1 + p.pop * 1.6 + breath * .5);
+    const r = (LAYOUT === "map" && RES && p.rCasilla ? p.rCasilla : r0 * p.sz) * (1 + p.pop * 1.6 + breath * .5);
     cx.fillStyle = `rgba(${p.col[0] | 0},${p.col[1] | 0},${p.col[2] | 0},${p.col[3].toFixed(3)})`;
     cx.beginPath(); cx.arc(p.x, p.y, r, 0, 6.283); cx.fill();
   }
@@ -295,20 +317,6 @@ function drawApp(t) {
   labelA += ((done && (SORTED || LAYOUT === "map") ? 1 : 0) - labelA) * .08;
   if (labelA > .02 && D) { cx.translate(SX, SY); drawLabels(); }
   cx.restore();
-}
-// capa de calor por comunidad: se dibuja una vez en un canvas aparte y se reutiliza en cada fotograma
-const HEAT = { key: "", cv: document.createElement("canvas") };
-function heatLayer() {
-  const B = mapBox(), lead = D.lead, key = [B.w | 0, B.h | 0, lead, D.share.join(), Object.values(D.reg).map(v => v[lead]).join()].join("|");
-  const pad = B.w / 20;
-  if (HEAT.key !== key) {
-    HEAT.key = key; const c = HEAT.cv, g = c.getContext("2d");
-    c.width = (B.w + 2 * pad) * DPR; c.height = (B.h + 2 * pad) * DPR; g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, B.w + 2 * pad, B.h + 2 * pad);
-    const vals = REG.map(r => D.reg[r.id] ? D.reg[r.id][lead] : null).filter(v => v !== null), mn = Math.min(...vals), mx = Math.max(...vals), col = hex2(optColor(lead)), rr = B.w / 46;
-    MAPPTS.forEach(([x, y, ri]) => { const v = D.reg[REG[ri].id]; if (!v) return; const s = (v[lead] - mn) / (mx - mn || 1);
-      g.fillStyle = `rgba(${col[0]},${col[1]},${col[2]},${(.02 + .1 * s).toFixed(3)})`; g.beginPath(); g.arc(pad + x * B.w, pad + y * B.h, rr, 0, 6.283); g.fill(); });
-  }
-  return { cv: HEAT.cv, x: B.x - pad, y: B.y - pad, w: B.w + 2 * pad, h: B.h + 2 * pad };
 }
 function txt(s, x, y, size, color, align = "center", weight = 600, font = "display") {
   cx.font = `${weight} ${size}px ${font === "mono" ? '"JetBrains Mono", monospace' : '"Space Grotesk", sans-serif'}`; cx.textAlign = align; cx.textBaseline = "alphabetic";
@@ -357,18 +365,28 @@ function drawLabels() {
     pts.forEach(p => p[1] = techo - (hi > lo ? (p[2] - lo) / (hi - lo) : .5) * Math.min(46, techo - 30));
     cx.globalAlpha = labelA * .55; cx.strokeStyle = lc; cx.lineWidth = 2; cx.setLineDash([4, 5]); cx.beginPath(); pts.forEach(([x, y], i) => i ? cx.lineTo(x, y - 6) : cx.moveTo(x, y - 6)); cx.stroke(); cx.setLineDash([]); cx.globalAlpha = 1;
     pts.forEach(([x, y, v]) => { cx.globalAlpha = labelA; cx.fillStyle = lc; cx.beginPath(); cx.arc(x, y - 6, 4, 0, 6.283); cx.fill(); cx.globalAlpha = 1; txt(pct(v), x, y - 16, sm ? 13 : 17, lc, "center", 700); }); }
-  if (LAYOUT === "grp" && layout.grp) { const G = layout.grp;
-    G.vals.forEach((v, r) => { const sh = D.grp[v]; if (!sh) return; const yc = G.pt + r * G.rowH + G.rowH / 2;
-      txt(v, G.left - 14, yc + 4, sm ? 11 : 13.5, "#1A1F3A", "right", 600);
-      let acum = 0; sh.forEach((x, o) => { const xc = G.left + (acum + x / 2) * G.ancho; acum += x; if (x >= (sm ? .14 : .09)) pill(pct(x), xc, yc, sm ? 10 : 11.5); });
-      txt(pct(sh[lead]), G.left + G.ancho + 10, yc + 5, sm ? 12 : 15, lc, "left", 700); }); }
   drawLegend(sm);
-  if (LAYOUT === "map") { const B = mapBox();
-    REG.forEach(r => { const v = D.reg[r.id]; if (!v || r.id === "NA" || r.id === "RI" || (W < 760 && ["CB", "AS", "MC", "IB"].includes(r.id))) return;
-      const x = B.x + (r.id === "CN" ? .11 : r.x) * B.w, y = B.y + (r.id === "CN" ? .845 : r.y) * B.h;
-      const pocos = nGrupo("ccaa", r.id) !== null && nGrupo("ccaa", r.id) < UMBRAL_N;
-      txt(r.name + (pocos ? "*" : ""), x, y - 2, sm ? 9.5 : 11, "#1A1F3A", "center", 600); txt(pct(v[lead]), x, y + 13, sm ? 11 : 13, pocos ? "#8A8FA3" : lc, "center", 700, "mono"); });
-    if (REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N)) txt(`* menos de ${UMBRAL_N} entrevistas reales: tomar con cautela`, W - (sm ? 10 : 24), H - 12, sm ? 9.5 : 11, "#5A6075", "right", 500, "mono"); }
+  if (LAYOUT === "map" && layout.casillas) {
+    const media = D.share[lead];
+    for (const [id, c] of Object.entries(layout.casillas)) {
+      const v = D.reg[id]; if (!v) continue;
+      // reparto exacto de la comunidad (agregados del motor) como barra apilada
+      const B = c.barra; let x = B.x; cx.save(); cx.globalAlpha = labelA; cx.beginPath(); cx.roundRect(B.x, B.y, B.w, B.h, 6); cx.clip();
+      v.forEach((sh, o) => { const w = sh * B.w; cx.fillStyle = optColor(o); cx.fillRect(x, B.y, Math.max(0, w - 1.5), B.h); x += w; });
+      cx.restore();
+      const pocos = (nGrupo("ccaa", id) ?? 1e9) < UMBRAL_N, nombre = (W < 900 && CORTO[id]) || (REG[RI[id]] || {}).name || id;
+      if (c.lista) {
+        txt(nombre + (pocos ? "*" : ""), c.x, c.y + c.h / 2 + 4, 11.5, "#1A1F3A", "left", 600);
+        txt(pct(v[lead]), c.x + c.w, c.y + c.h / 2 + 5, 13, v[lead] >= media ? lc : "#1A1F3A", "right", 700, "mono");
+        continue;
+      }
+      txt(nombre + (pocos ? "*" : ""), c.x + 9, c.y + (sm ? 14 : 17), sm ? 9 : 11.5, "#1A1F3A", "left", 600);
+      txt(pct(v[lead]), c.x + 9, c.y + c.h * .47, Math.min(sm ? 15 : 26, c.h * .27), v[lead] >= media ? lc : "#1A1F3A", "left", 700);
+    }
+    if (sm) txt(`Ordenadas por «${RES.opciones[lead]}» · España ${pct(media)}${REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N) ? " · * pocas entrevistas" : ""}`, W / 2, H - 8, 9.5, "#5A6075", "center", 500, "mono");
+    else txt(`Fondo coral: por encima de la media de España (${pct(media)}) · azul: por debajo${REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N) ? ` · * menos de ${UMBRAL_N} entrevistas reales` : ""}`,
+      W / 2, H - 10, sm ? 9 : 11, "#5A6075", "center", 500, "mono");
+  }
 }
 
 /* ================= interacción con el canvas ================= */
@@ -417,15 +435,8 @@ async function toApp() {
 const viewsEl = $("#views");
 function setViewBtn(v) { viewsEl.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.v === v)); const b = viewsEl.querySelector(`[data-v="${v}"]`), pill = viewsEl.querySelector(".pill"); if (b && b.offsetWidth) { pill.style.left = b.offsetLeft + "px"; pill.style.width = b.offsetWidth + "px"; } }
 viewsEl.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; switchView(b.dataset.v); });
-function renderDims() {
-  const el = $("#dims"); el.hidden = VIEW !== "grp" || !RES;
-  if (el.hidden) return;
-  const dims = (RES.agregados.grupos_orden && Object.keys(RES.agregados.grupos_orden)) || ["Ideología", "Estudios", "Trabajo", "Renta del hogar", "Vivienda", "Vive solo", "Uso de IA", "Municipio"];
-  el.innerHTML = dims.map(d => `<button type="button" class="${d === DIM ? "on" : ""}">${d}</button>`).join("");
-}
-$("#dims").addEventListener("click", e => { const b = e.target.closest("button"); if (!b || voting) return; DIM = b.textContent; renderDims(); D = displayStats(); labelA = 0; layout("grp", true, false); renderInsight(); });
-function switchView(v) { VIEW = v; setViewBtn(v); renderDims(); if (busy && !RES) return; if (voting) return; labelA = 0; whoosh(v !== "map"); layout(v, !!D, false); if (D) renderInsight(); }
-addEventListener("keydown", e => { if (e.target.closest && e.target.closest("textarea,input,select")) return; const m = { 1: "hemi", 2: "map", 3: "sex", 4: "age", 5: "grp" }[e.key]; if (m && MODE === "app") switchView(m); });
+function switchView(v) { VIEW = v; setViewBtn(v); if (busy && !RES) return; if (voting) return; labelA = 0; whoosh(v !== "map"); layout(v, !!D, false); if (D) renderInsight(); }
+addEventListener("keydown", e => { if (e.target.closest && e.target.closest("textarea,input,select")) return; const m = { 1: "hemi", 2: "map", 3: "sex", 4: "age" }[e.key]; if (m && MODE === "app") switchView(m); });
 
 /* ================= tira de resultados ================= */
 function renderResults(final) {
@@ -477,8 +488,6 @@ function insightFor(v) {
     return `<small>Brecha territorial · ${pp(f.regHi.v - f.regLo.v)}</small>Más alto en <b>${f.regHi.r.name} (${pct(f.regHi.v)})</b>. Más bajo en ${f.regLo.r.name} (${pct(f.regLo.v)}).` +
       (aviso.length ? ` <span style="color:var(--mute);font-size:12px">${aviso.join(" y ")}: pocas entrevistas reales.</span>` : ""); }
   if (v === "sex") return `<small>Brecha de género · ${pp(f.F - f.M)}</small>${o}: mujeres <b>${pct(f.F)}</b>, hombres <b>${pct(f.M)}</b>.`;
-  if (v === "grp") { const g = Object.entries(D.grp).map(([k, x]) => [k, x[D.lead]]).sort((a, b) => b[1] - a[1]);
-    if (g.length >= 2) return `<small>Brecha por ${DIM.toLowerCase()} · ${pp(g[0][1] - g[g.length - 1][1])}</small>${o}: <b>${g[0][0]} ${pct(g[0][1])}</b> frente a ${g[g.length - 1][0]} ${pct(g[g.length - 1][1])}.`; }
   if (v === "age" && f.unaEdad && f.ageY) return `<small>Filtro de edad activo</small>${o}: <b>${pct(f.ageY.v)}</b> entre las personas de ${f.ageY.a} años.`;
   if (v === "age" && f.ageY) return `<small>Brecha generacional · ${pp(f.ageY.v - f.ageO.v)}</small>${o}: ${f.ageY.a} años <b>${pct(f.ageY.v)}</b>, ${f.ageO.a} años <b>${pct(f.ageO.v)}</b>.`;
   return `<small>Lectura rápida</small>No hay suficientes personas con estos filtros.`;
@@ -503,7 +512,7 @@ const EJEMPLOS = [["¿Te preocupa el cambio climático?"], ["¿Te sientes solo a
   ["Test A/B: ahorro o huella de carbono", "«Ahorra 200 € al año en tu factura» vs «Reduce tu huella de carbono»"],
   ["¿Zapatos rojos o azules?", "¿Qué atrae más a los jóvenes: zapatos rojos o azules?"]];
 const exampleChips = target => chips(EJEMPLOS.map(([t, q]) => [t, () => ask(q || t)]), target);
-function followChips() { chips([["Ver por comunidades", () => ask("Ver por comunidades")], ["Ver por sexo", () => ask("Ver por sexo")], ["Ver por edad", () => ask("Ver por edad")], ["Ver por ideología, renta…", () => ask("Ver por grupos")],
+function followChips() { chips([["Ver por comunidades", () => ask("Ver por comunidades")], ["Ver por sexo", () => ask("Ver por sexo")], ["Ver por edad", () => ask("Ver por edad")],
   ...(RES && RES.modo === "evidencia" && (!ESTATICO || (RES._entrada && RES._entrada.comparar)) ? [["LLM sin datos vs pulso", abrirComparacion]] : []),
   ["¿Cómo lo sabemos?", abrirValidacion], ["Otra pregunta", () => { exampleChips(); $("#q").focus(); }]]); }
 
@@ -679,7 +688,6 @@ function viewReply(v) { const f = facts(), o = shortOpt(D.lead);
   if (v === "sex") return `${o}: mujeres <b>${pct(f.F)}</b>, hombres <b>${pct(f.M)}</b>. Diferencia de ${pp(f.F - f.M)}.`;
   if (v === "age") return `${o}: ${f.ageY.a} años <b>${pct(f.ageY.v)}</b> frente a ${f.ageO.a} años <b>${pct(f.ageO.v)}</b>. Brecha de ${pp(f.ageY.v - f.ageO.v)}.`;
   if (v === "map") return `Más alto en <b>${f.regHi.r.name}</b> (${pct(f.regHi.v)}), más bajo en ${f.regLo.r.name} (${pct(f.regLo.v)}). Pasa el cursor por el mapa para conocer a cada persona.`;
-  if (v === "grp") return insightFor("grp").replace(/<small>.*?<\/small>/, "") + " Cambien la dimensión arriba a la derecha: ideología, estudios, trabajo, renta, vivienda, vivir solo, uso de IA o municipio.";
   return `En total, ${o} gana con <b>${pct(D.share[D.lead])}</b>.`; }
 
 /* grupo mencionado en la pregunta («los jóvenes», «las mujeres»…): se aplica como filtro */
@@ -703,7 +711,7 @@ async function ask(q, opciones = null, fromPanel = false, extra = null) {
   // órdenes de seguimiento sobre el resultado actual
   const s = q.toLowerCase();
   if (D && !fromPanel && !opciones && !extra) { let v = null;
-    if (/^ver por sexo|^por sexo|hombres y mujeres|g[eé]nero$/.test(s)) v = "sex"; else if (/^ver por edad|^por edad/.test(s)) v = "age"; else if (/^ver por comunidad|^por comunidad|^mapa/.test(s)) v = "map"; else if (/^ver total|^total$/.test(s)) v = "hemi"; else if (/^ver por grupos|^por grupos|ideolog|renta|estudios/.test(s)) v = "grp";
+    if (/^ver por sexo|^por sexo|hombres y mujeres|g[eé]nero$/.test(s)) v = "sex"; else if (/^ver por edad|^por edad/.test(s)) v = "age"; else if (/^ver por comunidad|^por comunidad|^mapa/.test(s)) v = "map"; else if (/^ver total|^total$/.test(s)) v = "hemi";
     if (v) { addUser(q); switchView(v); await sleep(350); await streamBot(viewReply(v)); followChips(); return; } }
   busy = true; $("#send").disabled = $("#launch").disabled = true; closePanels();
   if (MODE === "home") await toApp();
@@ -774,7 +782,7 @@ async function ask(q, opciones = null, fromPanel = false, extra = null) {
   // 4. confianza
   setSteps(3); await sleep(650); setSteps(4);
   const auto = filtroDePregunta(q); if (auto) aplicarFiltro(auto);
-  D = displayStats(); layout(VIEW, true); renderResults(true); renderDims(); chord();
+  D = displayStats(); layout(VIEW, true); renderResults(true); chord();
   await sleep(500); $("#count").style.opacity = 0; $("#steps").style.opacity = 0;
   // respuesta en el chat
   const f = facts(), lead = D.lead, voz = RES.voces && RES.voces[lead], cand = P.filter(p => p.ans === lead && p.active),

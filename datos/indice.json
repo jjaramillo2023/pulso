@@ -364,6 +364,17 @@
 "comparar": null
 },
 {
+"pregunta": "“¿Qué te convencería más para que una IA gestione tus ahorros? A) ‘Gana un 2 % más al año que en tu banco’ · B) ‘Un asesor humano revisa cada decisión’”",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "Gana un 2 % más al año",
+"valor": 63.1,
+"archivo": "5a332912acdf9b1a.json",
+"comparar": null
+},
+{
 "pregunta": "¿Comprarías una vivienda este año?",
 "tipo": "pregunta",
 "mensajes": [],
