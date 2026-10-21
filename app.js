@@ -12,7 +12,7 @@ const sleep = ms => new Promise(r => setTimeout(r, RM ? Math.min(ms, 60) : ms));
 function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const hex2 = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
 // orden de marca: coral, navy, naranja, azul; a partir de la quinta opción, tonos suaves de los mismos
-const PAL = ["#F0442E", "#1A1F3A", "#FF8A1F", "#3E7CB1", "#F59A8C", "#6B7194", "#FFC285", "#93B7D6"], NSC = "#A9AEC0";
+const PAL = ["#F0442E", "#1A1F3A", "#FF8A1F", "#3E7CB1", "#F59A8C", "#6B7194", "#FFC285", "#93B7D6", "#2F9E8F", "#B2475E", "#C9A227", "#8E7CC3"], NSC = "#A9AEC0";
 const N = 1200, BEAT = 1.6;
 const SPAR = 1.2241, PAR = 0.62;
 
@@ -725,7 +725,13 @@ async function abrirValidacion() {
     h += `<div class="vcard"><small><i style="background:#3BD27E"></i>Verde · respuestas reales del CIS</small>
       <div><span class="big">±${num(v.evidencia.error_misma_ola_pp)} pp</span></div>
       <div>Error medio de la población sintética frente al CIS en ${v.evidencia.preguntas} preguntas reales (${fmt(v.evidencia.entrevistas)} entrevistas). Cada pregunta tiene su propio modelo entrenado con microdatos y aplicado a las 25.000 personas.</div></div>`;
-    if (v.temporal) { const r = Object.fromEntries(v.temporal.map(x => [x.validacion + "|" + x.desglose, x]));
+    if (v.temporal_banco) { const T = v.temporal_banco, nq = T[0].preguntas;
+      h += `<div class="vcard"><small><i style="background:#3BD27E"></i>Verde · predicción de la ola siguiente</small>
+        <div>${nq} preguntas que el CIS repitió en la encuesta siguiente (1 a 9 meses después). El modelo de la ola anterior se compara con lo que respondió la gente en la nueva, que no había visto:</div>
+        <table><tr><th>Desglose</th><th class="n">Error pulso</th><th class="n">Repetir la ola anterior</th><th class="n">Ruido de la encuesta</th></tr>
+        ${T.map(x => `<tr><td>${{ total: "España", sexo: "Sexo", grupo_edad: "Edad", ccaa: "Comunidad" }[x.desglose] || x.desglose}</td><td class="n">${num(x.pulso)} pp</td><td class="n">${num(x.persistencia)} pp</td><td class="n">${num(x.ruido)} pp</td></tr>`).join("")}</table>
+        <div style="font-size:12.5px;color:var(--mute)">Error medio por opción. Parte del error es cambio real de opinión entre olas y parte es el propio margen de la encuesta (última columna).</div></div>`; }
+    else if (v.temporal) { const r = Object.fromEntries(v.temporal.map(x => [x.validacion + "|" + x.desglose, x]));
       const b = k => r["B_reanclada|" + k];
       h += `<div class="vcard"><small><i style="background:#FFC24B"></i>Predicción en el tiempo · clima dic 2025 → sep 2026</small>
         <div>Entrenado con diciembre y comparado con septiembre (que el modelo no vio). Con el total nacional conocido, el reparto por grupos acierta:</div>
@@ -733,11 +739,14 @@ async function abrirValidacion() {
         ${["sexo", "grupo_edad", "ccaa"].filter(b).map(k => `<tr><td>${{ sexo: "Sexo", grupo_edad: "Edad", ccaa: "Comunidad" }[k]}</td><td class="n">${num(b(k).error_medio_pts)} pp</td><td class="n">${b(k).error_sin_modelo_pts != null ? num(b(k).error_sin_modelo_pts) + " pp" : "-"}</td></tr>`).join("")}</table>
         <div style="font-size:12.5px;color:var(--mute)">La opinión cambió de verdad entre olas (+9 pp, verano de incendios): por eso pulso ancla el nivel con el dato más reciente.</div></div>`; }
     if (v.simulacion) { const R = v.simulacion.resumen, best = R.slice().sort((a, b) => a.error_total_pts - b.error_total_pts)[0];
-      h += `<div class="vcard"><small><i style="background:#FF5A4A"></i>Rojo · preguntas nuevas simuladas con el LLM</small>
+      h += `<div class="vcard"><small><i style="background:#FF5A4A"></i>Ámbar y rojo · preguntas nuevas simuladas con el LLM</small>
         <div>Tratamos cada pregunta real del CIS como si fuera nueva (sin dejar que el perfil la conozca) y comparamos la simulación con lo que respondió la gente.</div>
         <table><tr><th>Cómo responde el LLM</th><th class="n">Error medio</th><th class="n">Patrón por edad (r)</th></tr>
         ${R.map(x => `<tr class="${x === best ? "best" : ""}"><td>${(COND[x.condicion] || [x.condicion])[0]}</td><td class="n">${num(x.error_total_pts)} pp</td><td class="n">${num(x.correlacion_edad, 2)}</td></tr>`).join("")}
         <tr><td>Referencia: repartir a partes iguales</td><td class="n">${num(R[0].error_uniforme_pts)} pp</td><td class="n">-</td></tr></table>
+        ${v.simulacion.por_modo ? `<div>Según el color que les habría dado el motor (con su propia pregunta quitada del CIS):</div>
+        <table><tr><th>Color</th><th class="n">Preguntas</th><th class="n">Error medio</th><th class="n">Repartir a partes iguales</th></tr>
+        ${v.simulacion.por_modo.filter(x => x.color !== "verde").sort((a, b) => (a.color === "ámbar" ? -1 : 1) - (b.color === "ámbar" ? -1 : 1)).map(x => `<tr><td>${x.color === "ámbar" ? "Ámbar · hay una pregunta CIS parecida" : "Rojo · ninguna pregunta parecida"}</td><td class="n">${x.preguntas}</td><td class="n">${num(x.error_total_pts)} pp</td><td class="n">${num(x.error_uniforme_pts)} pp</td></tr>`).join("")}</table>` : ""}
         <div class="scatter-wrap">${scatter(v.simulacion.puntos)}</div>
         <div style="font-size:12.5px;color:var(--mute)">Cada punto es una pregunta real: horizontal, lo que respondió España; vertical, lo que simuló pulso. Cuanto más cerca de la diagonal, mejor.</div></div>`; }
     else h += `<div class="vcard"><small>Simulación</small><div>La calibración del simulador todavía se está calculando.</div></div>`;
