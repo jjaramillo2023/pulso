@@ -279,7 +279,7 @@ function colorRegion(id) {
 }
 const nombreReg = id => (REG[RI[id]] || {}).name || id;
 function rankingReg() { const lead = D.lead; return REG.filter(r => D.reg[r.id]).map(r => ({ id: r.id, v: D.reg[r.id][lead] })).sort((a, b) => b.v - a.v); }
-function elegirComunidad(id) { SELREG = id; HOVREG = null; if (id) tone(660, .09, .04); whoosh(!!id); layout("map", true, false); }
+function elegirComunidad(id) { SELREG = id; HOVREG = null; if (id) tone(660, .09, .04); whoosh(!!id); layout("map", true, false); $("#ccp").scrollTop = 0; }
 // panel lateral de la vista Comunidades: clasificación (sin elegir) o detalle de la comunidad elegida
 function renderPanelCcaa() {
   const el = $("#ccp"), on = MODE === "app" && RES && D && !voting && LAYOUT === "map" && layout.mapa;
@@ -315,6 +315,7 @@ function renderPanelCcaa() {
 $("#volverMapa").addEventListener("click", () => elegirComunidad(null));
 $("#ccp").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
+  e.stopPropagation();
   if (b.dataset.id) return elegirComunidad(b.dataset.id);
   if (b.classList.contains("back")) return elegirComunidad(null);
   if (b.classList.contains("filtrar")) { F.reg = F.reg === SELREG ? "all" : SELREG; $("#fReg").value = F.reg; refilter(); renderPanelCcaa(); }
@@ -323,7 +324,7 @@ $("#ccp").addEventListener("click", e => {
 function layoutClasificacion(sorted, set) {
   const A = RES.agregados, lider = A.total.indexOf(Math.max(...A.total)), top = PADT() + 20, pad = 10;
   const ids = REG.map(r => r.id).filter(id => A.ccaa[id]).sort((a, b) => A.ccaa[b][lider] - A.ccaa[a][lider]);
-  const rh = Math.min(30, (H - top - 26) / ids.length);
+  const rh = Math.min(30, (H - top - 38) / ids.length);
   layout.casillas = {};
   ids.forEach((id, i) => {
     const t = { x: pad, y: top + i * rh, w: W - 2 * pad, h: rh, lista: true }, bx = t.x + 98, bw = t.w - 98 - 42, bh = Math.min(12, rh * .45), by = t.y + (rh - bh) / 2;
@@ -388,7 +389,7 @@ function drawApp(t) {
   const dy = stageRect();
   // si el área del gráfico cambia de tamaño (p. ej. crece la tarjeta de resultados), se recoloca todo
   if (!inTransition && (Math.abs(H - lastH) > 2 || Math.abs(W - lastW) > 2)) { if (lastH) layout(LAYOUT, SORTED, false); lastW = W; lastH = H; }
-  if (dy && !inTransition) P.forEach(p => { p.x += dy; p.y += dy; p.tx += dy; p.ty += dy; }); // desplazamiento en móvil
+  if (dy && !inTransition) P.forEach(p => { p.y += dy; p.ty += dy; }); // al hacer scroll en móvil el gráfico sube o baja: solo cambia la vertical
   if (!RM && t - lastBeat > BEAT) beat(t);
   cx.save();
   if (!inTransition) { cx.beginPath(); cx.rect(SX, SY, W, H); cx.clip(); }
@@ -428,12 +429,13 @@ function pill(t, x, y, size) {
 // leyenda de colores dentro del gráfico (arriba a la izquierda)
 function drawLegend(sm) {
   if (LAYOUT === "hemi") return;
-  let x = sm ? 10 : 24; const y = 20, size = sm ? 11 : 12.5;
+  const x0 = sm ? 10 : 24, size = sm ? 11 : 12.5, max = sm ? 18 : 24, limite = layout.mapa && LAYOUT === "map" ? W - panelW() - 30 : W - 10;
+  let x = x0, y = 20, linea = 0;
   cx.font = `500 ${size}px "Space Grotesk", sans-serif`;
-  RES.opciones.forEach((o, i) => { const etiqueta = o.length > 24 ? o.slice(0, 23) + "…" : o, w = cx.measureText(etiqueta).width;
-    if (x + w + 22 > (layout.mapa && LAYOUT === "map" ? W - panelW() - 30 : W - 10)) return;
+  RES.opciones.forEach((o, i) => { const etiqueta = o.length > max ? o.slice(0, max - 1) + "…" : o, w = cx.measureText(etiqueta).width;
+    if (x + w + 22 > limite) { if (!sm || linea) return; linea = 1; x = x0; y += size + 9; }  // en móvil, una segunda línea
     cx.globalAlpha = labelA; cx.fillStyle = optColor(i); cx.beginPath(); cx.arc(x + 5, y - 4, 5, 0, 6.283); cx.fill(); cx.globalAlpha = 1;
-    txt(etiqueta, x + 15, y, size, "#1A1F3A", "left", 500); x += w + 34; });
+    txt(etiqueta, x + 15, y, size, "#1A1F3A", "left", 500); x += w + (sm ? 26 : 34); });
 }
 const UMBRAL_N = 120;
 const nGrupo = (tipo, clave) => { const g = RES && RES.confianza && RES.confianza.n_grupos; return g && g[tipo] && g[tipo][clave] != null ? g[tipo][clave] : null; };
@@ -441,11 +443,15 @@ function drawLabels() {
   const lead = D.lead, lc = optColor(lead), sm = W < 600;
   if (LAYOUT === "hemi" && layout.hemi) { const h = layout.hemi;
     txt(pct(D.share[lead]), h.cx, h.cy - h.R0 * .25, Math.min(64, h.R0 * .6), lc, "center", 700);
-    txt(RES.opciones[lead], h.cx, h.cy - 4, sm ? 12 : 14, "#5A6075", "center", 500); }
+    // la etiqueta tiene que caber dentro del hueco del hemiciclo
+    let et = RES.opciones[lead]; cx.font = `500 ${sm ? 12 : 14}px "Space Grotesk", sans-serif`;
+    if (cx.measureText(et).width > h.R0 * 2.1) { while (et.length > 8 && cx.measureText(et + "…").width > h.R0 * 2.1) et = et.slice(0, -1); et = et.trimEnd().replace(/,$/, "") + "…"; }
+    txt(et, h.cx, h.cy - 4, sm ? 12 : 14, "#5A6075", "center", 500); }
   if (LAYOUT === "sex" && layout.sex) { const L = layout.sex;
     [["F", "Mujeres"], ["M", "Hombres"]].forEach(([s, name]) => { const v = D.sex[s]; if (!v) return; const x = L.xs[s] + L.fw / 2;
       txt(name, x, L.fy + L.fh + 24, sm ? 15 : 18, "#1A1F3A", "center", 600);
-      txt(`${pct(v[lead])} ${shortOpt(lead)}`, x, L.fy + L.fh + 44, sm ? 10.5 : 12, "#5A6075", "center", 400, "mono");
+      if (sm) txt(pct(v[lead]), x, L.fy + L.fh + 46, 15, lc, "center", 700);  // en móvil no cabe el nombre de la opción
+      else txt(`${pct(v[lead])} ${shortOpt(lead)}`, x, L.fy + L.fh + 44, 12, "#5A6075", "center", 400, "mono");
       const left = s === "F", bx = left ? L.xs[s] - 10 : L.xs[s] + L.fw + 10;
       for (let o = 0; o < D.k; o++) { if (v[o] < .06) continue; const g = P.filter(p => p.per && p.per.sexo === s && p.ans === o); if (!g.length) continue;
         const y = g.reduce((a, p) => a + p.ty, 0) / g.length - SY; txt(pct(v[o]), bx, y + 5, sm ? 12 : 15, optColor(o), left ? "right" : "left", 700); } }); }
@@ -473,7 +479,9 @@ function drawLabels() {
       txt(nombre + (pocos ? "*" : ""), c.x, c.y + c.h / 2 + 4, 11.5, "#1A1F3A", "left", 600);
       txt(pct(v[lead]), c.x + c.w, c.y + c.h / 2 + 5, 13, v[lead] >= media ? lc : "#1A1F3A", "right", 700, "mono");
     }
-    txt(`Ordenadas por «${RES.opciones[lead]}» · España ${pct(media)}${REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N) ? " · * pocas entrevistas" : ""}`, W / 2, H - 8, 9.5, "#5A6075", "center", 500, "mono");
+    const pocas = REG.some(r => (nGrupo("ccaa", r.id) ?? 1e9) < UMBRAL_N);
+    txt(`Ordenadas por ${shortOpt(lead)} · España ${pct(media)}`, W / 2, H - (pocas ? 20 : 8), 9.5, "#5A6075", "center", 500, "mono");
+    if (pocas) txt("* comunidades con pocas entrevistas del CIS", W / 2, H - 7, 9.5, "#5A6075", "center", 500, "mono");
   }
   if (LAYOUT === "map" && layout.mapa) { // mapa: porcentaje de cada comunidad sobre su centro
     const B = cajaActual(), media = D.share[lead], foco = SELREG || HOVREG, rk = rankingReg(), puestas = [];
@@ -562,11 +570,12 @@ addEventListener("keydown", e => { if (e.target.closest && e.target.closest("tex
 /* ================= tira de resultados ================= */
 function renderResults(final) {
   const st = final ? D : LIVE; if (!st || !RES) return;
-  const lead = st.share.indexOf(Math.max(...st.share));
+  const orden = st.share.map((_, i) => i).sort((a, b) => st.share[b] - st.share[a] || a - b);
+  const lead = orden[0];
   $("#res").classList.remove("wait");
-  $("#stack").innerHTML = RES.opciones.map((o, i) => `<i style="background:${optColor(i)};width:${(st.share[i] * 100).toFixed(2)}%"></i>`).join("");
-  $("#legend").innerHTML = RES.opciones.map((o, i) => `<span><i style="background:${optColor(i)}"></i>${o} <b>${pct(st.share[i])}</b></span>`).join("");
-  $("#big").textContent = pct(st.share[lead]); $("#big").style.color = optColor(lead) === "#1A1F3A" ? "#1A1F3A" : "";
+  $("#stack").innerHTML = orden.map(i => `<i style="background:${optColor(i)};width:${(st.share[i] * 100).toFixed(2)}%"></i>`).join("");
+  $("#legend").innerHTML = orden.map(i => `<span><i style="background:${optColor(i)}"></i>${RES.opciones[i]} <b>${pct(st.share[i])}</b></span>`).join("");
+  $("#big").textContent = pct(st.share[lead]); $("#big").style.color = optColor(lead);
   $("#bigL").textContent = `responde «${RES.opciones[lead]}»`;
   if (!final) return;
   const c = RES.confianza, L = c.nivel;
@@ -646,7 +655,7 @@ function renderTopics() { $("#topics").innerHTML = TOPICS.map(t => `<button type
 $("#topics").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; curTopic = b.textContent; $("#topicAuto").textContent = "elegido a mano"; renderTopics(); });
 function renderOpts() {
   $("#opts").innerHTML = OPTS.map((o, i) => `<div class="opt"><i style="background:${isNS(o) ? NSC : PAL[i % PAL.length]}"></i><input id="opt${i}" value="${o.replace(/"/g, "&quot;")}" placeholder="Opción ${i + 1}" aria-label="Opción ${i + 1}"><button type="button" data-i="${i}" aria-label="Quitar opción">×</button></div>`).join("");
-  $("#addOpt").hidden = OPTS.length >= 4;
+  $("#addOpt").hidden = OPTS.length >= 5;
 }
 $("#opts").addEventListener("input", e => { const m = e.target.id.match(/^opt(\d)$/); if (m) OPTS[+m[1]] = e.target.value; });
 $("#opts").addEventListener("click", e => { const b = e.target.closest("button"); if (!b || OPTS.length <= 2) return; OPTS.splice(+b.dataset.i, 1); renderOpts(); });
@@ -857,7 +866,7 @@ async function ask(q, opciones = null, fromPanel = false, extra = null) {
   // reinicio visual
   RES = null; D = null; LIVE = null; labelA = 0; SELREG = null; renderPanelCcaa(); P.forEach(p => { p.voted = false; });
   if (!fromPanel) { F.reg = "all"; $("#fReg").value = "all"; F.sex = "all"; segOn($("#fSex"), $('#fSex [data-v="all"]')); $("#aMin").value = 18; $("#aMax").value = 90; syncAge(); contarFiltros(); }
-  $("#res").classList.add("wait"); $("#big").textContent = "--"; $("#bigL").textContent = "Esperando respuestas"; $("#stack").innerHTML = ""; $("#legend").innerHTML = "";
+  $("#res").classList.add("wait"); $("#big").textContent = "--"; $("#big").style.color = ""; $("#bigL").textContent = "Esperando respuestas"; $("#stack").innerHTML = ""; $("#legend").innerHTML = "";
   $("#sema").dataset.l = 0; $("#semaT").textContent = "Confianza"; $("#moe").textContent = "±-- pp · n = --"; $("#base").textContent = "";
   $("#insight").innerHTML = `<small>Lectura rápida</small>Las diferencias entre grupos aparecerán aquí.`;
   $("#qt").textContent = q; $("#eyT").textContent = "Analizando"; $("#stProg").textContent = "";
@@ -990,6 +999,9 @@ if (ESTATICO) indice().then(idx => {
   chips([[`Ver las ${idx.length} preguntas`, abrirCatalogo], ...dest.map(i => [idx[i].tipo === "ab" ? "Test A/B: ahorro o huella de carbono" : idx[i].pregunta, () => elegirPreparada(i)])], "#homeChips");
   $("#homeChips").firstChild.classList.add("prim");
   if (/[?&]preguntas\b/.test(location.search)) abrirCatalogo();   // el QR abre directamente el catálogo
-}); else exampleChips("#homeChips");
+}); else {  // inicio con LLM: «Diseña tu encuesta» primero, luego ejemplos
+  chips([["Diseña tu encuesta", abrirDiseno], ...EJEMPLOS.map(([t, q]) => [t, () => ask(q || t)])], "#homeChips");
+  $("#homeChips").firstChild.classList.add("prim");
+}
 requestAnimationFrame(frame);
 (async () => { await sleep(300); await streamBot(`Hola. Soy <b>pulso</b>. Cada punto es una persona sintética de la España real, con actitudes estimadas a partir de encuestas del CIS.`); })();

@@ -52,7 +52,7 @@ button { cursor: pointer; }
 .app .only-app { opacity: 1; pointer-events: auto; }
 #cfgBtn.on { background: var(--ink); border-color: var(--ink); color: #fff; }
 .nfil { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--coral); color: #fff; font-family: var(--f-mono); font-size: 11px; font-weight: 600; display: inline-grid; place-items: center; }
-#disBtn { background: var(--coral); border-color: var(--coral); color: #fff; }
+#disBtn { background: var(--coral); border-color: var(--coral); color: #fff; flex-shrink: 0; white-space: nowrap; }
 #disBtn:hover { background: var(--coralInk); border-color: var(--coralInk); }
 .app .badge { bottom: auto; right: auto; top: calc(env(safe-area-inset-top, 0px) + 22px); left: 132px; }
 .badge { position: fixed; z-index: 21; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px));
@@ -227,7 +227,7 @@ body.home .chat > :not(#ask), body.home .cfg, body.home .stage > *, body.home .r
 .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 10px; font-size: 13px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend span i { width: 9px; height: 9px; border-radius: 50%; flex: none; }
-.legend span b { font-variant-numeric: tabular-nums; }
+.legend span b { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .r-trust { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--mute); }
 .sema { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; cursor: help; }
 .sema .lights { display: inline-flex; gap: 3px; padding: 3px 5px; border-radius: 8px; background: var(--ink); }
@@ -309,7 +309,7 @@ select { width: 100%; border: 1px solid var(--line); border-radius: 12px; paddin
 .vcard table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .vcard td, .vcard th { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: left; font-variant-numeric: tabular-nums; }
 .vcard th { font-family: var(--f-mono); font-size: 10.5px; font-weight: 400; color: var(--mute); text-transform: uppercase; letter-spacing: .06em; }
-.vcard td.n { text-align: right; font-family: var(--f-mono); }
+.vcard td.n { text-align: right; font-family: var(--f-mono); white-space: nowrap; }
 .vcard tr.best td { font-weight: 600; color: var(--coralInk); }
 .vcard .scatter-wrap { overflow-x: auto; }
 #sema { cursor: pointer; }
@@ -348,6 +348,8 @@ select { width: 100%; border: 1px solid var(--line); border-radius: 12px; paddin
   .steps { left: 14px; font-size: 12px; }
   .count { right: 14px; } .count b { font-size: 32px; } .count .pb { width: 110px; }
   .lbl-l { display: none; } .lbl-s { display: inline; }
+  #disBtn .lbl-s { display: none; } #disBtn { padding: 0 11px; }  /* en móvil, solo el lápiz: en el inicio está el chip «Diseña tu encuesta» */
+  body.estatico #disBtn .lbl-s { display: inline; }  /* versión publicada: sin historial, cabe «Preguntas» */
   .badge-fecha { display: none; }
   .top { gap: 8px; }
   #cfgBtn { padding: 0 10px; }
