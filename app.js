@@ -201,7 +201,8 @@ function layout(view, sorted, instant = false) {
    según cuánto se aparta de la media de España; al pulsarla, sus personas sintéticas aparecen sobre el mapa con su respuesta
    y el panel de la derecha muestra su reparto completo. */
 const CORTO = { CL: "C. y León", CM: "C.-La Mancha", VC: "C. Valenciana", PV: "País Vasco", IB: "Baleares" };
-let SELREG = null, HOVREG = null;   // comunidad elegida y comunidad bajo el cursor
+let SELREG = null, HOVREG = null, OPCION_CCAA = null;   // comunidad, cursor y respuesta del mapa
+const opcionCcaa = () => OPCION_CCAA == null ? D.lead : OPCION_CCAA;
 const REJ = {}; MAPA_CCAA.pts.forEach(([x, y, id, b]) => (REJ[id] = REJ[id] || []).push([x, y, b]));
 const panelW = () => clamp(W * .3, 250, 330);
 const CAJA = {}; for (const [id, pts] of Object.entries(REJ)) CAJA[id] = [Math.min(...pts.map(q => q[0])), Math.min(...pts.map(q => q[1])), Math.max(...pts.map(q => q[0])), Math.max(...pts.map(q => q[1]))];
@@ -245,7 +246,7 @@ function regionEn(cx0, cy0) {
 // la rejilla se pinta en un canvas aparte y solo se repinta cuando cambian el tamaño, el zoom, los datos o la comunidad en foco
 const rejCv = document.createElement("canvas"), rejCx = rejCv.getContext("2d"); let rejClave = "", rejD = null;
 function drawRejilla() {
-  const M = layout.mapa, B = cajaActual(), foco = SELREG || HOVREG, clave = [W, H, DPR, B.x, B.y, B.w, foco, SELREG].join("|");
+  const M = layout.mapa, B = cajaActual(), foco = SELREG || HOVREG, clave = [W, H, DPR, B.x, B.y, B.w, foco, SELREG, opcionCcaa()].join("|");
   if (clave !== rejClave || rejD !== D) { rejClave = clave; rejD = D;
     const paso = MAPA_CCAA.paso * B.w, rg = Math.min(paso * .36, M.r0 * 1.6);
     rejCv.width = W * DPR; rejCv.height = H * DPR; rejCx.setTransform(DPR, 0, 0, DPR, 0, 0); rejCx.clearRect(0, 0, W, H);
@@ -266,33 +267,41 @@ function drawRejilla() {
   }
   cx.globalAlpha = labelA; cx.drawImage(rejCv, SX, SY, W, H); cx.globalAlpha = 1;
 }
-// color de cada comunidad: coral (o el color de la opción ganadora) si está por encima de la media de España, azul si está por debajo.
+// color de cada comunidad: color de la respuesta seleccionada si está por encima de la media de España, azul si está por debajo.
 // La intensidad crece con la diferencia; por debajo de 5 pp los colores se mantienen suaves para no exagerar diferencias pequeñas.
-let COLREG = null, COLREG_D = null;
+let COLREG = null, COLREG_D = null, COLREG_OP = null;
 function colorRegion(id) {
-  if (COLREG_D !== D) { COLREG_D = D; COLREG = {};
-    const lead = D.lead, media = D.share[lead], lc = hex2(optColor(lead)), bajo = optColor(lead) === "#3E7CB1" ? [26, 31, 58] : [62, 124, 177];
+  const lead = opcionCcaa();
+  if (COLREG_D !== D || COLREG_OP !== lead) { COLREG_D = D; COLREG_OP = lead; COLREG = {};
+    const media = D.share[lead], lc = hex2(optColor(lead)), bajo = optColor(lead) === "#3E7CB1" ? [26, 31, 58] : [62, 124, 177];
     const difs = REG.map(r => D.reg[r.id] ? D.reg[r.id][lead] - media : 0), mx = Math.max(.05, ...difs.map(Math.abs)), base = [178, 174, 178];
     const mezcla = (c, k) => base.map((b, j) => Math.round(b + (c[j] - b) * k));
     REG.forEach((r, i) => { const t = difs[i] / mx; COLREG[r.id] = mezcla(t >= 0 ? lc : bajo, .2 + .8 * Math.abs(t)); }); }
   return COLREG[id] || [26, 31, 58];
 }
 const nombreReg = id => (REG[RI[id]] || {}).name || id;
-function rankingReg() { const lead = D.lead; return REG.filter(r => D.reg[r.id]).map(r => ({ id: r.id, v: D.reg[r.id][lead] })).sort((a, b) => b.v - a.v); }
+function rankingReg() { const lead = opcionCcaa(); return REG.filter(r => D.reg[r.id]).map(r => ({ id: r.id, v: D.reg[r.id][lead] })).sort((a, b) => b.v - a.v); }
 function elegirComunidad(id) { SELREG = id; HOVREG = null; if (id) tone(660, .09, .04); whoosh(!!id); layout("map", true, false); $("#ccp").scrollTop = 0; }
+function rellenarSelectorCcaa(el) {
+  const select = el.querySelector("#ccpOpcion");
+  RES.opciones.forEach((o, i) => { const opt = document.createElement("option"); opt.value = i; opt.textContent = o; select.appendChild(opt); });
+  select.value = String(opcionCcaa());
+}
 // panel lateral de la vista Comunidades: clasificación (sin elegir) o detalle de la comunidad elegida
 function renderPanelCcaa() {
   const el = $("#ccp"), on = MODE === "app" && RES && D && !voting && LAYOUT === "map" && layout.mapa;
   el.classList.toggle("on", !!on); $("#volverMapa").classList.toggle("on", !!(on && SELREG)); if (!on) return;
   Object.assign(el.style, { width: panelW() + "px", top: "46px", bottom: "30px" });
-  const lead = D.lead, media = D.share[lead], lc = optColor(lead), rank = rankingReg(), hi = rank.length ? rank[0].v : 1;
+  const lead = opcionCcaa(), media = D.share[lead], lc = optColor(lead), rank = rankingReg(), hi = rank.length ? rank[0].v : 1;
+  const selector = `<div class="ccp-sel"><label for="ccpOpcion"></label><div class="ccp-choice"><i style="background:${lc}"></i><select id="ccpOpcion"></select></div></div>`;
   const pocos = id => (nGrupo("ccaa", id) ?? 1e9) < UMBRAL_N, ast = id => pocos(id) ? `<sup title="Menos de ${UMBRAL_N} entrevistas del CIS">*</sup>` : "";
   const v = SELREG && D.reg[SELREG];
   if (!v) {
-    el.innerHTML = `<small class="ey">${shortOpt(lead)} por comunidad</small><p class="hint">Pulsen una comunidad en el mapa o en la lista para ver su reparto completo.</p>
+    el.innerHTML = `<small class="ey">${shortOpt(lead)} por comunidad</small>${selector}<p class="hint">Pulsen una comunidad en el mapa o en la lista para ver su reparto completo.</p>
       <ol class="rank">${rank.map(o => `<li><button type="button" data-id="${o.id}"><span class="nm">${nombreReg(o.id)}${ast(o.id)}</span>
         <span class="br"><i style="width:${(o.v / hi * 100).toFixed(1)}%;background:${o.v >= media ? lc : "#3E7CB1"}"></i></span><b>${pct(o.v)}</b></button></li>`).join("")}</ol>
       <p class="nota">España: ${pct(media)}${rank.some(o => pocos(o.id)) ? ` · * menos de ${UMBRAL_N} entrevistas del CIS` : ""}</p>`;
+    rellenarSelectorCcaa(el);
     return;
   }
   const dif = (v[lead] - media) * 100, pos = rank.findIndex(o => o.id === SELREG) + 1, n = nGrupo("ccaa", SELREG), np = P.filter(p => p.per && p.per.ccaa === SELREG).length;
@@ -303,6 +312,7 @@ function renderPanelCcaa() {
     : "Simulación con LLM y perfiles españoles: la diferencia con España sale de la composición de la comunidad (edad, sexo, estudios, ideología), no de entrevistas hechas allí.";
   el.innerHTML = `<button type="button" class="back">← Todas las comunidades</button>
     <h4>${nombreReg(SELREG)}${ast(SELREG)}</h4>
+    ${selector}
     <div class="big"><b style="color:${lc === "#1A1F3A" ? "#1A1F3A" : lc}">${pct(v[lead])}</b><span>responde ${shortOpt(lead)}</span></div>
     <p class="vs"><b>${signo(dif)}</b> frente a ${esp} (${pct(media)}) · puesto ${pos} de ${rank.length}</p>
     <div class="stack">${v.map((s, o) => `<i style="background:${optColor(o)};width:${(s * 100).toFixed(2)}%"></i>`).join("")}</div>
@@ -311,6 +321,7 @@ function renderPanelCcaa() {
     <p class="nota">${fuente}</p>
     <p class="nota">En el mapa, los ${fmt(np)} puntos de ${nombreReg(SELREG)} muestran la respuesta de cada persona sintética.</p>
     <button type="button" class="filtrar">${F.reg === SELREG ? "Quitar el filtro de comunidad" : `Ver sexo y edad solo en ${CORTO[SELREG] || nombreReg(SELREG)}`}</button>`;
+  rellenarSelectorCcaa(el);
 }
 $("#volverMapa").addEventListener("click", () => elegirComunidad(null));
 $("#ccp").addEventListener("click", e => {
@@ -320,9 +331,15 @@ $("#ccp").addEventListener("click", e => {
   if (b.classList.contains("back")) return elegirComunidad(null);
   if (b.classList.contains("filtrar")) { F.reg = F.reg === SELREG ? "all" : SELREG; $("#fReg").value = F.reg; refilter(); renderPanelCcaa(); }
 });
+$("#ccp").addEventListener("change", e => {
+  if (e.target.id !== "ccpOpcion") return;
+  OPCION_CCAA = Number(e.target.value);
+  renderPanelCcaa();
+  renderInsight();
+});
 /* En móvil: clasificación de comunidades (una fila por comunidad, de mayor a menor) */
 function layoutClasificacion(sorted, set) {
-  const A = RES.agregados, lider = A.total.indexOf(Math.max(...A.total)), top = PADT() + 20, pad = 10;
+  const A = RES.agregados, lider = opcionCcaa(), top = PADT() + 20, pad = 10;
   const ids = REG.map(r => r.id).filter(id => A.ccaa[id]).sort((a, b) => A.ccaa[b][lider] - A.ccaa[a][lider]);
   const rh = Math.min(30, (H - top - 38) / ids.length);
   layout.casillas = {};
@@ -440,7 +457,7 @@ function drawLegend(sm) {
 const UMBRAL_N = 120;
 const nGrupo = (tipo, clave) => { const g = RES && RES.confianza && RES.confianza.n_grupos; return g && g[tipo] && g[tipo][clave] != null ? g[tipo][clave] : null; };
 function drawLabels() {
-  const lead = D.lead, lc = optColor(lead), sm = W < 600;
+  const lead = LAYOUT === "map" ? opcionCcaa() : D.lead, lc = optColor(lead), sm = W < 600;
   if (LAYOUT === "hemi" && layout.hemi) { const h = layout.hemi;
     txt(pct(D.share[lead]), h.cx, h.cy - h.R0 * .25, Math.min(64, h.R0 * .6), lc, "center", 700);
     // la etiqueta tiene que caber dentro del hueco del hemiciclo
@@ -587,8 +604,8 @@ function renderResults(final) {
   $("#base").textContent = RES.modo === "evidencia" ? "Modelo entrenado con microdatos del CIS" : RES.modo === "analogia" ? "LLM con perfiles españoles, anclado en una pregunta CIS parecida" : "LLM con perfiles sintéticos españoles";
   renderInsight();
 }
-function facts() {
-  const lead = D.lead, f = {};
+function facts(lead = D.lead) {
+  const f = {};
   const regs = REG.map(r => ({ r, v: D.reg[r.id] ? D.reg[r.id][lead] : null })).filter(o => o.v !== null).sort((a, b) => b.v - a.v);
   f.regHi = regs[0]; f.regLo = regs[regs.length - 1];
   const ages = AGEB.map((a, b) => ({ a, v: D.age[b] ? D.age[b][lead] : null })).filter(o => o.v !== null);
@@ -605,10 +622,10 @@ function facts() {
 }
 const pp = x => Math.round(Math.abs(x) * 100) + " pp";
 function insightFor(v) {
-  const f = facts(), o = shortOpt(D.lead);
+  const lead = v === "map" ? opcionCcaa() : D.lead, f = facts(lead), o = shortOpt(lead);
   if (v === "hemi") return `<small>Mayor brecha · ${f.maxGap}</small>${o} gana con <b>${pct(D.share[D.lead])}</b>, ${Math.round(f.margin)} pp por delante de la segunda opción.`;
   if (v === "map" && f.regHi) { const aviso = [f.regHi, f.regLo].filter(x => (nGrupo("ccaa", x.r.id) ?? 1e9) < UMBRAL_N).map(x => x.r.name);
-    return `<small>Brecha territorial · ${pp(f.regHi.v - f.regLo.v)}</small>Más alto en <b>${f.regHi.r.name} (${pct(f.regHi.v)})</b>. Más bajo en ${f.regLo.r.name} (${pct(f.regLo.v)}).` +
+    return `<small>Brecha territorial · ${o} · ${pp(f.regHi.v - f.regLo.v)}</small>Más alto en <b>${f.regHi.r.name} (${pct(f.regHi.v)})</b>. Más bajo en ${f.regLo.r.name} (${pct(f.regLo.v)}).` +
       (aviso.length ? ` <span style="color:var(--mute);font-size:12px">${aviso.join(" y ")}: pocas entrevistas del CIS.</span>` : ""); }
   if (v === "sex") return `<small>Brecha de género · ${pp(f.F - f.M)}</small>${o}: mujeres <b>${pct(f.F)}</b>, hombres <b>${pct(f.M)}</b>.`;
   if (v === "age" && f.unaEdad && f.ageY) return `<small>Filtro de edad activo</small>${o}: <b>${pct(f.ageY.v)}</b> entre las personas de ${f.ageY.a} años.`;
@@ -831,10 +848,10 @@ async function esperar(job, onProg) {
     if (Date.now() - t0 > 10 * 60 * 1000) throw new Error("La consulta tardó demasiado.");
   }
 }
-function viewReply(v) { const f = facts(), o = shortOpt(D.lead);
+function viewReply(v) { const lead = v === "map" ? opcionCcaa() : D.lead, f = facts(lead), o = shortOpt(lead);
   if (v === "sex") return `${o}: mujeres <b>${pct(f.F)}</b>, hombres <b>${pct(f.M)}</b>. Diferencia de ${pp(f.F - f.M)}.`;
   if (v === "age") return `${o}: ${f.ageY.a} años <b>${pct(f.ageY.v)}</b> frente a ${f.ageO.a} años <b>${pct(f.ageO.v)}</b>. Brecha de ${pp(f.ageY.v - f.ageO.v)}.`;
-  if (v === "map") return `Más alto en <b>${f.regHi.r.name}</b> (${pct(f.regHi.v)}), más bajo en ${f.regLo.r.name} (${pct(f.regLo.v)}). Pulsen una comunidad para ver su reparto completo; con el cursor se conoce a cada persona.`;
+  if (v === "map") return `Para ${o}, más alto en <b>${f.regHi.r.name}</b> (${pct(f.regHi.v)}), más bajo en ${f.regLo.r.name} (${pct(f.regLo.v)}). Pulsen una comunidad para ver su reparto completo; con el cursor se conoce a cada persona.`;
   return `En total, ${o} gana con <b>${pct(D.share[D.lead])}</b>.`; }
 
 /* grupo mencionado en la pregunta («los jóvenes», «las mujeres»…): se aplica como filtro */
@@ -864,7 +881,7 @@ async function ask(q, opciones = null, fromPanel = false, extra = null) {
   if (MODE === "home") await toApp();
   addUser(q); $("#sugg").innerHTML = "";
   // reinicio visual
-  RES = null; D = null; LIVE = null; labelA = 0; SELREG = null; renderPanelCcaa(); P.forEach(p => { p.voted = false; });
+  RES = null; D = null; LIVE = null; labelA = 0; SELREG = null; OPCION_CCAA = null; renderPanelCcaa(); P.forEach(p => { p.voted = false; });
   if (!fromPanel) { F.reg = "all"; $("#fReg").value = "all"; F.sex = "all"; segOn($("#fSex"), $('#fSex [data-v="all"]')); $("#aMin").value = 18; $("#aMax").value = 90; syncAge(); contarFiltros(); }
   $("#res").classList.add("wait"); $("#big").textContent = "--"; $("#big").style.color = ""; $("#bigL").textContent = "Esperando respuestas"; $("#stack").innerHTML = ""; $("#legend").innerHTML = "";
   $("#sema").dataset.l = 0; $("#semaT").textContent = "Confianza"; $("#moe").textContent = "±-- pp · n = --"; $("#base").textContent = "";
