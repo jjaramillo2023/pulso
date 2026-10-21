@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pulso · Datos que laten</title>
+<meta name="description" content="pulso predice cómo respondería la población adulta de España a una pregunta, una campaña o un test A/B, por comunidad, sexo y edad, con un semáforo que mide cuánto fiarse.">
+<meta name="theme-color" content="#FFF4E8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFF4E8; --bg2: #FFFBF6; --ink: #1A1F3A; --coral: #F0442E; --orange: #FF8A1F; --mute: #5A6075;
+  --line: rgba(26, 31, 58, .12); --green: #2FB36B; --amber: #F2A516; --red: #E8452F; --grey: #A9AEC0;
+  --f: "Space Grotesk", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+  --ease: cubic-bezier(.22, 1, .36, 1); --w: min(1120px, calc(100vw - 32px));
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f); font-size: 17px; line-height: 1.5; overflow-x: hidden; }
+a { color: inherit; }
+.wrap { width: var(--w); margin-inline: auto; }
+.mono { font-family: var(--mono); }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--coral); display: inline-flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 4px rgba(240, 68, 46, .15); }
+h1, h2, h3 { margin: 0; letter-spacing: -.03em; line-height: 1.05; }
+h2 { font-size: clamp(32px, 5vw, 56px); font-weight: 700; margin-top: 14px; max-width: 18ch; }
+h2 .c, h1 .c { color: var(--coral); }
+.lead { font-size: clamp(17px, 1.6vw, 20px); color: var(--mute); max-width: 60ch; margin: 18px 0 0; }
+section { padding: clamp(72px, 11vw, 140px) 0; position: relative; }
+.src { font-family: var(--mono); font-size: 11px; color: var(--mute); margin-top: 28px; opacity: .8; }
+
+/* navegación */
+nav { position: fixed; inset: 0 0 auto; z-index: 20; transition: background .3s, box-shadow .3s; }
+nav.sol { background: rgba(255, 244, 232, .86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--line); }
+nav .wrap { display: flex; align-items: center; gap: 18px; height: 64px; }
+.logo { font-weight: 700; font-size: 26px; letter-spacing: -.04em; display: inline-flex; align-items: center; text-decoration: none; }
+.logo i { position: relative; width: 12px; height: 12px; border-radius: 50%; background: var(--coral); margin-left: 3px; margin-top: 4px; }
+.logo i::before, .logo i::after { content: ""; position: absolute; inset: -5px; border: 1.5px solid var(--coral); border-radius: 50%; opacity: .5; animation: anillo 1.6s var(--ease) infinite; }
+.logo i::after { animation-delay: .4s; }
+@keyframes anillo { from { transform: scale(.6); opacity: .7; } to { transform: scale(1.6); opacity: 0; } }
+nav .links { display: flex; gap: 22px; margin-left: auto; font-size: 14px; }
+nav .links a { text-decoration: none; color: var(--mute); transition: color .2s; }
+nav .links a:hover { color: var(--ink); }
+.btn { display: inline-flex; align-items: center; gap: 10px; background: var(--coral); color: #fff; text-decoration: none; font-weight: 600; border-radius: 999px; padding: 13px 22px; transition: transform .2s, box-shadow .2s; box-shadow: 0 10px 30px -10px rgba(240, 68, 46, .6); white-space: nowrap; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 14px 34px -10px rgba(240, 68, 46, .7); }
+.btn.sec { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+nav .btn { padding: 9px 16px; font-size: 14px; }
+
+/* portada */
+.hero { min-height: 100svh; display: grid; align-items: center; padding: 90px 0 40px; overflow: hidden; }
+#lienzo { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero .wrap { position: relative; z-index: 2; pointer-events: none; }
+.hero .wrap > * { pointer-events: auto; }
+.hero h1 { font-size: clamp(48px, 9vw, 112px); font-weight: 700; max-width: 9ch; }
+.hero .lead { max-width: 34ch; color: var(--ink); opacity: .85; }
+.acciones { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+.cifras { display: grid; grid-template-columns: repeat(4, auto); gap: 8px 36px; margin-top: 54px; justify-content: start; }
+.cifras b { display: block; font-size: clamp(26px, 3vw, 36px); letter-spacing: -.03em; }
+.cifras span { font-family: var(--mono); font-size: 11.5px; color: var(--mute); }
+.bajar { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 2; font-family: var(--mono); font-size: 11px; color: var(--mute); text-decoration: none; display: grid; justify-items: center; gap: 6px; }
+.bajar::after { content: ""; width: 1px; height: 28px; background: linear-gradient(var(--mute), transparent); animation: baja 1.8s infinite; }
+@keyframes baja { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+/* aparición al hacer scroll */
+.rv { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.rv.on { opacity: 1; transform: none; }
+.rv.d1 { transition-delay: .1s; } .rv.d2 { transition-delay: .2s; } .rv.d3 { transition-delay: .3s; } .rv.d4 { transition-delay: .4s; }
+
+/* tarjetas */
+.rejilla { display: grid; gap: 18px; margin-top: 46px; }
+.r3 { grid-template-columns: repeat(3, 1fr); } .r4 { grid-template-columns: repeat(4, 1fr); } .r2 { grid-template-columns: 1fr 1fr; }
+.card { background: var(--bg2); border: 1px solid var(--line); border-radius: 22px; padding: 26px; position: relative; overflow: hidden; }
+.card .big { font-size: clamp(40px, 5vw, 60px); font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+.card p { margin: 10px 0 0; color: var(--mute); font-size: 15.5px; }
+.card h3 { font-size: 21px; }
+.ink { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.ink p { color: rgba(255, 244, 232, .7); }
+
+/* problema: rejilla 10x10 */
+.cien { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; max-width: 230px; margin-top: 18px; }
+.cien i { aspect-ratio: 1; border-radius: 50%; background: rgba(255, 244, 232, .18); transition: background .4s, transform .4s; }
+.cien i.si { background: var(--coral); transform: scale(1.15); }
+
+/* proceso */
+.pasos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 54px; position: relative; }
+.pasos::before { content: ""; position: absolute; left: 4%; right: 4%; top: 27px; height: 2px; background: repeating-linear-gradient(90deg, var(--coral) 0 8px, transparent 8px 16px); opacity: .35; }
+.paso { position: relative; }
+.paso .n { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 2px solid var(--coral); display: grid; place-items: center; font-family: var(--mono); font-weight: 600; color: var(--coral); position: relative; z-index: 1; }
+.paso.clave .n { background: var(--coral); color: #fff; box-shadow: 0 0 0 8px rgba(240, 68, 46, .14); }
+.paso h3 { font-size: 18px; margin-top: 18px; }
+.paso p { font-size: 14.5px; color: var(--mute); margin: 8px 0 0; }
+.flujo { position: absolute; top: 22px; left: 4%; width: 12px; height: 12px; border-radius: 50%; background: var(--coral); z-index: 2; box-shadow: 0 0 14px var(--coral); animation: flujo 4.5s linear infinite; }
+@keyframes flujo { from { left: 4%; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } to { left: 95%; opacity: 0; } }
+
+/* motor: decisión */
+.motor { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; margin-top: 30px; }
+.decision { background: var(--bg2); border: 1px solid var(--line); border-radius: 22px; padding: 26px; font-size: 15px; }
+.decision .q { font-family: var(--mono); font-size: 13px; background: var(--bg); border: 1px dashed var(--line); border-radius: 12px; padding: 12px 14px; }
+.decision .flecha { text-align: center; color: var(--mute); font-family: var(--mono); font-size: 12px; margin: 10px 0; }
+.decision .rama { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.decision .rama div { border-radius: 12px; padding: 10px; font-size: 12.5px; text-align: center; line-height: 1.3; }
+
+/* semáforo */
+.modo { border-top: 6px solid; }
+.modo.v { border-top-color: var(--green); } .modo.a { border-top-color: var(--amber); } .modo.r { border-top-color: var(--red); }
+.modo .tag { font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+.modo .tag i { width: 12px; height: 12px; border-radius: 50%; }
+.modo h3 { margin-top: 14px; }
+.modo .big { margin-top: 20px; }
+.modo small { font-family: var(--mono); font-size: 12px; color: var(--mute); }
+.barra-err { height: 8px; border-radius: 99px; background: var(--line); margin-top: 16px; position: relative; overflow: hidden; }
+.barra-err b { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 99px; transition: width 1.6s var(--ease); }
+.on .barra-err b { width: var(--w2); }
+
+/* gráficos */
+.grafico { background: var(--bg2); border: 1px solid var(--line); border-radius: 22px; padding: 26px; margin-top: 46px; }
+.grafico .cab { display: flex; flex-wrap: wrap; gap: 14px 36px; align-items: end; justify-content: space-between; }
+.leyenda { display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--mute); }
+.leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+svg text { font-family: var(--mono); }
+#tip { position: fixed; z-index: 30; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 13px; line-height: 1.35; padding: 10px 12px; border-radius: 12px; max-width: 280px; opacity: 0; transition: opacity .15s; }
+#tip b { color: #FF9C8C; }
+.kpis { display: flex; gap: 36px; flex-wrap: wrap; }
+.kpis b { font-size: clamp(34px, 4vw, 48px); letter-spacing: -.04em; display: block; line-height: 1; }
+.kpis span { font-family: var(--mono); font-size: 12px; color: var(--mute); }
+
+/* estereotipo */
+.barras { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; height: 260px; align-items: end; margin-top: 26px; }
+.grupo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; height: 100%; align-items: end; position: relative; }
+.grupo i { display: block; border-radius: 8px 8px 3px 3px; height: 0; transition: height 1.4s var(--ease); position: relative; }
+.grupo i span { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.grupo.foco { outline: 2px dashed var(--coral); outline-offset: 8px; border-radius: 10px; }
+.edades { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; font-family: var(--mono); font-size: 12px; color: var(--mute); text-align: center; margin-top: 10px; }
+
+/* ejemplos */
+.apilada { display: flex; height: 44px; border-radius: 12px; overflow: hidden; margin-top: 16px; }
+.apilada i { height: 100%; width: 0; transition: width 1.4s var(--ease); display: grid; place-items: center; color: #fff; font-size: 12px; font-weight: 600; font-family: var(--mono); overflow: hidden; white-space: nowrap; }
+.filas { display: grid; gap: 10px; margin-top: 18px; }
+.fila { display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--mute); }
+.fila .apilada { height: 22px; margin: 0; border-radius: 6px; }
+.ops { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 14px; font-size: 13px; }
+.ops i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.ficha { background: var(--ink); color: var(--bg); border-radius: 22px; padding: 26px; position: relative; overflow: hidden; }
+.ficha .sello { position: absolute; right: 18px; top: 22px; border: 2px solid var(--coral); color: var(--coral); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .12em; padding: 6px 10px; border-radius: 8px; transform: rotate(8deg); }
+.ficha .id { font-family: var(--mono); font-size: 12px; opacity: .6; }
+.ficha h3 { font-size: 26px; margin-top: 8px; }
+.ficha ul { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.ficha li { font-size: 12.5px; border: 1px solid rgba(255, 244, 232, .25); border-radius: 99px; padding: 4px 10px; }
+.ficha .resp { margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255, 244, 232, .15); font-size: 15px; }
+.ficha .resp b { color: #FF9C8C; font-size: 30px; letter-spacing: -.03em; }
+.si-edad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; height: 200px; align-items: end; margin-top: 30px; }
+.si-edad div { display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: end; height: 100%; gap: 6px; font-family: var(--mono); font-size: 12px; color: var(--mute); }
+.si-edad i { width: 100%; max-width: 64px; height: 0; border-radius: 10px 10px 4px 4px; background: var(--amber); transition: height 1.4s var(--ease); position: relative; }
+.si-edad .alto i { background: var(--coral); }
+.si-edad i span { white-space: nowrap; position: absolute; top: -22px; left: 50%; transform: translateX(-50%); color: var(--ink); font-weight: 600; }
+
+/* ética */
+.sellos .card { padding-top: 70px; }
+.sellos .ico { position: absolute; top: 22px; left: 26px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: rgba(240, 68, 46, .12); color: var(--coral); }
+.limite small { font-family: var(--mono); font-size: 11.5px; color: var(--mute); text-transform: uppercase; letter-spacing: .08em; }
+.limite h3 { margin-top: 8px; font-size: 19px; }
+
+/* usos */
+.uso .ej { margin-top: 18px; font-family: var(--mono); font-size: 12.5px; background: var(--bg); border: 1px dashed var(--line); border-radius: 12px; padding: 12px; color: var(--ink); }
+
+/* equipo y cierre */
+.equipo { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+.miembro { display: grid; justify-items: center; gap: 10px; width: 120px; }
+.miembro i { width: 74px; height: 74px; border-radius: 50%; background: var(--coral); color: #fff; font-style: normal; font-weight: 700; font-size: 28px; display: grid; place-items: center; box-shadow: 0 0 0 7px rgba(240, 68, 46, .14); animation: late 1.6s infinite; }
+.miembro:nth-child(2) i { animation-delay: .08s; } .miembro:nth-child(3) i { animation-delay: .16s; } .miembro:nth-child(4) i { animation-delay: .24s; } .miembro:nth-child(5) i { animation-delay: .32s; }
+@keyframes late { 0%, 100% { transform: scale(1); } 12% { transform: scale(1.08); } 24% { transform: scale(1); } 36% { transform: scale(1.05); } }
+.cierre { background: var(--coral); color: #fff; text-align: center; border-radius: 32px; padding: clamp(48px, 8vw, 90px) 24px; margin-top: 70px; }
+.cierre h2 { margin-inline: auto; max-width: none; color: #fff; }
+.cierre .btn { background: #fff; color: var(--coral); margin-top: 28px; box-shadow: none; }
+footer { padding: 40px 0 60px; font-family: var(--mono); font-size: 11.5px; color: var(--mute); }
+footer p { margin: 6px 0; }
+
+@media (max-width: 900px) {
+  nav .links { display: none; }
+  nav .btn { margin-left: auto; }
+  .r3, .r4, .r2, .motor { grid-template-columns: 1fr; }
+  .r4.m2 { grid-template-columns: 1fr 1fr; }
+  .equipo { gap: 10px; } .miembro { width: 60px; } .miembro i { width: 52px; height: 52px; font-size: 20px; } .miembro b { font-size: 13px; }
+  .pasos { grid-template-columns: 1fr; gap: 26px; }
+  .pasos::before { left: 27px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto; background: repeating-linear-gradient(180deg, var(--coral) 0 8px, transparent 8px 16px); }
+  .paso { display: grid; grid-template-columns: 56px 1fr; gap: 0 18px; }
+  .paso h3 { margin-top: 4px; } .paso p { grid-column: 2; }
+  .flujo { display: none; }
+  .cifras { grid-template-columns: repeat(2, auto); gap: 18px 30px; margin-top: 40px; }
+  .hero { align-items: start; padding-top: calc(96px + min(71vw, 357px)); padding-bottom: 80px; }
+  .hero .eyebrow { display: none; } .bajar { display: none; }
+  .barras { height: 210px; gap: 6px; }
+  .grupo i span { font-size: 9.5px; top: -16px; }
+  .grafico, .card { padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .rv { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+<nav id="nav"><div class="wrap">
+  <a class="logo" href="#inicio" aria-label="pulso">puls<i></i></a>
+  <div class="links"><a href="#problema">El problema</a><a href="#como">Cómo funciona</a><a href="#prueba">La prueba</a><a href="#ejemplos">Ejemplos</a><a href="#etica">Ética</a></div>
+  <a class="btn" href="../?preguntas">Probar pulso</a>
+</div></nav>
+
+<!-- PORTADA -->
+<header class="hero" id="inicio">
+  <canvas id="lienzo" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <span class="eyebrow rv">GenAI Mavericks · Accenture · Reto 3</span>
+    <h1 class="rv d1" style="margin-top:18px">Pregúntale a <span class="c">España.</span></h1>
+    <p class="lead rv d2">25.000 personas sintéticas que predicen cómo respondería España a una pregunta, una campaña o un test A/B. Por comunidad, sexo y edad, y con un semáforo que dice cuánto fiarse.</p>
+    <div class="acciones rv d3"><a class="btn" href="../?preguntas">Probar las 270 preguntas →</a><a class="btn sec" href="#como">Cómo funciona</a></div>
+    <div class="cifras rv d4">
+      <div><b data-n="25000">0</b><span>personas sintéticas</span></div>
+      <div><b data-n="9">0</b><span>encuestas del CIS</span></div>
+      <div><b data-n="37000" data-pre="~">0</b><span>entrevistas reales</span></div>
+      <div><b data-n="300" data-pre="~">0</b><span>preguntas entrenadas</span></div>
+    </div>
+  </div>
+  <a class="bajar" href="#problema">desliza</a>
+</header>
+
+<!-- PROBLEMA -->
+<section id="problema"><div class="wrap">
+  <span class="eyebrow rv">El problema</span>
+  <h2 class="rv d1">Preguntar a la gente es caro, lento <span class="c">y cada vez funciona peor.</span></h2>
+  <div class="rejilla r3" style="align-items:start">
+    <div class="card rv"><div class="big" data-n="56000" data-suf=" M$">0</div><p>al año en investigación de mercados en el mundo. En España, 1.398 M€ (2023).</p></div>
+    <div class="card ink rv d1"><div class="big"><span data-n="6">0</span> <span style="font-size:.45em;opacity:.7">de 100</span></div><p>personas contestan hoy una encuesta telefónica. En 1997 eran 36.</p><div class="cien" id="cien"></div></div>
+    <div class="card rv d2"><div class="big" data-n="420000" data-suf=" €">0</div><p>cuesta el trabajo de campo de una sola encuesta en España, y el CIS tarda de 2 a 4 semanas en publicar.</p></div>
+  </div>
+  <div class="card rv" style="margin-top:18px;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center">
+    <div class="big" style="color:var(--coral)">½</div>
+    <p style="margin:0;font-size:17px;color:var(--ink)"><b>La IA ya imita a la sociedad, pero la aplana.</b> Las respuestas sintéticas de ChatGPT tienen la mitad de diversidad que las de personas reales. Responden todas igual y repiten estereotipos.</p>
+  </div>
+  <p class="src rv">Fuentes: ESOMAR 2025 · Insights + Analytics España · Pew Research Center · ESS España · Bisbee et al., Political Analysis (2024)</p>
+</div></section>
+
+<!-- CÓMO FUNCIONA -->
+<section id="como" style="background:linear-gradient(180deg,transparent,rgba(255,138,31,.07) 40%,transparent)"><div class="wrap">
+  <span class="eyebrow rv">Cómo funciona</span>
+  <h2 class="rv d1">De encuestas reales a una España <span class="c">que late.</span></h2>
+  <p class="lead rv d2">El CIS dice cómo piensa cada tipo de persona. La población sintética dice cuántas personas de cada tipo viven en cada sitio. pulso junta las dos cosas.</p>
+  <div class="pasos">
+    <span class="flujo" aria-hidden="true"></span>
+    <div class="paso rv"><div class="n">01</div><div><h3>Población sintética</h3><p>25.000 personas con datos del INE (Censo, ECV, TIC) y del CIS. Cada una representa a su parte de España.</p></div></div>
+    <div class="paso rv d1"><div class="n">02</div><div><h3>Microdatos del CIS</h3><p>9 encuestas recientes y unas 37.000 entrevistas: vivienda, soledad, IA, clima, salud y consumo.</p></div></div>
+    <div class="paso rv d2"><div class="n">03</div><div><h3>Armonización</h3><p>Las mismas categorías en el CIS y en la población: sexo, edad, comunidad, estudios, trabajo, ideología y religión.</p></div></div>
+    <div class="paso clave rv d3"><div class="n">04</div><div><h3>Un modelo por pregunta</h3><p>Unas 300 preguntas del CIS se convierten en modelos que predicen la respuesta de cada persona sintética.</p></div></div>
+    <div class="paso rv d4"><div class="n">05</div><div><h3>Calibración</h3><p>Cada modo se valida contra respuestas reales que el modelo no había visto. De ahí sale el semáforo.</p></div></div>
+  </div>
+
+  <div class="motor" style="margin-top:80px">
+    <div class="rv">
+      <h3 style="font-size:28px">Y cuando alguien pregunta…</h3>
+      <p class="lead" style="font-size:17px">pulso busca por significado entre las preguntas del CIS y un juez decide si es la misma, una parecida o ninguna. Si el CIS ya la hizo, responde el modelo entrenado. Si es nueva, 100 personas sintéticas la contestan con un LLM local que conoce su perfil y sus actitudes medidas en el CIS, y su respuesta se extiende a las 25.000.</p>
+    </div>
+    <div class="decision rv d1" aria-label="Ejemplo de cómo se elige el modo">
+      <div class="q">«¿Cuál es el problema que más te afecta a ti personalmente?»</div>
+      <div class="flecha">↓ búsqueda por significado + juez ↓</div>
+      <div class="rama">
+        <div style="background:rgba(47,179,107,.14)"><b>Misma</b><br>pregunta del CIS</div>
+        <div style="background:rgba(242,165,22,.14)"><b>Parecida</b><br>pregunta del CIS</div>
+        <div style="background:rgba(232,69,47,.12)"><b>Ninguna</b><br>pregunta nueva</div>
+      </div>
+      <div class="flecha">↓</div>
+      <div class="rama"><div style="background:var(--green);color:#fff">Verde</div><div style="background:var(--amber);color:#fff">Ámbar</div><div style="background:var(--red);color:#fff">Rojo</div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- SEMÁFORO -->
+<section id="semaforo" style="padding-top:0"><div class="wrap">
+  <span class="eyebrow rv">El semáforo</span>
+  <h2 class="rv d1">Confianza <span class="c">medida</span>, no declarada.</h2>
+  <p class="lead rv d2">Cada color lleva su error medido, comparando a pulso con respuestas reales del CIS que no había usado.</p>
+  <div class="rejilla r3">
+    <div class="card modo v rv"><div class="tag"><i style="background:var(--green)"></i>Verde</div><h3>Modelo entrenado con el CIS</h3><p>El CIS ya hizo la pregunta: responde un modelo entrenado con miles de entrevistas.</p><div class="big">±0,5–2 <small>pp</small></div><div class="barra-err"><b style="--w2:8%;background:var(--green)"></b></div></div>
+    <div class="card modo a rv d1"><div class="tag"><i style="background:var(--amber)"></i>Ámbar</div><h3>LLM anclado en el CIS</h3><p>Hay una pregunta del CIS parecida: un LLM responde con perfiles españoles calibrados con el CIS.</p><div class="big">±14 <small>pp</small></div><div class="barra-err"><b style="--w2:56%;background:var(--amber)"></b></div></div>
+    <div class="card modo r rv d2"><div class="tag"><i style="background:var(--red)"></i>Rojo</div><h3>LLM con perfiles españoles</h3><p>Pregunta nueva, sin nada parecido en el CIS: una estimación orientativa, y así se dice.</p><div class="big">±20 <small>pp</small></div><div class="barra-err"><b style="--w2:79%;background:var(--red)"></b></div></div>
+  </div>
+  <p class="src rv">Ámbar: 14 preguntas reales tratadas como nuevas · Rojo: 6 preguntas · Referencia, repartir a partes iguales: 19 pp</p>
+</div></section>
+
+<!-- LA PRUEBA -->
+<section id="prueba" style="background:var(--bg2)"><div class="wrap">
+  <span class="eyebrow rv">La prueba</span>
+  <h2 class="rv d1">Una IA sin datos <span class="c">se inventa a España.</span></h2>
+  <p class="lead rv d2">¿Cuántas personas están muy preocupadas por el cambio climático, por edad? Un LLM que solo conoce la demografía, como las herramientas de «personas sintéticas» del mercado, cree que a los mayores apenas les importa. En el CIS son los que más se preocupan.</p>
+  <div class="grafico rv" id="g-clima">
+    <div class="cab"><b style="font-size:18px">«Mucho» preocupados por el cambio climático (%)</b>
+      <div class="leyenda"><span><i style="background:var(--ink)"></i>CIS real</span><span><i style="background:var(--coral)"></i>pulso</span><span><i style="background:var(--grey)"></i>LLM sin datos</span></div></div>
+    <div class="barras" id="barras"></div><div class="edades" id="edades"></div>
+  </div>
+
+  <div class="grafico rv" id="g98">
+    <div class="cab">
+      <div><b style="font-size:18px">98 preguntas con respuesta real del CIS</b><div class="mono" style="font-size:12px;color:var(--mute);margin-top:4px">Error medio por opción frente al CIS · toca un punto para ver la pregunta</div></div>
+      <div class="kpis"><div><b style="color:var(--coral)" data-n="1" data-dec="1">0</b><span>pp · pulso</span></div><div><b style="color:var(--grey)" data-n="21">0</b><span>pp · LLM sin datos</span></div><div><b data-n="97">0</b><span>de 98 gana pulso</span></div></div>
+    </div>
+    <svg id="svg98" style="width:100%;height:auto;margin-top:22px;overflow:visible" role="img" aria-label="Error de pulso y de un LLM sin datos en 98 preguntas"></svg>
+    <div class="leyenda" style="margin-top:8px"><span><i style="background:var(--coral)"></i>pulso (como mucho 4,1 pp)</span><span><i style="background:var(--grey)"></i>LLM sin datos (hasta 51 pp)</span></div>
+  </div>
+
+  <div class="grafico rv">
+    <b style="font-size:18px">Y no solo copia: predice.</b>
+    <p style="color:var(--mute);margin:6px 0 0;font-size:15.5px">Entrenado con una encuesta del CIS, pulso predijo la siguiente (de 1 a 9 meses después), que no había visto. 24 preguntas repetidas, error medio por opción:</p>
+    <div class="rejilla r4 m2" style="margin-top:22px">
+      <div><div class="big" style="font-size:44px;font-weight:700;letter-spacing:-.04em"><span data-n="1.8" data-dec="1">0</span><small style="font-size:16px"> pp</small></div><span class="mono" style="font-size:12px;color:var(--mute)">España</span></div>
+      <div><div class="big" style="font-size:44px;font-weight:700;letter-spacing:-.04em"><span data-n="2.1" data-dec="1">0</span><small style="font-size:16px"> pp</small></div><span class="mono" style="font-size:12px;color:var(--mute)">por sexo</span></div>
+      <div><div class="big" style="font-size:44px;font-weight:700;letter-spacing:-.04em"><span data-n="3.1" data-dec="1">0</span><small style="font-size:16px"> pp</small></div><span class="mono" style="font-size:12px;color:var(--mute)">por edad</span></div>
+      <div><div class="big" style="font-size:44px;font-weight:700;letter-spacing:-.04em"><span data-n="4.8" data-dec="1">0</span><small style="font-size:16px"> pp</small></div><span class="mono" style="font-size:12px;color:var(--mute)">por comunidad</span></div>
+    </div>
+  </div>
+  <p class="src rv">Fuentes: microdatos CIS 3528, 3535, 3536, 3554, 3560, 3569, 3575, 3577 y 8825 · validación propia de pulso</p>
+</div></section>
+
+<!-- EJEMPLOS -->
+<section id="ejemplos"><div class="wrap">
+  <span class="eyebrow rv">Dos preguntas, dos colores</span>
+  <h2 class="rv d1">La misma España, <span class="c">países distintos.</span></h2>
+
+  <div class="rejilla r2" style="align-items:start">
+    <div class="grafico rv" style="margin-top:0">
+      <div class="cab"><b style="font-size:18px;max-width:30ch">«¿Cuál es el problema que más te afecta a ti personalmente?»</b><span class="mono" style="font-size:12px;color:var(--green)">● Verde · ±1,5 pp</span></div>
+      <div class="apilada" id="q2total"></div>
+      <div class="ops" id="q2ops"></div>
+      <p style="color:var(--mute);font-size:14.5px;margin:22px 0 0">Por edad. La vivienda es el primer problema del 33 % de los jóvenes y del 3 % de los mayores de 75.</p>
+      <div class="filas" id="q2edad"></div>
+    </div>
+    <div>
+      <div class="ficha rv d1">
+        <span class="sello">SINTÉTICA</span>
+        <div class="id">Persona sintética n.º 7.448</div>
+        <h3>Mujer, 34 años</h3>
+        <ul><li>Comunitat Valenciana</li><li>Universitaria</li><li>Trabaja</li><li>Vive sola</li><li>Usa IA</li><li>Ideología 1-2</li></ul>
+        <div class="resp">¿Qué problema le afecta más? El modelo le da<br><b>45 %</b> «La vivienda» · 25 % «La economía y el empleo»</div>
+        <p class="mono" style="font-size:11px;opacity:.55;margin:16px 0 0">Esta persona no existe. Representa a unas 1.900 personas reales con su perfil.</p>
+      </div>
+      <div class="grafico rv d2" style="margin-top:18px">
+        <div class="cab"><b style="font-size:18px;max-width:30ch">«¿Dejarías que una IA acompañara a un familiar mayor que vive solo?»</b><span class="mono" style="font-size:12px;color:var(--amber)">● Ámbar · ±14 pp</span></div>
+        <div class="apilada" id="q1total"></div>
+        <p style="color:var(--mute);font-size:14.5px;margin:20px 0 0">«Sí», por edad. Contra el estereotipo, los mayores de 75 son de los más abiertos, y el CIS lo confirma: también son los que más cómodos se sienten con la IA en sanidad.</p>
+        <div class="si-edad" id="q1edad"></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ÉTICA Y LÍMITES -->
+<section id="etica" style="background:var(--bg2)"><div class="wrap">
+  <span class="eyebrow rv">Ética y ley</span>
+  <h2 class="rv d1">Esta persona no existe. <span class="c">Y por eso cumple la ley.</span></h2>
+  <div class="rejilla r3 sellos">
+    <div class="card rv"><span class="ico">✓</span><h3>Cero datos personales</h3><p>Datos sintéticos y anónimos, fuera del RGPD (considerando 26).</p></div>
+    <div class="card rv d1"><span class="ico">✓</span><h3>Datos abiertos</h3><p>INE con licencia CC BY 4.0. El CIS permite reutilizar sus datos citando la fuente (Ley 37/2007).</p></div>
+    <div class="card rv d2"><span class="ico">✓</span><h3>Transparencia</h3><p>Cada resultado se etiqueta como simulación, como pide el art. 50 del Reglamento Europeo de IA.</p></div>
+  </div>
+  <h3 class="rv" style="font-size:clamp(26px,3vw,34px);margin-top:80px">pulso sabe lo que no sabe.</h3>
+  <div class="rejilla r4" style="margin-top:24px">
+    <div class="card limite rv"><small>Lo nuevo es una estimación</small><h3>El semáforo lo avisa antes de que nadie se fíe.</h3></div>
+    <div class="card limite rv d1"><small>Las opiniones cambian</small><h3>Predice con la última encuesta, y cada encuesta nueva lo actualiza.</h3></div>
+    <div class="card limite rv d2"><small>Comunidades pequeñas</small><h3>Si hay pocas entrevistas detrás, se marca con un asterisco.</h3></div>
+    <div class="card limite rv d3"><small>No sustituye a la encuesta</small><h3>Ayuda a decidir qué preguntar y a quién, antes de pagarla.</h3></div>
+  </div>
+  <p class="src rv">Y nos auditamos: antes de publicar apartamos 28 respuestas de la IA con opciones mal planteadas o poco creíbles.</p>
+</div></section>
+
+<!-- USOS -->
+<section id="usos"><div class="wrap">
+  <span class="eyebrow rv">Para qué sirve</span>
+  <h2 class="rv d1">Antes de gastar 420.000 € en una encuesta, <span class="c">pregúntale a pulso.</span></h2>
+  <div class="rejilla r3">
+    <div class="card uso rv"><h3>Marcas y agencias</h3><p>Probar campañas y test A/B antes de lanzarlos, por público y región.</p><div class="ej">«Ahorra 200 € al año» frente a «Reduce tu huella de carbono»</div></div>
+    <div class="card uso rv d1"><h3>Sector público</h3><p>Medir cómo se recibiría una política en cada comunidad antes de anunciarla.</p><div class="ej">«Bono de alquiler de 250 € al mes para menores de 35»</div></div>
+    <div class="card uso rv d2"><h3>Banca, energía y retail</h3><p>Elegir el mensaje de un producto en minutos, no en semanas.</p><div class="ej">Tarifa de luz con precio fijo: 83 %. Precio de mercado: 9 %.</div></div>
+  </div>
+  <div class="card ink rv" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center;justify-content:space-between">
+    <p style="margin:0;font-size:18px;color:var(--bg)"><b>Hecho con 0 €.</b> Datos públicos del INE y el CIS y modelos open source en un portátil.</p>
+    <p style="margin:0" class="mono">Siguiente paso: más estudios del CIS · más países (ESS, Eurostat) · conectarlo a las herramientas de cada cliente</p>
+  </div>
+</div></section>
+
+<!-- EQUIPO -->
+<section id="equipo" style="padding-top:0"><div class="wrap">
+  <span class="eyebrow rv">El equipo</span>
+  <h2 class="rv d1">Somos 5. <span class="c">Un solo pulso.</span></h2>
+  <div class="equipo rv d2">
+    <div class="miembro"><i>J</i><b>Juanjo</b></div><div class="miembro"><i>A</i><b>Adrián</b></div><div class="miembro"><i>G</i><b>Guille</b></div><div class="miembro"><i>A</i><b>Anton</b></div><div class="miembro"><i>A</i><b>Ainhoa</b></div>
+  </div>
+  <div class="cierre rv">
+    <h2>Pregúntale a España.</h2>
+    <p style="margin:14px auto 0;max-width:46ch;opacity:.9">270 preguntas ya calculadas, con su semáforo, por comunidad, sexo y edad.</p>
+    <a class="btn" href="../?preguntas">Probar pulso →</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <p><b style="color:var(--ink)">pulso</b> · Datos que laten · GenAI Mavericks Challenge (Accenture), reto 3 · IE University</p>
+  <p>Datos sintéticos · resultados experimentales · cada persona sintética es una simulación y no existe.</p>
+  <p>Fuentes: INE (Censo, ECV, TIC-H) · CIS (estudios 3528, 3535, 3536, 3554, 3560, 3569, 3575, 3577, 8825) · ESOMAR · Pew Research Center · ESS · Bisbee et al. (2024).</p>
+</div></footer>
+
+<div id="tip"></div>
+<script src="datos.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const fmt = (v, dec = 0) => v.toLocaleString("es-ES", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+const PAL = ["#F0442E", "#1A1F3A", "#FF8A1F", "#3E7CB1", "#F59A8C"];
+const reducido = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* navegación sólida al bajar */
+addEventListener("scroll", () => $("#nav").classList.toggle("sol", scrollY > 30), { passive: true });
+
+/* ---------- portada: 1.200 personas que forman España y laten desde Madrid ---------- */
+(() => {
+  const cv = $("#lienzo"), cx = cv.getContext("2d");
+  let W, H, dpr, caja, pts = [], raton = { x: -1e4, y: -1e4 }, t0 = performance.now();
+  const MADRID = [0.47, 0.44], COLS = ["#1A1F3A", "#1A1F3A", "#5A6075", "#F0442E", "#FF8A1F"];
+  function medir() {
+    dpr = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const movil = W < 900, s = movil ? Math.min(W * .84, 420) : Math.min(W * .42, H * .8);
+    caja = { x: movil ? (W - s) / 2 : Math.max(W * .53, W - s - 30), y: movil ? 74 : (H - s * .85) / 2, s };
+  }
+  function crear() {
+    pts = DATOS.mapa.map(([x, y], i) => ({ hx: x, hy: y, x: Math.random() * W, y: Math.random() * H, vx: 0, vy: 0,
+      c: COLS[i % 7 === 0 ? 3 : i % 11 === 0 ? 4 : i % 3], r: 1.2 + (i * 7919 % 13) / 9, f: (i * 2654435761 % 1000) / 1000 }));
+  }
+  function frame(now) {
+    const t = Math.max(0, now - t0) / 1000, ciclo = (t % 1.6) / 1.6;
+    cx.clearRect(0, 0, W, H);
+    const mx = caja.x + MADRID[0] * caja.s, my = caja.y + MADRID[1] * caja.s * .85, R = ciclo * caja.s * .9;
+    // anillo del latido
+    cx.strokeStyle = `rgba(240,68,46,${(.35 * (1 - ciclo)).toFixed(3)})`; cx.lineWidth = 1.5;
+    cx.beginPath(); cx.arc(mx, my, R, 0, Math.PI * 2); cx.stroke();
+    for (const p of pts) {
+      const tx = caja.x + p.hx * caja.s + Math.sin(t * .8 + p.f * 6) * 1.4, ty = caja.y + p.hy * caja.s * .85 + Math.cos(t * .7 + p.f * 6) * 1.4;
+      p.vx += (tx - p.x) * .018; p.vy += (ty - p.y) * .018;
+      const dx = p.x - raton.x, dy = p.y - raton.y, d2 = dx * dx + dy * dy;
+      if (d2 < 9000) { const k = (9000 - d2) / 9000 * 2.2; p.vx += dx / Math.sqrt(d2 + 1) * k; p.vy += dy / Math.sqrt(d2 + 1) * k; }
+      p.vx *= .86; p.vy *= .86; p.x += p.vx; p.y += p.vy;
+      const dm = Math.hypot(p.x - mx, p.y - my), ola = Math.max(0, 1 - Math.abs(dm - R) / 26);
+      cx.globalAlpha = .55 + ola * .45; cx.fillStyle = ola > .35 ? "#F0442E" : p.c;
+      cx.beginPath(); cx.arc(p.x, p.y, p.r * (1 + ola * .7), 0, Math.PI * 2); cx.fill();
+    }
+    cx.globalAlpha = 1;
+    if (!reducido) requestAnimationFrame(frame);
+  }
+  medir(); crear();
+  if (reducido) pts.forEach(p => { p.x = caja.x + p.hx * caja.s; p.y = caja.y + p.hy * caja.s * .85; });
+  requestAnimationFrame(frame);
+  addEventListener("resize", () => { medir(); });
+  cv.parentElement.addEventListener("pointermove", e => { const r = cv.getBoundingClientRect(); raton = { x: e.clientX - r.left, y: e.clientY - r.top }; });
+  cv.parentElement.addEventListener("pointerleave", () => raton = { x: -1e4, y: -1e4 });
+})();
+
+/* ---------- contadores ---------- */
+function contar(el) {
+  const fin = parseFloat(el.dataset.n), dec = +(el.dataset.dec || 0), pre = el.dataset.pre || "", suf = el.dataset.suf || "", dur = 1600, t0 = performance.now();
+  const paso = now => { const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 4);
+    el.textContent = pre + fmt(fin * e, dec) + suf; if (k < 1) requestAnimationFrame(paso); };
+  reducido ? el.textContent = pre + fmt(fin, dec) + suf : requestAnimationFrame(paso);
+}
+
+/* ---------- 6 de 100 ---------- */
+(() => { const c = $("#cien"); for (let i = 0; i < 100; i++) c.appendChild(document.createElement("i")); })();
+function encenderCien() { const ii = $$("#cien i"); [3, 17, 38, 52, 71, 94].forEach((n, k) => setTimeout(() => ii[n].classList.add("si"), 300 + k * 260)); }
+
+/* ---------- estereotipo del clima ---------- */
+(() => {
+  const C = DATOS.clima, b = $("#barras"), e = $("#edades");
+  C.edades.forEach((ed, i) => {
+    const g = document.createElement("div"); g.className = "grupo" + (ed === "60-74" ? " foco" : "");
+    [["real", "#1A1F3A"], ["pulso", "#F0442E"], ["llm", "#A9AEC0"]].forEach(([k, col]) => {
+      const bar = document.createElement("i"); bar.style.background = col; bar.dataset.h = C[k][i];
+      bar.innerHTML = `<span style="color:${col === "#A9AEC0" ? "#5A6075" : col}">${fmt(C[k][i])}</span>`; g.appendChild(bar);
+    });
+    b.appendChild(g); e.insertAdjacentHTML("beforeend", `<span>${ed}</span>`);
+  });
+})();
+function crecerClima() { $$("#barras i").forEach((x, i) => setTimeout(() => x.style.height = x.dataset.h / 65 * 100 + "%", i * 40)); }
+
+/* ---------- 98 preguntas ---------- */
+function dibujar98() {
+  const S = $("#svg98"), D = DATOS.comparar, n = D.length, Wd = Math.max(300, S.clientWidth), estrecho = Wd < 600;
+  const Hd = estrecho ? 240 : 300, izq = 34, X = i => izq + i * ((Wd - izq - 8) / (n - 1)), Y = v => Hd - 30 - v / 55 * (Hd - 50), r = estrecho ? 2.6 : 4.2;
+  S.setAttribute("viewBox", `0 0 ${Wd} ${Hd}`);
+  let h = "";
+  [0, 10, 20, 30, 40, 50].forEach(v => h += `<line x1="${izq}" x2="${Wd - 4}" y1="${Y(v)}" y2="${Y(v)}" stroke="rgba(26,31,58,.08)"/><text x="${izq - 8}" y="${Y(v) + 4}" font-size="11" text-anchor="end" fill="#5A6075">${v}</text>`);
+  D.forEach((d, i) => h += `<line class="ln" x1="${X(i)}" x2="${X(i)}" y1="${Y(0)}" y2="${Y(0)}" data-y1="${Y(d.p)}" data-y2="${Y(d.l)}" stroke="rgba(26,31,58,.12)" stroke-width="1.1"/>`);
+  D.forEach((d, i) => h += `<circle class="pt" cx="${X(i)}" cy="${Y(0)}" data-cy="${Y(d.l)}" r="${r}" fill="#A9AEC0"/>`);
+  D.forEach((d, i) => h += `<circle class="pt" cx="${X(i)}" cy="${Y(0)}" data-cy="${Y(d.p)}" r="${r}" fill="#F0442E"/>`);
+  D.forEach((d, i) => h += `<rect class="hit" x="${X(i) - (Wd - izq) / n / 2}" y="0" width="${(Wd - izq) / n}" height="${Hd - 20}" fill="transparent" data-i="${i}"/>`);
+  h += `<text x="${izq}" y="${Hd - 6}" font-size="11" fill="#5A6075">pp de error · de mayor a menor error del LLM</text>`;
+  S.innerHTML = h;
+  $$("#svg98 .pt").forEach((c, k) => { c.style.transition = `cy 1.3s cubic-bezier(.22,1,.36,1) ${(k % n) * 12}ms`; requestAnimationFrame(() => requestAnimationFrame(() => c.setAttribute("cy", c.dataset.cy))); });
+  $$("#svg98 .ln").forEach((l, k) => setTimeout(() => { l.setAttribute("y1", l.dataset.y1); l.setAttribute("y2", l.dataset.y2); }, 400 + k * 12));
+  const tip = $("#tip");
+  const ver = e => { const r = e.target.closest(".hit"); if (!r) return tip.style.opacity = 0; const d = D[+r.dataset.i];
+    tip.innerHTML = `${d.q}<br><b>pulso ${fmt(d.p, 1)} pp</b> · LLM sin datos ${fmt(d.l, 1)} pp`; tip.style.opacity = 1;
+    const x = Math.min(e.clientX + 14, innerWidth - 296); tip.style.left = x + "px"; tip.style.top = (e.clientY - 70) + "px"; };
+  S.addEventListener("pointermove", ver); S.addEventListener("pointerdown", ver); S.addEventListener("pointerleave", () => tip.style.opacity = 0);
+  addEventListener("scroll", () => tip.style.opacity = 0, { passive: true });
+}
+
+/* ---------- ejemplos ---------- */
+function apilada(el, vals, labels, cols, texto = true) {
+  const tot = vals.reduce((a, b) => a + b, 0);
+  const ancho = el.clientWidth || 300;
+  el.innerHTML = vals.map((v, i) => `<i style="background:${cols[i]}" title="${labels[i]}: ${fmt(v)} %">${texto && v / tot * ancho > 38 ? fmt(v / tot * 100) + " %" : ""}</i>`).join("");
+  el.dataset.w = JSON.stringify(vals.map(v => v / tot * 100));
+}
+(() => {
+  const Q = DATOS.q2;
+  apilada($("#q2total"), Q.total, Q.opciones, PAL);
+  $("#q2ops").innerHTML = Q.opciones.map((o, i) => `<span><i style="background:${PAL[i]}"></i>${o}</span>`).join("");
+  $("#q2edad").innerHTML = Object.keys(Q.edad).map(k => `<div class="fila"><span>${k}</span><div class="apilada" data-k="${k}"></div></div>`).join("");
+  $$("#q2edad .apilada").forEach(el => apilada(el, Q.edad[el.dataset.k], Q.opciones, PAL));
+  const P = DATOS.q1;
+  apilada($("#q1total"), P.total, P.opciones, ["#F0442E", "#FF8A1F", "#1A1F3A"]);
+  $("#q1total").insertAdjacentHTML("afterend", `<div class="ops">${P.opciones.map((o, i) => `<span><i style="background:${["#F0442E", "#FF8A1F", "#1A1F3A"][i]}"></i>${o} ${fmt(P.total[i])} %</span>`).join("")}</div>`);
+  $("#q1edad").innerHTML = Object.entries(P.edad).map(([k, v]) => `<div class="${k === "75+" ? "alto" : ""}"><i data-h="${v[0]}"><span>${fmt(v[0])} %</span></i>${k}</div>`).join("");
+})();
+function llenar(sel) { $$(sel).forEach(el => { const w = JSON.parse(el.dataset.w); [...el.children].forEach((c, i) => setTimeout(() => c.style.width = w[i] + "%", i * 90)); }); }
+
+/* ---------- aparición al hacer scroll ---------- */
+const hecho = new Set();
+const obs = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const el = e.target; el.classList.add("on");
+  $$("[data-n]").filter(n => el.contains(n) && !hecho.has(n)).forEach(n => { hecho.add(n); contar(n); });
+  if (el.querySelector && el.querySelector("#cien") && !hecho.has("cien")) { hecho.add("cien"); encenderCien(); }
+  if (el.id === "g-clima" && !hecho.has("clima")) { hecho.add("clima"); setTimeout(crecerClima, 250); }
+  if (el.id === "g98" && !hecho.has("98")) { hecho.add("98"); dibujar98(); }
+  if (el.querySelector && el.querySelector("#q2total") && !hecho.has("q2")) { hecho.add("q2"); llenar("#q2total, #q2edad .apilada"); }
+  if (el.querySelector && el.querySelector("#q1total") && !hecho.has("q1")) { hecho.add("q1"); llenar("#q1total"); $$("#q1edad i").forEach((x, i) => setTimeout(() => x.style.height = x.dataset.h / 70 * 100 + "%", 300 + i * 90)); }
+  obs.unobserve(el);
+}), { threshold: .18, rootMargin: "0px 0px -6% 0px" });
+$$(".rv").forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
