@@ -449,6 +449,21 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
   font-size: 18px; line-height: 1.5; padding: 18px 24px; border-radius: 14px; display: none; z-index: 9; border: 1px solid rgba(250,247,242,.12); }
 #notes b { color: var(--saffron); }
 @media (prefers-reduced-motion: reduce) { .w > *, .rv, .step { transition: none !important; } #grain { animation: none; } }
+
+/* --- ajustes 22/10: ecuación de la diapositiva 11, semáforo, líneas de la 18 --- */
+.eq { display: flex; align-items: stretch; gap: 22px; margin-top: 38px; max-width: 1640px; }
+.eq-t { flex: 1; padding: 14px 22px; border-radius: 18px; background: rgba(255,255,255,.7); border: 1px solid rgba(26,31,58,.12); box-shadow: 0 14px 30px rgba(180,86,10,.08); }
+.eq-t b { display: block; font-size: 27px; color: var(--navy); letter-spacing: -.01em; }
+.eq-t span { display: block; font-size: 20px; line-height: 1.3; color: var(--slate); margin-top: 4px; }
+.eq-t.hot { background: linear-gradient(95deg, var(--saffron), var(--coral)); border-color: transparent; box-shadow: 0 18px 40px rgba(240,68,46,.28); }
+.eq-t.hot b, .eq-t.hot span { color: #fff; }
+.eq-op { align-self: center; font-style: normal; font-size: 40px; font-weight: 700; color: var(--coral); }
+.eq-pie { position: absolute; left: 140px; bottom: 112px; margin: 0; font-size: 28px; font-weight: 600; color: var(--navy); max-width: 1640px; }
+.list .sem-v::before { background: var(--ok); } .list .sem-a::before { background: var(--mid); } .list .sem-r::before { background: var(--low); }
+.tag .tag-e { display: inline-block; margin-top: 6px; font-weight: 600; color: var(--navy); }
+.uc-cta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.uc-cta p { margin: 6px 6px 0 0; font-size: 21px; color: var(--slate); white-space: nowrap; }
+.uc-cta p.uc-b { margin-top: 0; font-weight: 600; color: var(--navy); }
 </style>
 </head>
 <body data-theme="dark" data-variant="light" class="v-light">
@@ -552,15 +567,15 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
 
 <!-- =================== BLOQUE 3 · CÓMO FUNCIONA =================== -->
 <section class="slide" data-theme="dark" data-form="spain" data-sfx="spain" data-blk="3"
-  data-notes="[BLOQUE 3 · PERSONA 3 · 2:00] «Detrás de esa respuesta hay una España sintética, y lo primero fue comprobar que se parece a la real.» Señala el 47,3 M: «25.000 personas sintéticas, y cada una pesa por unas 1.900 personas reales. Juntas reproducen la población de España, por comunidad y por edad.» Los tres puntos, rápido: renta limpia, categorías limpias, pesos calibrados.">
+  data-notes="[BLOQUE 3 · PERSONA 3 · 2:15] «Vale, pero ¿cómo consigue pulso responder a todo esto? Lo primero es construir una España en miniatura.» Señala los 25.000 perfiles y después el 47,3 M: «25.000 perfiles sintéticos que, en conjunto, representan a unos 47 millones de personas.» Clave: «No todos representan al mismo número de personas: cada perfil tiene su peso, y 1.892 es solo la media.» Los tres puntos, rápido, sin fórmulas.">
   <div class="col" style="max-width:820px; margin-top:10px">
     <h2 class="sp">Se parece a la España real.</h2>
     <div class="rv" style="margin-top:30px"><span class="num" style="font-size:150px"><span class="count" data-to="47.3" data-dec="1">0</span><small> M</small></span></div>
-    <p class="lead rv" style="margin-top:4px">de personas, representadas por 25.000 perfiles. Cada uno vale por unas 1.892.</p>
+    <p class="lead rv" style="margin-top:4px">de personas, en una representación estadística de 25.000 perfiles. Cada perfil pesa distinto: de media, unas 1.892 personas.</p>
     <div class="list" style="margin-top:34px; gap:18px">
       <div class="rv" style="font-size:27px"><b>Renta limpia:</b> datos fuera de rango corregidos con la mediana.</div>
       <div class="rv" style="font-size:27px"><b>Categorías limpias:</b> estudios, vivienda, empleo, ideología y religión.</div>
-      <div class="rv" style="font-size:27px"><b>Pesos calibrados:</b> reproduce España por comunidad y edad.</div>
+      <div class="rv" style="font-size:27px"><b>Pesos calibrados:</b> cada perfil pesa según cuántas personas como él hay en España, por comunidad y edad.</div>
     </div>
   </div>
   <div class="blk"><b>3/5</b> Cómo funciona</div>
@@ -568,58 +583,67 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
 </section>
 
 <section class="slide" data-theme="dark" data-form="stream" data-sfx="whoosh"
-  data-notes="[PERSONA 3] «No le pedimos a la IA que se invente a España. Partimos de 25.000 personas sintéticas construidas con el INE, y de 37.000 entrevistas reales del CIS. Las ponemos en el mismo idioma, entrenamos un modelo por cada pregunta que el CIS ya hizo, unas 300, y lo aplicamos a la población. El CIS dice cómo piensa cada perfil; la población dice cuántos hay en cada sitio.»">
-  <h2 class="sp" style="max-width:1400px">De respuestas reales a una España que late.</h2>
-  <div class="flow">
+  data-notes="[PERSONA 3] «Pero tener 25.000 perfiles no significa saber lo que piensan.» Señala la ecuación de arriba: «La población sintética pone los perfiles y cuántos hay de cada uno. El CIS pone las respuestas reales, miles de entrevistas sobre vivienda, tecnología, salud o medio ambiente. Unificamos las categorías de los dos y entrenamos modelos estadísticos que aprenden cómo se relaciona cada perfil con sus respuestas: el resultado son probabilidades.» Pausa y remata con la línea de abajo: «Pulso no le pregunta a un LLM qué opina España: cuando hay evidencia, parte de lo que contestó la gente.»">
+  <h2 class="sp" style="max-width:1640px; font-size:70px">De respuestas reales a una España que late.</h2>
+  <div class="eq rv">
+    <div class="eq-t"><b>Población sintética</b><span>los perfiles y cuántos hay de cada uno</span></div>
+    <i class="eq-op">+</i>
+    <div class="eq-t"><b>CIS</b><span>las respuestas reales de la gente</span></div>
+    <i class="eq-op">→</i>
+    <div class="eq-t hot"><b>Modelos estadísticos</b><span>aprenden la relación entre perfil y respuesta: probabilidades</span></div>
+  </div>
+  <div class="flow" style="margin-top:56px">
     <div class="rv"><i>1</i><h3>Población</h3><p>25.000 personas sintéticas: INE, ECV, TIC y CIS</p></div>
     <div class="rv"><i>2</i><h3>Microdatos</h3><p>9 encuestas del CIS, ~37.000 entrevistas reales</p></div>
     <div class="rv"><i>3</i><h3>Armonización</h3><p>Las mismas categorías en el CIS y en la población</p></div>
-    <div class="rv hot"><i>4</i><h3>Un modelo por pregunta</h3><p>~300 preguntas reales aplicadas a las 25.000 personas</p></div>
+    <div class="rv hot"><i>4</i><h3>Un modelo por pregunta</h3><p>~300 preguntas: probabilidad de cada respuesta para cada perfil</p></div>
     <div class="rv"><i>5</i><h3>Calibración</h3><p>Error medido de cada modo: de ahí sale el semáforo</p></div>
   </div>
+  <p class="eq-pie rv">pulso no le pregunta a un LLM qué opina España: cuando hay evidencia, parte de lo que contestó la gente.</p>
   <div class="blk"><b>3/5</b> Cómo funciona</div>
   <div class="src">INE: Censo, ECV, TIC-H · CIS: estudios 3577, 3575, 3569, 3560, 3554, 3536, 3535, 3528 y 8825 (2025-2026)</div>
 </section>
 
 <section class="slide" data-theme="dark" data-form="sort" data-sfx="sort"
-  data-notes="[PERSONA 3] Mira cómo la multitud se clasifica en tres colores. «Cada pregunta busca primero en el CIS. Si ya se preguntó, un modelo entrenado con miles de entrevistas del CIS predice la respuesta de cada persona sintética: verde, error de 0,5 a 2 puntos. Si hay una pregunta parecida, un LLM responde con perfiles españoles, anclado en esa pregunta del CIS: ámbar. Si es nueva, un LLM responde con perfiles sintéticos españoles: rojo. Ámbar, unos 14 puntos de error; rojo, unos 20. Y no solo copia: entrenado con el CIS hasta junio de 2026, predijo encuestas que no había visto con 1,8 puntos de error. El semáforo no es una etiqueta: es un error medido.» Sigue: «Y todo esto, sin una sola persona real.»">
+  data-notes="[PERSONA 3] Mira cómo la multitud se clasifica en tres colores. «Y ahora lo más interesante: pulso no responde siempre de la misma manera. Primero busca si existe una pregunta equivalente en el CIS. Si existe, usa el modelo entrenado con respuestas reales: verde. Si encuentra preguntas relacionadas, combina esa información con un modelo de lenguaje para simular las respuestas: ámbar. Y si es completamente nueva, hace una simulación exploratoria: rojo.» Sigue los colores con la mano. «¿Por qué? Porque una estimación basada en entrevistas reales no merece la misma confianza que una simulación. Y hemos medido los errores de cada método contrastándolos con encuestas reales.» Sin recitar cifras: si preguntan, 0,5 pp en verde sobre la misma encuesta, 1,8 pp en el total nacional al predecir la encuesta siguiente, unos 14 pp en ámbar y unos 20 en rojo. Son errores medidos, no márgenes garantizados.">
   <div class="col" style="margin-top:40px; max-width:780px">
-    <h2 class="sp" style="font-size:70px">Primero, el modelo entrenado con el CIS. El LLM, solo para lo nuevo.</h2>
-    <div class="list" style="gap:22px; margin-top:44px">
-      <div class="rv" style="font-size:27px"><b>¿El CIS ya lo preguntó?</b> Un modelo entrenado con miles de entrevistas del CIS predice la respuesta de cada persona sintética.</div>
-      <div class="rv" style="font-size:27px"><b>¿Es parecida o nueva?</b> Un LLM responde con perfiles sintéticos españoles, anclado en una pregunta del CIS parecida si la hay.</div>
-      <div class="rv" style="font-size:27px"><b>Y predice:</b> entrenado con el CIS hasta junio de 2026, acierta encuestas que no vio con 1,8 pp de error medio.</div>
+    <h2 class="sp" style="font-size:70px">Tres niveles de evidencia. Cada uno, con su error medido.</h2>
+    <div class="list" style="gap:20px; margin-top:40px">
+      <div class="rv sem-v" style="font-size:26px"><b>Verde · hay una pregunta equivalente en el CIS.</b> Modelo entrenado con sus respuestas reales.</div>
+      <div class="rv sem-a" style="font-size:26px"><b>Ámbar · hay preguntas relacionadas.</b> Simulación con un LLM apoyada en esas preguntas y en las actitudes medidas en el CIS.</div>
+      <div class="rv sem-r" style="font-size:26px"><b>Rojo · pregunta nueva.</b> Simulación exploratoria, con más incertidumbre.</div>
+      <div class="rv" style="font-size:26px"><b>Medido, no prometido:</b> 0,5 pp sobre la misma encuesta; al predecir una encuesta posterior, 1,8 pp en el total nacional y 4,8 pp por comunidad.</div>
     </div>
   </div>
-  <div class="tag rv" style="left:1060px; top:820px; text-align:center; width:200px"><b style="color:var(--ok)">Verde</b>Modelo entrenado con el CIS<br>±0,5-2 pp</div>
-  <div class="tag rv" style="left:1320px; top:820px; text-align:center; width:200px"><b style="color:var(--mid)">Ámbar</b>LLM anclado en el CIS<br>±14 pp</div>
-  <div class="tag rv" style="left:1580px; top:820px; text-align:center; width:200px"><b style="color:var(--low)">Rojo</b>LLM con perfiles españoles<br>±20 pp</div>
-  <div class="src">Búsqueda por significado (bge-m3) + juez LLM (llama3.1:8b, local) · Error medido frente al CIS real</div>
+  <div class="tag rv" style="left:1045px; top:820px; text-align:center; width:230px"><b style="color:var(--ok)">Verde</b>Pregunta equivalente del CIS<br><span class="tag-e">≈0,5 pp</span></div>
+  <div class="tag rv" style="left:1305px; top:820px; text-align:center; width:230px"><b style="color:var(--mid)">Ámbar</b>LLM + preguntas relacionadas<br><span class="tag-e">≈14 pp</span></div>
+  <div class="tag rv" style="left:1565px; top:820px; text-align:center; width:230px"><b style="color:var(--low)">Rojo</b>Simulación exploratoria<br><span class="tag-e">≈20 pp</span></div>
+  <div class="src">Error medio por opción frente a respuestas reales del CIS: verde, sobre la misma encuesta; ámbar y rojo, preguntas que el modelo no usó. Referencias medidas, no márgenes garantizados</div>
   <div class="blk"><b>3/5</b> Cómo funciona</div>
 </section>
 
 <section class="slide" data-theme="dark" data-form="person" data-sfx="stamp"
-  data-notes="[PERSONA 3] Deja que los puntos formen a la persona. «Les presentamos a una de nuestras 25.000 encuestadas. Mujer, 34 años, Valencia, alquila, usa IA a diario… y no existe.» Pausa. «Por eso pulso cumple la ley por diseño:» y señala los tres sellos sin leerlos enteros. Cierra y pasa a la Persona 4: «¿Y de verdad es mejor que preguntarle a una IA normal?»">
+  data-notes="[PERSONA 3] Deja que los puntos formen a la persona. «Y hay otra cosa importante. Esta persona tiene 30 años, vive en la Comunitat Valenciana, es universitaria, vive de alquiler y usa inteligencia artificial. Pero hay un pequeño detalle: no existe.» Pausa breve. «No estamos consultando a esa persona ni guardando su identidad: es un perfil generado para representar características estadísticas.» Señala los sellos sin leerlos enteros. «En definitiva, detrás de pulso hay datos, modelos y una forma de distinguir lo que sabemos de lo que estimamos.» Mira a Anton: «¿Y realmente funciona mejor que preguntarle directamente a una IA? Eso os lo cuenta Anton.» (Ficha real: persona sintética n.º 7.395 de la población.)">
   <div class="col" style="max-width:700px; margin-top:30px">
     <h2 class="sp">Esta persona no existe.</h2>
-    <p class="lead rv">Y por eso pulso cumple la ley por diseño.</p>
+    <p class="lead rv">Perfiles sintéticos. Patrones estadísticos. Sin identidades individuales en los perfiles generados.</p>
   </div>
   <div class="ficha rv">
-    <div class="fid">Persona sintética n.º 18.217</div>
-    <div class="frow"><span>Perfil</span>Mujer, 34 años</div>
-    <div class="frow"><span>Vive en</span>Valencia, ciudad</div>
+    <div class="fid">Persona sintética n.º 7.395</div>
+    <div class="frow"><span>Perfil</span>Mujer, 30 años</div>
+    <div class="frow"><span>Vive en</span>C. Valenciana, ciudad</div>
     <div class="frow"><span>Estudios</span>Universitarios, trabaja</div>
     <div class="frow"><span>Hogar</span>Alquila, vive sola</div>
-    <div class="frow"><span>Tecnología</span>Usa IA a diario</div>
+    <div class="frow"><span>Tecnología</span>Usa IA e internet a diario</div>
     <div class="stamp">Sintética</div>
   </div>
   <div class="seals">
-    <div class="seal rv"><i></i><div><b>Cero datos personales</b>Los datos anónimos quedan fuera del RGPD.</div></div>
+    <div class="seal rv"><i></i><div><b>Sin identidades individuales</b>Perfiles generados a partir de estadísticas agregadas, no de personas concretas.</div></div>
     <div class="seal rv"><i></i><div><b>Datos abiertos</b>INE (CC BY 4.0) y CIS permiten reutilizarlos citando la fuente.</div></div>
-    <div class="seal rv"><i></i><div><b>Reglamento Europeo de IA</b>Cada resultado se etiqueta como simulación (art. 50).</div></div>
+    <div class="seal rv"><i></i><div><b>Transparencia</b>Cada resultado indica cómo se obtuvo y con qué nivel de confianza.</div></div>
   </div>
   <div class="blk"><b>3/5</b> Cómo funciona</div>
-  <div class="src">RGPD, considerando 26 (AEPD) · Aviso legal INE · Condiciones de reutilización CIS · Reglamento (UE) 2024/1689</div>
+  <div class="src">Perfiles imputados a partir de datos agregados del INE y del CIS · Aviso legal INE · Condiciones de reutilización CIS · Reglamento (UE) 2024/1689, art. 50</div>
 </section>
 
 <!-- =================== BLOQUE 4 · LA PRUEBA =================== -->
@@ -684,7 +708,7 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
 
 <!-- =================== BLOQUE 5 · EL CIELO ES EL LÍMITE =================== -->
 <section class="slide" data-theme="dark" data-form="coin" data-sfx="biz" data-blk="5"
-  data-notes="[BLOQUE 5 · PERSONA 5 · 2:00] «¿Para quién es pulso? Para cualquiera que hoy se gaste 420.000 euros y un mes en una encuesta antes de decidir.» Recorre las columnas: «Empresas que prueban campañas y productos: marcas, energía, banca, retail. El sector público, que puede medir una política por comunidad antes de anunciarla. Y la sociedad: ONG, medios y universidades que hoy no pueden pagar una encuesta.» Señala abajo: «Un ejemplo que ya hicimos: una tarifa de luz con precio fijo gana con un 83 %. En minutos, no en semanas.»">
+  data-notes="[BLOQUE 5 · PERSONA 5 · 2:00] «¿Para quién es pulso? Para cualquiera que hoy se gaste 420.000 euros y un mes en una encuesta antes de decidir.» Recorre las columnas: «Empresas que prueban campañas y productos: marcas, energía, banca, retail. El sector público, que puede medir una política por comunidad antes de anunciarla. Y la sociedad: ONG, medios y universidades que hoy no pueden pagar una encuesta.» Señala abajo: «Un ejemplo que ya hicimos: una tarifa de luz con precio fijo gana con un 83 %. En minutos, por comunidad y edad, y con su semáforo. Y solo lo dudoso va a encuesta real.»">
   <h2 class="sp" style="max-width:1250px; font-size:74px">Antes de gastar 420.000 € en una encuesta, pregúntale a pulso.</h2>
   <div class="uc">
     <div class="uc-c rv"><div class="ui"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></div><h4>Empresas</h4><ul><li>Marcas y agencias</li><li>Energía</li><li>Banca y seguros</li><li>Retail y consumo</li></ul></div>
@@ -693,7 +717,7 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
   </div>
   <div class="uc-bot">
     <div class="uc-ex rv"><span>Ejemplo hecho en pulso · tarifa de luz</span><div><div class="mb"><span>Precio fijo 12 meses</span><i style="--w:83%"></i><b>83 %</b></div><div class="mb g"><span>Precio de mercado</span><i style="--w:9%"></i><b>9 %</b></div></div></div>
-    <div class="uc-pill rv">Minutos, no semanas</div>
+    <div class="uc-cta rv"><div class="uc-pill">Minutos, no semanas</div><p>En minutos · por comunidad y edad · con semáforo</p><p class="uc-b">Solo lo dudoso va a encuesta real</p></div>
   </div>
   <div class="blk"><b>5/5</b> El cielo es el límite</div>
   <div class="src">ESS Spain (coste del trabajo de campo) · CIS (plazos de publicación) · Consultas de la web de pulso</div>
@@ -712,7 +736,7 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
   <div class="col" style="max-width:820px; margin-top:20px">
     <h2 class="sp">De España a Europa.</h2>
     <div class="list">
-      <div class="rv"><b>Más datos:</b> cada nuevo estudio del CIS suma decenas de preguntas en verde.</div>
+      <div class="rv"><b>Más datos:</b> más estudios del CIS y más ediciones de cada encuesta: decenas de preguntas nuevas en verde y más precisión por comunidad.</div>
       <div class="rv"><b>Más países:</b> la Encuesta Social Europea y Eurostat ya miden Europa con el mismo método.</div>
       <div class="rv"><b>Más filtros:</b> provincia, profesión, hábitos de consumo.</div>
       <div class="rv"><b>Más usos:</b> la API ya existe; el siguiente paso, conectarla a las herramientas de cada cliente.</div>
