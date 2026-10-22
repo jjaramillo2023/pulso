@@ -540,7 +540,7 @@ addEventListener("pointermove", e => {
   const v = ans && RES.voces && RES.voces[p.ans], quote = v ? v[p.i % v.length] : "Aún no ha respondido.";
   tip.innerHTML = `<div class="who"><span class="ini" style="background:${c}">${p.name[0]}</span><div><b>${p.name}, ${p.per.edad}</b><span>${(REG[RI[p.per.ccaa]] || {}).name || ""}</span></div></div>
     <div class="tags"><span>${p.per.sexo === "F" ? "Mujer" : "Hombre"}</span>${p.per.tags.map(t => `<span>${t}</span>`).join("")}</div>
-    ${ans ? `<div class="ans"><i style="background:${c}"></i>${ans}</div>` : ""}<q>${quote}</q><div class="fake">Persona sintética · no existe</div>`;
+    ${ans ? `<div class="ans"><i style="background:${c}"></i>${ans}</div>` : ""}<q>${quote}</q><div class="fake">Persona sintética</div>`;
   const tw = 256, x = e.clientX + 18 + tw > VW ? e.clientX - tw - 18 : e.clientX + 18; tip.style.left = x + "px"; tip.style.top = clamp(e.clientY - 40, 8, VH - 200) + "px"; tip.classList.add("on");
 });
 addEventListener("pointerleave", () => { mouse.x = mouse.y = -1e4; hover = null; HOVREG = null; tip.classList.remove("on"); });
@@ -999,7 +999,6 @@ if (ESTATICO) {
   $("#disBtn").querySelector(".lbl-l").textContent = "Preguntas disponibles"; $("#disBtn").querySelector(".lbl-s").textContent = "Preguntas";
   $("#disBtn").onclick = abrirCatalogo; $("#disBtn").querySelector("svg").innerHTML = `<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>`;
   $(".home-below small").textContent = "Versión de demostración sin LLM · solo preguntas ya calculadas"; $(".home-below small").classList.add("est");
-  $(".badge").classList.add("est"); $(".badge").firstChild.textContent = "Demo sin LLM · preguntas preparadas";
   $(".hero p").textContent = "1.200 personas sintéticas calibradas con INE y CIS · elijan una pregunta";
   $("#catClose").onclick = closePanels;
   $("#catBuscar").addEventListener("input", renderCatalogo);
