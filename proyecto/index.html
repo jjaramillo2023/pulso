@@ -212,7 +212,7 @@ footer p { margin: 6px 0; }
     <span class="eyebrow rv">GenAI Mavericks · Accenture · Reto 3</span>
     <h1 class="rv d1" style="margin-top:18px">Pregúntale a <span class="c">España.</span></h1>
     <p class="lead rv d2">25.000 personas sintéticas que predicen cómo respondería España a una pregunta, una campaña o un test A/B. Por comunidad, sexo y edad, y con un semáforo que dice cuánto fiarse.</p>
-    <div class="acciones rv d3"><a class="btn" href="../?preguntas">Probar las 270 preguntas →</a><a class="btn sec" href="#como">Cómo funciona</a></div>
+    <div class="acciones rv d3"><a class="btn" href="../?preguntas">Probar más de 450 preguntas →</a><a class="btn sec" href="#como">Cómo funciona</a></div>
     <div class="cifras rv d4">
       <div><b data-n="25000">0</b><span>personas sintéticas</span></div>
       <div><b data-n="9">0</b><span>encuestas del CIS</span></div>
@@ -298,11 +298,11 @@ footer p { margin: 6px 0; }
 
   <div class="grafico rv" id="g98">
     <div class="cab">
-      <div><b style="font-size:18px">98 preguntas con respuesta real del CIS</b><div class="mono" style="font-size:12px;color:var(--mute);margin-top:4px">Error medio por opción frente al CIS · toca un punto para ver la pregunta</div></div>
-      <div class="kpis"><div><b style="color:var(--coral)" data-n="1" data-dec="1">0</b><span>pp · pulso</span></div><div><b style="color:var(--grey)" data-n="21">0</b><span>pp · LLM sin datos</span></div><div><b data-n="97">0</b><span>de 98 gana pulso</span></div></div>
+      <div><b style="font-size:18px">163 preguntas con respuesta real del CIS</b><div class="mono" style="font-size:12px;color:var(--mute);margin-top:4px">Error medio por opción frente al CIS · toca un punto para ver la pregunta</div></div>
+      <div class="kpis"><div><b style="color:var(--coral)" data-n="0.9" data-dec="1">0</b><span>pp · pulso</span></div><div><b style="color:var(--grey)" data-n="20">0</b><span>pp · LLM sin datos</span></div><div><b data-n="161">0</b><span>de 163 gana pulso</span></div></div>
     </div>
-    <svg id="svg98" style="width:100%;height:auto;margin-top:22px;overflow:visible" role="img" aria-label="Error de pulso y de un LLM sin datos en 98 preguntas"></svg>
-    <div class="leyenda" style="margin-top:8px"><span><i style="background:var(--coral)"></i>pulso (como mucho 4,1 pp)</span><span><i style="background:var(--grey)"></i>LLM sin datos (hasta 51 pp)</span></div>
+    <svg id="svg98" style="width:100%;height:auto;margin-top:22px;overflow:visible" role="img" aria-label="Error de pulso y de un LLM sin datos en 163 preguntas"></svg>
+    <div class="leyenda" style="margin-top:8px"><span><i style="background:var(--coral)"></i>pulso (como mucho 4,1 pp)</span><span><i style="background:var(--grey)"></i>LLM sin datos (hasta 71 pp)</span></div>
   </div>
 
   <div class="grafico rv">
@@ -393,7 +393,7 @@ footer p { margin: 6px 0; }
   </div>
   <div class="cierre rv">
     <h2>Pregúntale a España.</h2>
-    <p style="margin:14px auto 0;max-width:46ch;opacity:.9">270 preguntas ya calculadas, con su semáforo, por comunidad, sexo y edad.</p>
+    <p style="margin:14px auto 0;max-width:46ch;opacity:.9">Más de 450 preguntas ya calculadas, con su semáforo, por comunidad, sexo y edad.</p>
     <a class="btn" href="../?preguntas">Probar pulso →</a>
   </div>
 </div></section>
@@ -485,13 +485,13 @@ function encenderCien() { const ii = $$("#cien i"); [3, 17, 38, 52, 71, 94].forE
 })();
 function crecerClima() { $$("#barras i").forEach((x, i) => setTimeout(() => x.style.height = x.dataset.h / 65 * 100 + "%", i * 40)); }
 
-/* ---------- 98 preguntas ---------- */
+/* ---------- preguntas comparadas con un LLM sin datos ---------- */
 function dibujar98() {
   const S = $("#svg98"), D = DATOS.comparar, n = D.length, Wd = Math.max(300, S.clientWidth), estrecho = Wd < 600;
-  const Hd = estrecho ? 240 : 300, izq = 34, X = i => izq + i * ((Wd - izq - 8) / (n - 1)), Y = v => Hd - 30 - v / 55 * (Hd - 50), r = estrecho ? 2.6 : 4.2;
+  const Hd = estrecho ? 240 : 300, izq = 34, X = i => izq + i * ((Wd - izq - 8) / (n - 1)), Y = v => Hd - 30 - v / 75 * (Hd - 50), r = estrecho ? 2.6 : 4.2;
   S.setAttribute("viewBox", `0 0 ${Wd} ${Hd}`);
   let h = "";
-  [0, 10, 20, 30, 40, 50].forEach(v => h += `<line x1="${izq}" x2="${Wd - 4}" y1="${Y(v)}" y2="${Y(v)}" stroke="rgba(26,31,58,.08)"/><text x="${izq - 8}" y="${Y(v) + 4}" font-size="11" text-anchor="end" fill="#5A6075">${v}</text>`);
+  [0, 10, 20, 30, 40, 50, 60, 70].forEach(v => h += `<line x1="${izq}" x2="${Wd - 4}" y1="${Y(v)}" y2="${Y(v)}" stroke="rgba(26,31,58,.08)"/><text x="${izq - 8}" y="${Y(v) + 4}" font-size="11" text-anchor="end" fill="#5A6075">${v}</text>`);
   D.forEach((d, i) => h += `<line class="ln" x1="${X(i)}" x2="${X(i)}" y1="${Y(0)}" y2="${Y(0)}" data-y1="${Y(d.p)}" data-y2="${Y(d.l)}" stroke="rgba(26,31,58,.12)" stroke-width="1.1"/>`);
   D.forEach((d, i) => h += `<circle class="pt" cx="${X(i)}" cy="${Y(0)}" data-cy="${Y(d.l)}" r="${r}" fill="#A9AEC0"/>`);
   D.forEach((d, i) => h += `<circle class="pt" cx="${X(i)}" cy="${Y(0)}" data-cy="${Y(d.p)}" r="${r}" fill="#F0442E"/>`);
