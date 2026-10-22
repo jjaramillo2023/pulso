@@ -143,6 +143,17 @@
 "comparar": "ce4ee0dd5779a3bf.json"
 },
 {
+"pregunta": "¿Cómo ha ido la economía de tu comunidad autónoma en los últimos seis meses?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "evidencia",
+"lider": "Peor",
+"valor": 44.1,
+"archivo": "c75f9a153f929eb9.json",
+"comparar": "a99255e0dbc73afb.json"
+},
+{
 "pregunta": "¿Cómo ha ido la economía de tu hogar estos meses?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -154,6 +165,17 @@
 "comparar": "d71b66cfdf66556a.json"
 },
 {
+"pregunta": "¿Cómo haces normalmente las transferencias bancarias?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "evidencia",
+"lider": "Usando la página web o la aplicación del banco",
+"valor": 67.2,
+"archivo": "50f1312ecf0255d0.json",
+"comparar": "7694aa3888e01d95.json"
+},
+{
 "pregunta": "¿Cómo prefieres hacer las transferencias: en la oficina, por internet o con el móvil?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -163,6 +185,39 @@
 "valor": 63.2,
 "archivo": "513a5e1c05a0e91d.json",
 "comparar": "39f094b52ba17d89.json"
+},
+{
+"pregunta": "¿Cómo prefieres pagar los recibos: en la oficina o por internet?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "evidencia",
+"lider": "Mediante domiciliación",
+"valor": 55.4,
+"archivo": "8a5c5f504b6d721e.json",
+"comparar": "e47c2bdd121c1fec.json"
+},
+{
+"pregunta": "¿Cómo sacas dinero en efectivo normalmente?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "evidencia",
+"lider": "Usando un cajero automático",
+"valor": 79.1,
+"archivo": "db3372db93656ac8.json",
+"comparar": "4a9d5f1d9e569839.json"
+},
+{
+"pregunta": "¿Cómo sueles consultar el saldo de tu cuenta: en la oficina, por internet o con el móvil?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "evidencia",
+"lider": "Usando la página web o la aplicación del banco",
+"valor": 76.1,
+"archivo": "fb4d197da3d6068e.json",
+"comparar": "66218c2722d938d1.json"
 },
 {
 "pregunta": "¿Cómo valorarías tu situación económica personal actual?",
@@ -185,6 +240,28 @@
 "valor": 55.4,
 "archivo": "154988876d7d05e6.json",
 "comparar": "6a2860a985a418ef.json"
+},
+{
+"pregunta": "¿Has contratado algún seguro en el último año?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "evidencia",
+"lider": "Nunca",
+"valor": 56.2,
+"archivo": "ffb93354f3c012cf.json",
+"comparar": "5c33e20b27c67ca9.json"
+},
+{
+"pregunta": "¿Has contratado un producto de inversión o pedido un préstamo en el último año?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "evidencia",
+"lider": "Nunca",
+"valor": 65.3,
+"archivo": "8afde1210c9530e8.json",
+"comparar": "850f7ea0bd0237f0.json"
 },
 {
 "pregunta": "¿Has tenido un fondo de inversión o acciones en los últimos cinco años?",
@@ -231,6 +308,17 @@
 "comparar": "ab179932fe3289a4.json"
 },
 {
+"pregunta": "¿Has tenido una cuenta de ahorro en los últimos cinco años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "evidencia",
+"lider": "Sí",
+"valor": 67.0,
+"archivo": "98a706ea68757b87.json",
+"comparar": "cf4164674e95f892.json"
+},
+{
 "pregunta": "¿Te da miedo una crisis económica?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -253,6 +341,17 @@
 "comparar": "bd84c4aa8cd906d3.json"
 },
 {
+"pregunta": "¿Ahorras pensando en tu jubilación?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "analogia",
+"lider": "No",
+"valor": 50.8,
+"archivo": "746f4e0c412b98f5.json",
+"comparar": null
+},
+{
 "pregunta": "¿Cambiarías de banco por una cuenta remunerada al 3 %?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -261,6 +360,28 @@
 "lider": "No",
 "valor": 41.1,
 "archivo": "f4c044f6fae8be17.json",
+"comparar": null
+},
+{
+"pregunta": "¿Cambiarías de trabajo por cobrar un 10 % más?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "analogia",
+"lider": "No",
+"valor": 55.2,
+"archivo": "85727f9e894e215b.json",
+"comparar": null
+},
+{
+"pregunta": "¿Compras en Amazon al menos una vez al mes?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "analogia",
+"lider": "No",
+"valor": 82.2,
+"archivo": "ce8e7c10681132df.json",
 "comparar": null
 },
 {
@@ -297,6 +418,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Cómo prefieres pagar en una tienda?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "analogia",
+"lider": "En efectivo",
+"valor": 55.3,
+"archivo": "39e8bc5ee1c34f9d.json",
+"comparar": null
+},
+{
 "pregunta": "¿Cómo ves la posibilidad de encontrar o mejorar empleo en España en los próximos seis meses?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -316,6 +448,17 @@
 "lider": "Sí",
 "valor": 51.6,
 "archivo": "ca1b8b88850b8caf.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has pedido un préstamo para pagar unas vacaciones o compras?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "analogia",
+"lider": "No",
+"valor": 90.2,
+"archivo": "6fbfa826dc0134a2.json",
 "comparar": null
 },
 {
@@ -349,6 +492,17 @@
 "lider": "Nunca",
 "valor": 52.5,
 "archivo": "55fedf8bedf6fc0f.json",
+"comparar": null
+},
+{
+"pregunta": "¿Prefieres comprar en rebajas o cuando lo necesitas?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "analogia",
+"lider": "Cuando lo necesito",
+"valor": 73.1,
+"archivo": "9fc58a0d53b748cd.json",
 "comparar": null
 },
 {
@@ -396,6 +550,28 @@
 "comparar": null
 },
 {
+"pregunta": "¿Tienes ahorros para una emergencia?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "analogia",
+"lider": "Nada",
+"valor": 46.9,
+"archivo": "9a256f3b83328682.json",
+"comparar": null
+},
+{
+"pregunta": "¿Usas apps de comida a domicilio?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "analogia",
+"lider": "A veces",
+"valor": 52.2,
+"archivo": "2087cfa05e692ead.json",
+"comparar": null
+},
+{
 "pregunta": "¿Usas las cajas de autocobro del supermercado?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -431,6 +607,19 @@
 "comparar": null
 },
 {
+"pregunta": "Campaña: «Compra de temporada: más barato y más sano»",
+"tipo": "campana",
+"mensajes": [
+"Compra de temporada: más barato y más sano"
+],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "No me convence",
+"valor": 42.4,
+"archivo": "9fbe88da6e86f8a0.json",
+"comparar": null
+},
+{
 "pregunta": "Campaña: «Compra en tu barrio: el comercio local da vida a tu calle»",
 "tipo": "campana",
 "mensajes": [
@@ -441,6 +630,32 @@
 "lider": "Me convence",
 "valor": 36.2,
 "archivo": "f7adb4304db58c49.json",
+"comparar": null
+},
+{
+"pregunta": "Campaña: «Transporte público gratis para menores de 26 años»",
+"tipo": "campana",
+"mensajes": [
+"Transporte público gratis para menores de 26 años"
+],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "Me es indiferente",
+"valor": 39.4,
+"archivo": "229d06b44a788844.json",
+"comparar": null
+},
+{
+"pregunta": "Campaña: «Tu ayuntamiento te escucha: vota en qué se gasta el presupuesto de tu barrio»",
+"tipo": "campana",
+"mensajes": [
+"Tu ayuntamiento te escucha: vota en qué se gasta el presupuesto de tu barrio"
+],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "No me convence",
+"valor": 42.5,
+"archivo": "f64b2942dfa6f3b3.json",
 "comparar": null
 },
 {
@@ -549,6 +764,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Comparas precios en varias tiendas antes de comprar?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "A veces",
+"valor": 53.6,
+"archivo": "217a671bc184417d.json",
+"comparar": null
+},
+{
 "pregunta": "¿Comprarías ropa de segunda mano?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -593,6 +819,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Compras productos ecológicos?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "A veces",
+"valor": 49.8,
+"archivo": "7b92e2cadcbaa739.json",
+"comparar": null
+},
+{
 "pregunta": "¿Cuántas veces a la semana quedas con amigos?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -612,6 +849,28 @@
 "lider": "Ninguna",
 "valor": 32.9,
 "archivo": "53d81c05a3df046b.json",
+"comparar": null
+},
+{
+"pregunta": "¿Cuánto gastas al mes en ocio?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "Menos de 50 €",
+"valor": 57.6,
+"archivo": "9a5ac7beb3278d43.json",
+"comparar": null
+},
+{
+"pregunta": "¿Deberían poder votar los jóvenes a los 16 años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "No",
+"valor": 48.9,
+"archivo": "89bf4607b0eaa317.json",
 "comparar": null
 },
 {
@@ -648,6 +907,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Has cambiado de banco en los últimos cinco años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "No",
+"valor": 77.5,
+"archivo": "9d9d88dacc84af84.json",
+"comparar": null
+},
+{
 "pregunta": "¿Has cambiado de compañía de luz o gas en los últimos dos años?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -656,6 +926,39 @@
 "lider": "No",
 "valor": 68.3,
 "archivo": "c88fdc07a86956fb.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has comprado algo por impulso por un anuncio en redes sociales?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "No",
+"valor": 91.1,
+"archivo": "32ccddebcb18a22a.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has pensado en contratar un plan de pensiones privado?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "No",
+"valor": 89.6,
+"archivo": "7ca6f917dc90794c.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has reducido el consumo de carne por su precio?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "No",
+"valor": 89.9,
+"archivo": "bb773e440ed1c561.json",
 "comparar": null
 },
 {
@@ -678,6 +981,17 @@
 "lider": "No",
 "valor": 48.2,
 "archivo": "73318616eb88f907.json",
+"comparar": null
+},
+{
+"pregunta": "¿Pagarías más por un producto si la empresa trata bien a sus trabajadores?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 61.7,
+"archivo": "cceac061d66cf096.json",
 "comparar": null
 },
 {
@@ -714,6 +1028,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Sabes cuánto pagas de comisiones en tu banco?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "Más o menos",
+"valor": 39.9,
+"archivo": "88ee2f34f7ab9c2f.json",
+"comparar": null
+},
+{
 "pregunta": "¿Si compraras un coche, sería nuevo o de segunda mano?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -744,6 +1069,28 @@
 "lider": "Algo",
 "valor": 45.2,
 "archivo": "819dca2ff8b975c6.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te gustaría montar tu propio negocio?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "No",
+"valor": 61.7,
+"archivo": "76c1a9bdfc959fdf.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te influye que una marca sea española al comprar?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Consumo",
+"modo": "simulacion",
+"lider": "Nada",
+"valor": 66.1,
+"archivo": "58b583c61a04e439.json",
 "comparar": null
 },
 {
@@ -857,6 +1204,17 @@
 "comparar": "e5e9ba8b716fdfab.json"
 },
 {
+"pregunta": "¿Te preocupa la situación de los incendios en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "evidencia",
+"lider": "Mucho",
+"valor": 78.5,
+"archivo": "a6346a82497b9f3e.json",
+"comparar": "ea516547efd6fb69.json"
+},
+{
 "pregunta": "¿Te preocupan los incendios forestales?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -866,6 +1224,28 @@
 "valor": 78.5,
 "archivo": "e97491da2b8ec741.json",
 "comparar": "a4655db10e458a8f.json"
+},
+{
+"pregunta": "¿Comprarías menos ropa para reducir residuos?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "analogia",
+"lider": "No",
+"valor": 56.7,
+"archivo": "7cee70119d47f4c3.json",
+"comparar": null
+},
+{
+"pregunta": "¿Crees que el cambio climático lo causa el ser humano?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "analogia",
+"lider": "Sí",
+"valor": 63.7,
+"archivo": "d321947b66a0d83e.json",
+"comparar": null
 },
 {
 "pregunta": "¿Estás a favor de alargar la vida de las centrales nucleares?",
@@ -901,6 +1281,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Te preocupa la contaminación del aire en tu ciudad?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "analogia",
+"lider": "Mucho",
+"valor": 41.4,
+"archivo": "ad4e1c6803860a45.json",
+"comparar": null
+},
+{
 "pregunta": "¿Te preocupa la sequía y la falta de agua?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -920,6 +1311,19 @@
 "lider": "Sí",
 "valor": 49.3,
 "archivo": "7d5b772ba509e3bf.json",
+"comparar": null
+},
+{
+"pregunta": "Campaña: «Agua que no se gasta, agua que se queda: cierra el grifo»",
+"tipo": "campana",
+"mensajes": [
+"Agua que no se gasta, agua que se queda: cierra el grifo"
+],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "No me convence",
+"valor": 54.8,
+"archivo": "2f7ea7c6dcf1da5c.json",
 "comparar": null
 },
 {
@@ -977,6 +1381,20 @@
 "comparar": null
 },
 {
+"pregunta": "Test A/B: «Muévete en bici: es gratis» frente a «Muévete en bici: es más sano»",
+"tipo": "ab",
+"mensajes": [
+"Muévete en bici: es gratis",
+"Muévete en bici: es más sano"
+],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "A · Muévete en bici: es gratis",
+"valor": 43.2,
+"archivo": "3fb7f9f117687652.json",
+"comparar": null
+},
+{
 "pregunta": "Test A/B: «Pásate al coche eléctrico y ahorra en gasolina» frente a «Pásate al coche eléctrico y respira un aire más limpio»",
 "tipo": "ab",
 "mensajes": [
@@ -1002,6 +1420,20 @@
 "lider": "Ninguno",
 "valor": 44.8,
 "archivo": "a8dce58132054fbb.json",
+"comparar": null
+},
+{
+"pregunta": "Test A/B: «Reciclar es fácil» frente a «Reciclar ahorra dinero a tu ciudad»",
+"tipo": "ab",
+"mensajes": [
+"Reciclar es fácil",
+"Reciclar ahorra dinero a tu ciudad"
+],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "Ninguno",
+"valor": 51.5,
+"archivo": "d4d5a874dad41cc3.json",
 "comparar": null
 },
 {
@@ -1049,6 +1481,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Crees que España está preparada para las olas de calor?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "No",
+"valor": 64.0,
+"archivo": "02ab064d719925f0.json",
+"comparar": null
+},
+{
 "pregunta": "¿Crees que los veranos en España serán cada vez más calurosos?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1060,6 +1503,28 @@
 "comparar": null
 },
 {
+"pregunta": "¿Deberían prohibirse los coches más contaminantes en el centro de las ciudades?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 68.7,
+"archivo": "63fbad99d2924285.json",
+"comparar": null
+},
+{
+"pregunta": "¿Estás a favor de las grandes plantas solares en el campo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 54.2,
+"archivo": "c181e3f0ea4bbab2.json",
+"comparar": null
+},
+{
 "pregunta": "¿Estás a favor de las zonas de bajas emisiones en las ciudades?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1068,6 +1533,28 @@
 "lider": "Sí",
 "valor": 60.3,
 "archivo": "b10eda8abd3b5da0.json",
+"comparar": null
+},
+{
+"pregunta": "¿Estás a favor de los molinos de viento cerca de donde vives?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 49.8,
+"archivo": "dca6149460d74b75.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has cambiado algún hábito por el cambio climático?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "No",
+"valor": 54.6,
+"archivo": "60bab2fd0087b380.json",
 "comparar": null
 },
 {
@@ -1104,6 +1591,39 @@
 "comparar": null
 },
 {
+"pregunta": "¿Pagarías más por un coche eléctrico que por uno de gasolina?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "No",
+"valor": 52.6,
+"archivo": "d29fe5e2632273d8.json",
+"comparar": null
+},
+{
+"pregunta": "¿Pagarías una tasa turística para proteger la naturaleza?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 48.5,
+"archivo": "a5febdb91b70f8b3.json",
+"comparar": null
+},
+{
+"pregunta": "¿Pondrías menos el aire acondicionado para ahorrar energía?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "No",
+"valor": 40.9,
+"archivo": "c7204b3d856c9303.json",
+"comparar": null
+},
+{
 "pregunta": "¿Pondrías un punto de recarga para coche eléctrico en tu casa?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1112,6 +1632,50 @@
 "lider": "No",
 "valor": 61.6,
 "archivo": "1d528035d6e7da0b.json",
+"comparar": null
+},
+{
+"pregunta": "¿Separas la basura para reciclar?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "Siempre",
+"valor": 52.9,
+"archivo": "a472478cda92ac23.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te preocupa la escasez de agua en tu comunidad?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "Poco",
+"valor": 57.1,
+"archivo": "ef267439ecbffc64.json",
+"comparar": null
+},
+{
+"pregunta": "¿Tiene tu ciudad suficientes zonas verdes?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "No",
+"valor": 68.3,
+"archivo": "0aae2034b605a691.json",
+"comparar": null
+},
+{
+"pregunta": "¿Usarías más el transporte público si fuera gratis?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Medio ambiente",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 37.5,
+"archivo": "ad72d6bc0afaf926.json",
 "comparar": null
 },
 {
@@ -1349,6 +1913,17 @@
 "comparar": "ce9e999931a83543.json"
 },
 {
+"pregunta": "¿En el último año fuiste a urgencias de la sanidad pública o de la privada?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Ninguna, no ha tenido que acudir a urgencias",
+"valor": 47.1,
+"archivo": "5a16abf33be91687.json",
+"comparar": "8b341d8f01080c1f.json"
+},
+{
 "pregunta": "¿En el último año no has podido tomar un medicamento recetado por su coste?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1358,6 +1933,28 @@
 "valor": 94.1,
 "archivo": "f07dad645bc2a161.json",
 "comparar": "16204ad046f9140c.json"
+},
+{
+"pregunta": "¿Estás satisfecho con el funcionamiento del sistema sanitario español?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Funciona bien, aunque son necesarios algunos cambios",
+"valor": 41.0,
+"archivo": "edb6df85ea89b9f8.json",
+"comparar": "896124de8eec69e5.json"
+},
+{
+"pregunta": "¿Estás satisfecho con el servicio de urgencias 061 y 112?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Totalmente satisfactoria (7-10)",
+"valor": 55.6,
+"archivo": "74034273672ac4bd.json",
+"comparar": "f6c5fbb5be82579f.json"
 },
 {
 "pregunta": "¿Estás satisfecho con la atención primaria en los centros de salud?",
@@ -1382,6 +1979,17 @@
 "comparar": "c29758b7cb7ea2ea.json"
 },
 {
+"pregunta": "¿Estás satisfecho con las consultas con especialistas de la sanidad pública?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Totalmente satisfactoria (7-10)",
+"valor": 42.0,
+"archivo": "856cdd415ec4d59d.json",
+"comparar": "d821843f0b296973.json"
+},
+{
 "pregunta": "¿Estás satisfecho con las urgencias de los hospitales públicos?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1393,6 +2001,17 @@
 "comparar": "bc7c2394c9713742.json"
 },
 {
+"pregunta": "¿Has hecho alguna consulta telefónica con tu médico de familia este año?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Sí",
+"valor": 40.9,
+"archivo": "281489ee001061d2.json",
+"comparar": "dbf309c6f48233b2.json"
+},
+{
 "pregunta": "¿Has ido a un profesional de salud mental en el último año?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1402,6 +2021,17 @@
 "valor": 81.2,
 "archivo": "ac179e1bf3c6f66b.json",
 "comparar": "3bcf323509cb70c0.json"
+},
+{
+"pregunta": "¿Has recibido asistencia médica fuera de tu comunidad autónoma en el último año?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "No",
+"valor": 93.1,
+"archivo": "add076c71394e98b.json",
+"comparar": "be103931d5e96ccd.json"
 },
 {
 "pregunta": "¿Has tenido que esperar más de una hora en la sala de espera del médico?",
@@ -1459,6 +2089,39 @@
 "comparar": "d4dc683cf1347eba.json"
 },
 {
+"pregunta": "¿Pudiste participar en las decisiones sobre tu tratamiento con el médico?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Sí",
+"valor": 65.1,
+"archivo": "4bea4d71eb367e49.json",
+"comparar": "6b818e673f96d262.json"
+},
+{
+"pregunta": "¿Sabías que los médicos pueden ver tu historia clínica desde otra comunidad autónoma?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "No lo sabía",
+"valor": 53.0,
+"archivo": "5ab4260936e8bec5.json",
+"comparar": "8d24def5c77ec4a2.json"
+},
+{
+"pregunta": "¿Sabías que puedes recoger medicamentos con receta electrónica en otra comunidad autónoma?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Sí lo sabía, pero no la ha utilizado",
+"valor": 46.2,
+"archivo": "dc924396aef2ca34.json",
+"comparar": "f758da56d54fa4e2.json"
+},
+{
 "pregunta": "¿Te da miedo contraer un cáncer?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1490,6 +2153,17 @@
 "valor": 80.8,
 "archivo": "b5943e304ae372a7.json",
 "comparar": "241d0bc29ff0bd3c.json"
+},
+{
+"pregunta": "¿Te da miedo perder la salud?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Mucho temor (7-10)",
+"valor": 76.9,
+"archivo": "8dec7367694ec78a.json",
+"comparar": "632b5b5c7e68f4bf.json"
 },
 {
 "pregunta": "¿Te da miedo perder la vida?",
@@ -1591,6 +2265,39 @@
 "comparar": "76df6796edfc0ecf.json"
 },
 {
+"pregunta": "¿Tu comunidad autónoma tiene mejores o peores medios sanitarios que el resto de España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Igual",
+"valor": 40.6,
+"archivo": "c086ebe15f39ed4a.json",
+"comparar": "7823d40b3f499a26.json"
+},
+{
+"pregunta": "¿Tu médico de familia te explica las cosas de forma fácil de entender?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Sí",
+"valor": 75.0,
+"archivo": "3877856a97597d89.json",
+"comparar": "f377347c189c6afd.json"
+},
+{
+"pregunta": "¿Tu médico te dio la oportunidad de hacer preguntas en la consulta?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "evidencia",
+"lider": "Sí",
+"valor": 68.1,
+"archivo": "09c2c08ea8c78afe.json",
+"comparar": "f49f72128f69e82f.json"
+},
+{
 "pregunta": "¿Confiarías en un diagnóstico médico hecho solo por una inteligencia artificial?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1610,6 +2317,17 @@
 "lider": "No",
 "valor": 51.7,
 "archivo": "1eb519065cd9477e.json",
+"comparar": null
+},
+{
+"pregunta": "¿Confiarías en una inteligencia artificial para elegir tu tratamiento médico?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "No",
+"valor": 48.7,
+"archivo": "1c45a1f0bc522ace.json",
 "comparar": null
 },
 {
@@ -1635,6 +2353,28 @@
 "comparar": null
 },
 {
+"pregunta": "¿Cuánto tardas en conseguir cita con tu médico de cabecera?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "De 2 a 7 días",
+"valor": 48.7,
+"archivo": "70eef9de48b82206.json",
+"comparar": null
+},
+{
+"pregunta": "¿Cómo valoras la integración de las personas con discapacidad hoy?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "Regular",
+"valor": 68.6,
+"archivo": "8c98f7a1b09ccd94.json",
+"comparar": null
+},
+{
 "pregunta": "¿Debería la sanidad pública cubrir el dentista?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1657,6 +2397,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Deberían las empresas ofrecer apoyo psicológico a sus empleados?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "Sí",
+"valor": 69.3,
+"archivo": "7901cb3b257540c6.json",
+"comparar": null
+},
+{
 "pregunta": "¿Deberían las farmacias poder recetar algunos medicamentos?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1665,6 +2416,50 @@
 "lider": "Sí",
 "valor": 41.3,
 "archivo": "98ed2b7eaa67c66e.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has dejado de ir al médico por las listas de espera?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "No",
+"valor": 66.0,
+"archivo": "5dcabff405c2059c.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has estado ingresado en un hospital en el último año?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "No",
+"valor": 93.3,
+"archivo": "70e6e40c4c883b60.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has ido a un médico especialista en el último año, en la pública o en la privada?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "Pública",
+"valor": 49.6,
+"archivo": "4b5dcb66a96dd21a.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has ido al psicólogo alguna vez?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "No",
+"valor": 64.0,
+"archivo": "4eb54fcc1b869808.json",
 "comparar": null
 },
 {
@@ -1690,6 +2485,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Pagarías por un servicio de acompañamiento para un familiar mayor?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "Sí",
+"valor": 45.0,
+"archivo": "3ad6f89fe7b51688.json",
+"comparar": null
+},
+{
 "pregunta": "¿Pagarías un seguro médico privado para evitar las listas de espera?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1698,6 +2504,39 @@
 "lider": "Sí",
 "valor": 49.1,
 "archivo": "588c5895bebc0ef6.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te preocupa tu salud mental?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "Mucho",
+"valor": 37.5,
+"archivo": "4de42cf0af9f9e1a.json",
+"comparar": null
+},
+{
+"pregunta": "¿Tomas algún suplemento o vitamina?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "No",
+"valor": 77.7,
+"archivo": "c1ce1151fd75341a.json",
+"comparar": null
+},
+{
+"pregunta": "¿Usarías la telemedicina para consultas rutinarias?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "analogia",
+"lider": "No",
+"valor": 41.2,
+"archivo": "3f6de9cdc39dbd59.json",
 "comparar": null
 },
 {
@@ -1733,6 +2572,19 @@
 "lider": "Me es indiferente",
 "valor": 37.8,
 "archivo": "f95408a7c9385369.json",
+"comparar": null
+},
+{
+"pregunta": "Campaña: «Cita con el médico de cabecera en 48 horas, garantizada»",
+"tipo": "campana",
+"mensajes": [
+"Cita con el médico de cabecera en 48 horas, garantizada"
+],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "Me convence",
+"valor": 45.2,
+"archivo": "c78f59ba86d729db.json",
 "comparar": null
 },
 {
@@ -1773,6 +2625,20 @@
 "lider": "B · Cuida tu corazón: menos azúcar",
 "valor": 42.9,
 "archivo": "120085223ea11c97.json",
+"comparar": null
+},
+{
+"pregunta": "Test A/B: «Cuida tu corazón: camina 30 minutos al día» frente a «Camina 30 minutos al día y vivirás más años»",
+"tipo": "ab",
+"mensajes": [
+"Cuida tu corazón: camina 30 minutos al día",
+"Camina 30 minutos al día y vivirás más años"
+],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "Ninguno",
+"valor": 38.8,
+"archivo": "fdddff24c75f4e0e.json",
 "comparar": null
 },
 {
@@ -1818,6 +2684,39 @@
 "comparar": null
 },
 {
+"pregunta": "¿Comes suficiente fruta y verdura?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 56.6,
+"archivo": "895a6d07ba895371.json",
+"comparar": null
+},
+{
+"pregunta": "¿Confías en las vacunas?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "Algo",
+"valor": 47.4,
+"archivo": "ea1093f5274ad552.json",
+"comparar": null
+},
+{
+"pregunta": "¿Crees que pasas demasiado tiempo con el móvil?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "No",
+"valor": 64.1,
+"archivo": "6c173604351193b0.json",
+"comparar": null
+},
+{
 "pregunta": "¿Cuidas tu alimentación?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1829,6 +2728,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Cuántas horas al día pasas sentado?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "De 4 a 8",
+"valor": 46.5,
+"archivo": "f543053b60cbe47d.json",
+"comparar": null
+},
+{
 "pregunta": "¿Cuántas horas duermes normalmente?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1837,6 +2747,39 @@
 "lider": "Entre 7 y 8",
 "valor": 52.3,
 "archivo": "64172d011e99c446.json",
+"comparar": null
+},
+{
+"pregunta": "¿Debería limitar la ley las horas de pantalla de los menores?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 49.3,
+"archivo": "51410581dbf0602c.json",
+"comparar": null
+},
+{
+"pregunta": "¿Deberían ser gratuitas las gafas y los audífonos en la sanidad pública?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 57.2,
+"archivo": "2058dce5831ebe4e.json",
+"comparar": null
+},
+{
+"pregunta": "¿Deberían subir los impuestos al tabaco y al alcohol?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "No",
+"valor": 47.2,
+"archivo": "0a789056cde33fd3.json",
 "comparar": null
 },
 {
@@ -1859,6 +2802,17 @@
 "lider": "En contra",
 "valor": 47.5,
 "archivo": "d6bbe003fb08990d.json",
+"comparar": null
+},
+{
+"pregunta": "¿Fumas?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "No",
+"valor": 88.4,
+"archivo": "e0687b6f9be985b9.json",
 "comparar": null
 },
 {
@@ -1906,6 +2860,28 @@
 "comparar": null
 },
 {
+"pregunta": "¿Te fías de la información de salud que ves en redes sociales?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "Nada",
+"valor": 76.3,
+"archivo": "cbec44015a8ccf3e.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te harías un análisis genético para conocer tus riesgos de salud?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Salud",
+"modo": "simulacion",
+"lider": "No",
+"valor": 51.9,
+"archivo": "0dca44156d2d5301.json",
+"comparar": null
+},
+{
 "pregunta": "¿Te jubilarías antes aunque cobraras menos pensión?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1937,6 +2913,28 @@
 "valor": 44.5,
 "archivo": "7b894f53300eabfa.json",
 "comparar": null
+},
+{
+"pregunta": "Del 0 al 10, ¿cómo de racista es la sociedad española?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Intermedio (4-6)",
+"valor": 50.9,
+"archivo": "94f4c9914e42ac7c.json",
+"comparar": "bf469ae06b1167ae.json"
+},
+{
+"pregunta": "Del 0 al 10, ¿cómo de racista te consideras?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Nada racista (0-3)",
+"valor": 79.2,
+"archivo": "15a0388014866af9.json",
+"comparar": "b6ef22c097f0e0c5.json"
 },
 {
 "pregunta": "Del 0 al 10, ¿qué probabilidad hay de que vayas a votar en las próximas elecciones generales?",
@@ -1972,6 +2970,171 @@
 "comparar": "58daf2088953e563.json"
 },
 {
+"pregunta": "¿Crees que el Estado debería dirigir y planificar toda la actividad económica?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "El Estado debe intervenir solo en determinados sectores de interés público y fijando orientaciones generales",
+"valor": 56.6,
+"archivo": "7d02d694581e20a0.json",
+"comparar": "6152d29b6e0ca90c.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más desigualdad entre países ricos y pobres?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Mayores/más que ahora",
+"valor": 64.3,
+"archivo": "89a5371f15795a33.json",
+"comparar": "d54f06f8b7f29bc2.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más diferencias sociales y económicas en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Más que ahora",
+"valor": 69.7,
+"archivo": "df7a858434ae0e3b.json",
+"comparar": "da8f3039751d5abc.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más gente que disfrute con su trabajo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Menos que ahora",
+"valor": 44.7,
+"archivo": "e6c9ca7f0f46e327.json",
+"comparar": "e8106b0eda3e2cdd.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más igualdad de oportunidades en el empleo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Igual que ahora",
+"valor": 38.1,
+"archivo": "05f3fc5b64da3e85.json",
+"comparar": "312e1de92b231db2.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más integración de las personas con discapacidad?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Más que ahora",
+"valor": 64.6,
+"archivo": "81c52073dad6e9bb.json",
+"comparar": "b8aae7c04caa3d26.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más libertad sexual en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Más que ahora",
+"valor": 50.5,
+"archivo": "656cb9b95e098cd7.json",
+"comparar": "2ec90f3e9428c1db.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más paro en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Más que ahora",
+"valor": 44.1,
+"archivo": "698ee8cd782932d2.json",
+"comparar": "8fc640726f1ea8a1.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más personas emigrando de países pobres a ricos?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Mayores/más que ahora",
+"valor": 68.9,
+"archivo": "990033b95114908b.json",
+"comparar": "1c3e5bd0ec96f3ac.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más personas religiosas en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Menos que ahora",
+"valor": 46.8,
+"archivo": "94a6d8e351b0743f.json",
+"comparar": "2f53ff76cc87b475.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más racismo y xenofobia en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Más que ahora",
+"valor": 47.6,
+"archivo": "32b55942ee095c19.json",
+"comparar": "00e98114bc5ff0e6.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más separaciones y divorcios en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Más que ahora",
+"valor": 63.3,
+"archivo": "09959472fccda1e9.json",
+"comparar": "2c6c2a0ca33e0204.json"
+},
+{
+"pregunta": "¿Crees que en diez años habrá más tiempo libre para el ocio?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Igual que ahora",
+"valor": 35.4,
+"archivo": "a5ba98d460d63655.json",
+"comparar": "8d9cf2c2cbe86236.json"
+},
+{
+"pregunta": "¿Crees que en diez años nacerán más o menos niños en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Menos que ahora",
+"valor": 67.8,
+"archivo": "e6fcc2de2e314a5f.json",
+"comparar": "05b6484ffe999a52.json"
+},
+{
+"pregunta": "¿Crees que en diez años tendrás más o menos relación con tu familia?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Menos que ahora",
+"valor": 55.1,
+"archivo": "fb844c0bc7d777e1.json",
+"comparar": "81d0ba86ef8e3d85.json"
+},
+{
 "pregunta": "¿Crees que habrá muchos cambios económicos y sociales en los próximos diez años?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -1981,6 +3144,72 @@
 "valor": 36.4,
 "archivo": "092f13a64a968496.json",
 "comparar": "d1ee846fcd8379c6.json"
+},
+{
+"pregunta": "¿Crees que habrá más guerras y conflictos internacionales en los próximos diez años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Mayores/más que ahora",
+"valor": 50.6,
+"archivo": "9784cc64eb56a461.json",
+"comparar": "d6d5dc6b72842a1b.json"
+},
+{
+"pregunta": "¿Crees que la ONU será más eficaz en los próximos diez años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Igual que ahora",
+"valor": 45.9,
+"archivo": "b4a2c63950029d12.json",
+"comparar": "13955104c6a373ae.json"
+},
+{
+"pregunta": "¿Crees que los conflictos sociales van en aumento en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Sí",
+"valor": 90.0,
+"archivo": "5552aa27214fd5f9.json",
+"comparar": "81514b9696d29da7.json"
+},
+{
+"pregunta": "¿Crees que los países latinoamericanos tendrán más influencia en el mundo dentro de diez años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Igual que ahora",
+"valor": 47.1,
+"archivo": "fcc7e8f8af08de8a.json",
+"comparar": "baead0f6487df87b.json"
+},
+{
+"pregunta": "¿Crees que una guerra nuclear sería el fin de la humanidad?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "No cree que sea el fin de la humanidad",
+"valor": 54.6,
+"archivo": "5365cbb35a28ea9f.json",
+"comparar": "56de6c20efab0e24.json"
+},
+{
+"pregunta": "¿Crees que unas Fuerzas Armadas preparadas evitan abusos de otros países?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Sí lo cree",
+"valor": 67.9,
+"archivo": "b8126e26d9429a5a.json",
+"comparar": "ed8211b732d8e2e2.json"
 },
 {
 "pregunta": "¿Cuál es el problema que más te afecta a ti personalmente?",
@@ -2005,6 +3234,28 @@
 "comparar": "000bab58d833394a.json"
 },
 {
+"pregunta": "¿Cuánto te preocupa el conflicto en Oriente Próximo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Bastante preocupado/a",
+"valor": 38.7,
+"archivo": "d1f269635399e9b1.json",
+"comparar": "ff5a28ed28d7be44.json"
+},
+{
+"pregunta": "¿Cuánto te preocupa la guerra entre Rusia y Ucrania?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Bastante preocupado/a",
+"valor": 41.7,
+"archivo": "19fd490e9b99748e.json",
+"comparar": "9b0b388bcebfd728.json"
+},
+{
 "pregunta": "¿Debe el Estado intervenir en la economía?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2014,6 +3265,50 @@
 "valor": 69.5,
 "archivo": "bcfc8c840972f708.json",
 "comparar": "6e71334ac8302392.json"
+},
+{
+"pregunta": "¿Es importante que España y Marruecos se entiendan bien?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Mucha importancia",
+"valor": 63.1,
+"archivo": "e96ffb5945fef338.json",
+"comparar": "1184ee2a82440065.json"
+},
+{
+"pregunta": "¿Hace falta reforzar las fronteras para evitar entradas masivas de personas?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Sí, cree que es necesario",
+"valor": 82.0,
+"archivo": "7b67f9f6dd925121.json",
+"comparar": "d1c085bb24a1ff17.json"
+},
+{
+"pregunta": "¿Has notado más gente en paro a tu alrededor en los últimos meses?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "El mismo número",
+"valor": 75.4,
+"archivo": "4e5a26f9b608686c.json",
+"comparar": "65e589615469863f.json"
+},
+{
+"pregunta": "¿Has presenciado alguna agresión por motivos racistas?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "No",
+"valor": 83.1,
+"archivo": "4b07d7f7c163e725.json",
+"comparar": "73a9b2f10ef4ad18.json"
 },
 {
 "pregunta": "¿Hay que favorecer la igualdad y la solidaridad, o que cada uno llegue tan lejos como pueda?",
@@ -2038,6 +3333,50 @@
 "comparar": "a56abe8c8aaf8b4b.json"
 },
 {
+"pregunta": "¿Te da miedo perder tu trabajo o no encontrar un trabajo estable?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Le suscita el máximo miedo o temor (7-10)",
+"valor": 40.6,
+"archivo": "611e2af552951f79.json",
+"comparar": "e5d6603ab76cea75.json"
+},
+{
+"pregunta": "¿Te da miedo que te juzguen por un delito que no has cometido?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Le suscita el máximo miedo o temor (7-10)",
+"valor": 68.9,
+"archivo": "58948e453e53499c.json",
+"comparar": "cb128e5afa09ab8a.json"
+},
+{
+"pregunta": "¿Te da miedo una crisis de la democracia?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Le suscita el máximo miedo o temor (7-10)",
+"valor": 70.7,
+"archivo": "74ea37442123644f.json",
+"comparar": "22ef58740a00b71b.json"
+},
+{
+"pregunta": "¿Te da miedo una guerra civil?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Le suscita el máximo miedo o temor (7-10)",
+"valor": 71.3,
+"archivo": "7554ca34022fd4bf.json",
+"comparar": "d75666f6b71c8837.json"
+},
+{
 "pregunta": "¿Te da miedo una guerra mundial?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2047,6 +3386,105 @@
 "valor": 77.0,
 "archivo": "36ea6b546444e6c6.json",
 "comparar": "350ef157ebdd8983.json"
+},
+{
+"pregunta": "¿Te importaría que el alcalde de tu municipio fuera de otra raza o religión?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "No le importaría en absoluto (0-3)",
+"valor": 67.7,
+"archivo": "31d75014f70da02a.json",
+"comparar": "35b125f697a237ad.json"
+},
+{
+"pregunta": "¿Te importaría que el profesor de tus hijos fuera de otra raza o religión?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "No le importaría en absoluto (0-3)",
+"valor": 74.2,
+"archivo": "881dc01d7ea0dc7e.json",
+"comparar": "df5d661a533addb9.json"
+},
+{
+"pregunta": "¿Te importaría que tu jefe fuera de otra raza, etnia o religión?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "No le importaría en absoluto (0-3)",
+"valor": 76.6,
+"archivo": "2620f36ca5141a04.json",
+"comparar": "b4cb612974fc8fe8.json"
+},
+{
+"pregunta": "¿Te importaría que un familiar cercano tuviera pareja de otra raza o religión?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "No le importaría en absoluto (0-3)",
+"valor": 72.0,
+"archivo": "d7db2932d3c98c4e.json",
+"comparar": "caec51413ea8e8ba.json"
+},
+{
+"pregunta": "¿Te importaría vivir en el mismo edificio que personas de otra raza, etnia o religión?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "No le importaría en absoluto (0-3)",
+"valor": 77.7,
+"archivo": "46cd87330c952646.json",
+"comparar": "b25ca68858e1d7c3.json"
+},
+{
+"pregunta": "¿Te preocupa el deterioro de la democracia en España?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "evidencia",
+"lider": "Bastante",
+"valor": 37.1,
+"archivo": "b248774661052d3c.json",
+"comparar": "d3f1499b3261cefa.json"
+},
+{
+"pregunta": "¿Crees que en España se premia el esfuerzo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "analogia",
+"lider": "No",
+"valor": 57.6,
+"archivo": "454093d8526b3683.json",
+"comparar": null
+},
+{
+"pregunta": "¿Cómo valoras los cambios políticos y sociales que vienen en los próximos años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "analogia",
+"lider": "Me preocupa",
+"valor": 56.6,
+"archivo": "6cb5569f2aa6ae73.json",
+"comparar": null
+},
+{
+"pregunta": "¿Está la política española más polarizada que hace diez años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Sociedad",
+"modo": "analogia",
+"lider": "Igual",
+"valor": 44.5,
+"archivo": "0e56ac9dbfe10be6.json",
+"comparar": null
 },
 {
 "pregunta": "¿Hay hoy más igualdad entre hombres y mujeres que hace diez años?",
@@ -2082,6 +3520,17 @@
 "comparar": "8bc69b1d220e653c.json"
 },
 {
+"pregunta": "¿Te da miedo quedarte solo o sin apoyo emocional en los momentos difíciles?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "evidencia",
+"lider": "Poco temor",
+"valor": 42.5,
+"archivo": "278fa8255cbddb3d.json",
+"comparar": "6d5bdfeecfdb372d.json"
+},
+{
 "pregunta": "¿Tienes miedo a quedarte solo?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2091,6 +3540,28 @@
 "valor": 42.5,
 "archivo": "a8b3f470fb3eaca9.json",
 "comparar": "d3191073c33ea489.json"
+},
+{
+"pregunta": "¿Con qué frecuencia comes solo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "analogia",
+"lider": "Casi nunca",
+"valor": 44.7,
+"archivo": "64611307f8aa667f.json",
+"comparar": null
+},
+{
+"pregunta": "¿Crees que los mayores están más solos que hace diez años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "analogia",
+"lider": "Más solos",
+"valor": 51.2,
+"archivo": "dbf034aaddd467ea.json",
+"comparar": null
 },
 {
 "pregunta": "¿Debería haber un plan nacional contra la soledad no deseada?",
@@ -2123,6 +3594,28 @@
 "lider": "No",
 "valor": 60.4,
 "archivo": "8f8bae61b788bdf6.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has sentido soledad en el último mes?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "analogia",
+"lider": "Nada",
+"valor": 57.6,
+"archivo": "f26ceae2a8c07004.json",
+"comparar": null
+},
+{
+"pregunta": "¿Llamarías a una línea de ayuda si te sintieras solo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "analogia",
+"lider": "No",
+"valor": 39.9,
+"archivo": "27955894f54d55dc.json",
 "comparar": null
 },
 {
@@ -2170,6 +3663,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Tienes amigos de otro origen, raza o religión?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "analogia",
+"lider": "Sí, amigos de otros orígenes",
+"valor": 79.3,
+"archivo": "056b836f89af53df.json",
+"comparar": null
+},
+{
 "pregunta": "Campaña: «Llama a tus mayores: la soledad no deseada también es cosa tuya»",
 "tipo": "campana",
 "mensajes": [
@@ -2183,6 +3687,74 @@
 "comparar": null
 },
 {
+"pregunta": "Campaña: «Una llamada a la semana contra la soledad de los mayores»",
+"tipo": "campana",
+"mensajes": [
+"Una llamada a la semana contra la soledad de los mayores"
+],
+"tema": "Soledad",
+"modo": "simulacion",
+"lider": "Me convence",
+"valor": 38.4,
+"archivo": "e54d243c655a9b06.json",
+"comparar": null
+},
+{
+"pregunta": "¿Crees que las redes sociales aumentan la soledad de los jóvenes?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 52.3,
+"archivo": "fb2946aae355be1d.json",
+"comparar": null
+},
+{
+"pregunta": "¿Cuántos amigos íntimos tienes?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "simulacion",
+"lider": "De tres a cinco",
+"valor": 31.9,
+"archivo": "c8f679c61d3589d8.json",
+"comparar": null
+},
+{
+"pregunta": "¿Hablas de política con tu familia?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "simulacion",
+"lider": "A veces",
+"valor": 62.0,
+"archivo": "723c764aadabd4c3.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has perdido el contacto con algún amigo cercano en el último año?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "simulacion",
+"lider": "No",
+"valor": 62.4,
+"archivo": "7f30fa35a3748f69.json",
+"comparar": null
+},
+{
+"pregunta": "¿Participas en alguna asociación, club o grupo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "simulacion",
+"lider": "No",
+"valor": 71.7,
+"archivo": "11cad4e0af8ea505.json",
+"comparar": null
+},
+{
 "pregunta": "¿Te apuntarías a una actividad de tu barrio para conocer gente?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2191,6 +3763,17 @@
 "lider": "No",
 "valor": 55.2,
 "archivo": "0c312aae34b1f291.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te cuesta hacer amigos nuevos de adulto?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Soledad",
+"modo": "simulacion",
+"lider": "Nada",
+"valor": 48.9,
+"archivo": "37f54f308481f88f.json",
 "comparar": null
 },
 {
@@ -2282,6 +3865,17 @@
 "comparar": "faca5af3b5571afc.json"
 },
 {
+"pregunta": "¿Crees que los robots y sistemas automáticos en el trabajo aumentarán el paro o crearán empleo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "evidencia",
+"lider": "Aumentará el paro",
+"valor": 53.5,
+"archivo": "ef7ca7fc0655c0d2.json",
+"comparar": "7936ee7138568060.json"
+},
+{
 "pregunta": "¿Crees que los vehículos eléctricos van a desarrollarse mucho en los próximos diez años?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2304,6 +3898,17 @@
 "comparar": "c149e30ef506f15f.json"
 },
 {
+"pregunta": "¿Cuánto crees que se desarrollarán los ordenadores y la microelectrónica en los próximos diez años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "evidencia",
+"lider": "Mucho",
+"valor": 52.3,
+"archivo": "3026247fb2ed8a29.json",
+"comparar": "809bdc36e8f202ff.json"
+},
+{
 "pregunta": "¿Has pagado con el móvil en el último año?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2324,6 +3929,17 @@
 "valor": 28.7,
 "archivo": "5bdd3a6347b9227a.json",
 "comparar": "3f927c61eeea8f3b.json"
+},
+{
+"pregunta": "¿Te sentirías cómodo hablando con una inteligencia artificial durante una consulta médica?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "evidencia",
+"lider": "Incómodo/a (1-3)",
+"valor": 62.1,
+"archivo": "7306f33711a978dc.json",
+"comparar": "c1f8ca1e7be58f86.json"
 },
 {
 "pregunta": "¿Te sentirías cómodo si una inteligencia artificial interpretara tus radiografías?",
@@ -2359,6 +3975,41 @@
 "comparar": "88fdc9c820e2e337.json"
 },
 {
+"pregunta": "Campaña: «Tu historia clínica en el móvil, siempre contigo»",
+"tipo": "campana",
+"mensajes": [
+"Tu historia clínica en el móvil, siempre contigo"
+],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "No me convence",
+"valor": 49.4,
+"archivo": "e1d9e082a578a2f4.json",
+"comparar": null
+},
+{
+"pregunta": "¿Aceptarías que una inteligencia artificial te hiciera una entrevista de trabajo?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "No",
+"valor": 53.5,
+"archivo": "70b2e0378f919cc5.json",
+"comparar": null
+},
+{
+"pregunta": "¿Confías en que los bancos protejan tus datos?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "Algo",
+"valor": 45.6,
+"archivo": "8f4fe99a62608c97.json",
+"comparar": null
+},
+{
 "pregunta": "¿Crees que habrá más teletrabajo en el futuro?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2381,6 +4032,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Crees que tu trabajo seguirá existiendo dentro de diez años?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "No",
+"valor": 46.1,
+"archivo": "a13b6ede3b07108e.json",
+"comparar": null
+},
+{
 "pregunta": "¿Debería etiquetarse todo el contenido creado con inteligencia artificial?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2389,6 +4051,28 @@
 "lider": "No lo sé",
 "valor": 46.5,
 "archivo": "c85373f531b43398.json",
+"comparar": null
+},
+{
+"pregunta": "¿Debería tener España una ley propia sobre la inteligencia artificial?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "Sí",
+"valor": 41.7,
+"archivo": "683610b427c4981a.json",
+"comparar": null
+},
+{
+"pregunta": "¿Deberían los colegios enseñar a usar la inteligencia artificial?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "Sí",
+"valor": 61.6,
+"archivo": "9838d4b1a4681da7.json",
 "comparar": null
 },
 {
@@ -2436,6 +4120,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿La inteligencia artificial creará más empleo del que destruya?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "Destruirá más",
+"valor": 52.3,
+"archivo": "8e93852abb18d972.json",
+"comparar": null
+},
+{
 "pregunta": "¿La inteligencia artificial hará tu trabajo más fácil o más difícil?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2458,6 +4153,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Pagarías por proteger tus datos personales en internet?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "Sí",
+"valor": 61.0,
+"archivo": "5452a05510ee0930.json",
+"comparar": null
+},
+{
 "pregunta": "¿Pagarías una suscripción mensual a una inteligencia artificial?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2466,6 +4172,17 @@
 "lider": "No",
 "valor": 63.5,
 "archivo": "b7cff3cdf4918f89.json",
+"comparar": null
+},
+{
+"pregunta": "¿Prefieres hablar con una persona o con un chatbot cuando llamas a una empresa?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "Con una persona",
+"valor": 54.5,
+"archivo": "98aecbc5203757fc.json",
 "comparar": null
 },
 {
@@ -2488,6 +4205,17 @@
 "lider": "Nada",
 "valor": 46.3,
 "archivo": "4df642030b4848b4.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te fías de los medios de comunicación?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "Algo",
+"valor": 52.0,
+"archivo": "5b2b28107dcb0be0.json",
 "comparar": null
 },
 {
@@ -2521,6 +4249,17 @@
 "lider": "Mucho",
 "valor": 40.9,
 "archivo": "011ed2296383e62e.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te preocupa que la inteligencia artificial difunda bulos?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "analogia",
+"lider": "Mucho",
+"valor": 39.2,
+"archivo": "95f68dc5a0664669.json",
 "comparar": null
 },
 {
@@ -2579,6 +4318,19 @@
 "comparar": null
 },
 {
+"pregunta": "Campaña: «Desconexión digital: tu derecho fuera del horario laboral»",
+"tipo": "campana",
+"mensajes": [
+"Desconexión digital: tu derecho fuera del horario laboral"
+],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "No me convence",
+"valor": 51.0,
+"archivo": "8fed1b36b2d8510b.json",
+"comparar": null
+},
+{
 "pregunta": "Campaña: «Una inteligencia artificial te ayuda a hacer la declaración de la renta»",
 "tipo": "campana",
 "mensajes": [
@@ -2589,6 +4341,34 @@
 "lider": "No me convence",
 "valor": 43.8,
 "archivo": "e654de7c4601ce0e.json",
+"comparar": null
+},
+{
+"pregunta": "Test A/B: «Enseña a tus mayores a usar el banco por el móvil» frente a «Atención en oficina para mayores, sin cita»",
+"tipo": "ab",
+"mensajes": [
+"Enseña a tus mayores a usar el banco por el móvil",
+"Atención en oficina para mayores, sin cita"
+],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "B · Atención en oficina para mayores, si…",
+"valor": 38.6,
+"archivo": "9a16ea10241a99ec.json",
+"comparar": null
+},
+{
+"pregunta": "Test A/B: «Inteligencia artificial que te ahorra tiempo» frente a «Inteligencia artificial bajo control humano»",
+"tipo": "ab",
+"mensajes": [
+"Inteligencia artificial que te ahorra tiempo",
+"Inteligencia artificial bajo control humano"
+],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "A · Inteligencia artificial que te ahorr…",
+"valor": 39.3,
+"archivo": "67bbebc2eaaa2237.json",
 "comparar": null
 },
 {
@@ -2669,6 +4449,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Has recibido llamadas o mensajes fraudulentos este mes?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "No",
+"valor": 55.9,
+"archivo": "3dc079315674a06e.json",
+"comparar": null
+},
+{
 "pregunta": "¿Has sufrido un fraude o una estafa por internet?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2688,6 +4479,50 @@
 "lider": "No",
 "valor": 52.9,
 "archivo": "8baf4c07446d6a75.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te fías de las reseñas en internet?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "Algo",
+"valor": 43.8,
+"archivo": "ff1f03ebacad7bc0.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te gustaría desconectarte de internet un día a la semana?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 38.6,
+"archivo": "a420b0acb134a052.json",
+"comparar": null
+},
+{
+"pregunta": "¿Teletrabajas al menos un día a la semana?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "No",
+"valor": 61.9,
+"archivo": "e6e544a22c2cb6e6.json",
+"comparar": null
+},
+{
+"pregunta": "¿Usarías gafas de realidad virtual para trabajar?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Tecnología e IA",
+"modo": "simulacion",
+"lider": "No",
+"valor": 69.0,
+"archivo": "9a482be4d4063f4a.json",
 "comparar": null
 },
 {
@@ -2768,6 +4603,28 @@
 "comparar": "4d78306be62b840e.json"
 },
 {
+"pregunta": "¿Aceptarías un trabajo en otra ciudad por un sueldo mejor?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "No",
+"valor": 59.4,
+"archivo": "3bbda7902feda0fb.json",
+"comparar": null
+},
+{
+"pregunta": "¿Alquilarías una habitación de tu casa para ganar dinero?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "No",
+"valor": 60.3,
+"archivo": "cd5f1c19fe0ac465.json",
+"comparar": null
+},
+{
 "pregunta": "¿Ayudarías a un vecino mayor que vive solo con la compra o los recados?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2776,6 +4633,17 @@
 "lider": "Sí",
 "valor": 95.6,
 "archivo": "ced812829d7b0590.json",
+"comparar": null
+},
+{
+"pregunta": "¿Compartirías piso con desconocidos para ahorrar?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "No",
+"valor": 76.0,
+"archivo": "57d1bb6fe71a240b.json",
 "comparar": null
 },
 {
@@ -2801,6 +4669,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Cuántos de tus vecinos son de otro origen, raza o religión?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "1 a 5",
+"valor": 39.4,
+"archivo": "d230a28c74b66af0.json",
+"comparar": null
+},
+{
 "pregunta": "¿Debería limitarse por ley el precio del alquiler?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2809,6 +4688,17 @@
 "lider": "Sí",
 "valor": 78.4,
 "archivo": "9c8d41e264db74d0.json",
+"comparar": null
+},
+{
+"pregunta": "¿Has pensado en irte de tu ciudad por el precio de la vivienda?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "No",
+"valor": 66.0,
+"archivo": "4c26a67157398311.json",
 "comparar": null
 },
 {
@@ -2823,6 +4713,50 @@
 "comparar": null
 },
 {
+"pregunta": "¿Te has tenido que mudar por la subida del alquiler?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "No",
+"valor": 65.4,
+"archivo": "0dca46fab6ac2de5.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te preocupa poder pagar una residencia cuando seas mayor?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "Mucho",
+"valor": 38.2,
+"archivo": "3e7b6dc3446756f4.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te sentirías cómodo pidiendo ayuda a un vecino?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "Sí",
+"valor": 74.3,
+"archivo": "3aecb6f6647f2efe.json",
+"comparar": null
+},
+{
+"pregunta": "¿Usarías un asistente de voz para controlar las luces y la calefacción de casa?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "No",
+"valor": 50.1,
+"archivo": "05d489fa3e5aee62.json",
+"comparar": null
+},
+{
 "pregunta": "¿Vivirías en un piso compartido para pagar menos alquiler?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2831,6 +4765,17 @@
 "lider": "No",
 "valor": 80.8,
 "archivo": "a93b71ccd4ef99e7.json",
+"comparar": null
+},
+{
+"pregunta": "¿Vivirías más lejos de tu familia a cambio de una vivienda mejor?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "analogia",
+"lider": "No",
+"valor": 64.6,
+"archivo": "0a6a771ef986df62.json",
 "comparar": null
 },
 {
@@ -2873,6 +4818,47 @@
 "comparar": null
 },
 {
+"pregunta": "Campaña: «Un mayor y un joven: compartan casa y compañía»",
+"tipo": "campana",
+"mensajes": [
+"Un mayor y un joven: compartan casa y compañía"
+],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No me convence",
+"valor": 54.3,
+"archivo": "9347a13289ecd111.json",
+"comparar": null
+},
+{
+"pregunta": "Test A/B: «Ahorra poniendo la lavadora de noche» frente a «Ahorra con placas solares compartidas en tu edificio»",
+"tipo": "ab",
+"mensajes": [
+"Ahorra poniendo la lavadora de noche",
+"Ahorra con placas solares compartidas en tu edificio"
+],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "Ninguno",
+"valor": 48.8,
+"archivo": "5f06650f5eb3cd01.json",
+"comparar": null
+},
+{
+"pregunta": "Test A/B: «Alquiler asequible para jóvenes en tu ciudad» frente a «Ayuda directa de 300 € al mes para el alquiler»",
+"tipo": "ab",
+"mensajes": [
+"Alquiler asequible para jóvenes en tu ciudad",
+"Ayuda directa de 300 € al mes para el alquiler"
+],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "B · Ayuda directa de 300 € al mes para e…",
+"valor": 57.9,
+"archivo": "a96a4d22c0bccb70.json",
+"comparar": null
+},
+{
 "pregunta": "Test A/B: «Conoce a tus vecinos: comida popular este sábado» frente a «¿Necesitas ayuda? Tus vecinos están aquí»",
 "tipo": "ab",
 "mensajes": [
@@ -2898,6 +4884,34 @@
 "lider": "A · Hipoteca a tipo fijo: duerme tranquilo",
 "valor": 48.8,
 "archivo": "a032d33a53148011.json",
+"comparar": null
+},
+{
+"pregunta": "Test A/B: «Hipoteca joven con el 100 % financiado» frente a «Ayuda de 20.000 € para la entrada de tu piso»",
+"tipo": "ab",
+"mensajes": [
+"Hipoteca joven con el 100 % financiado",
+"Ayuda de 20.000 € para la entrada de tu piso"
+],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "B · Ayuda de 20.000 € para la entrada de…",
+"valor": 46.4,
+"archivo": "ad475298c925b505.json",
+"comparar": null
+},
+{
+"pregunta": "Test A/B: «Seguro de hogar más barato» frente a «Seguro de hogar con reparaciones en 24 horas»",
+"tipo": "ab",
+"mensajes": [
+"Seguro de hogar más barato",
+"Seguro de hogar con reparaciones en 24 horas"
+],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "A · Seguro de hogar más barato",
+"valor": 38.1,
+"archivo": "436f40adbcfbf27b.json",
 "comparar": null
 },
 {
@@ -2945,6 +4959,28 @@
 "comparar": null
 },
 {
+"pregunta": "¿Cuánto pagas al mes de alquiler o hipoteca?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No pago",
+"valor": 44.3,
+"archivo": "123dbc9bd6dd0552.json",
+"comparar": null
+},
+{
+"pregunta": "¿Cuántos años tardarías en ahorrar la entrada de un piso?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "Nunca",
+"valor": 51.1,
+"archivo": "95789a7e99e71afb.json",
+"comparar": null
+},
+{
 "pregunta": "¿Debería prohibirse que extranjeros no residentes compren vivienda en España?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -2953,6 +4989,72 @@
 "lider": "No",
 "valor": 48.1,
 "archivo": "8d69d3754d2562af.json",
+"comparar": null
+},
+{
+"pregunta": "¿Deberían construirse más viviendas públicas de alquiler?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 42.0,
+"archivo": "75d0a28b9124c561.json",
+"comparar": null
+},
+{
+"pregunta": "¿Deberían los bancos ofrecer hipotecas al 100 % a los jóvenes?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No",
+"valor": 63.2,
+"archivo": "4c2971d307cf9b09.json",
+"comparar": null
+},
+{
+"pregunta": "¿Deberían pagar un impuesto especial los pisos vacíos?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No",
+"valor": 48.2,
+"archivo": "afbc4878e5733bfd.json",
+"comparar": null
+},
+{
+"pregunta": "¿Dónde preferirías vivir?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "En un pueblo",
+"valor": 43.2,
+"archivo": "af701409f011c527.json",
+"comparar": null
+},
+{
+"pregunta": "¿Dónde te gustaría vivir cuando seas mayor?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "En mi casa",
+"valor": 55.1,
+"archivo": "7c22650876f008c4.json",
+"comparar": null
+},
+{
+"pregunta": "¿Es la vivienda el mayor obstáculo para formar una familia?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No",
+"valor": 49.2,
+"archivo": "5424de6fa634e2ed.json",
 "comparar": null
 },
 {
@@ -2989,6 +5091,17 @@
 "comparar": null
 },
 {
+"pregunta": "¿Sabes cómo se llaman tus vecinos de rellano?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "Sí",
+"valor": 51.2,
+"archivo": "3206cb0264cf9c42.json",
+"comparar": null
+},
+{
 "pregunta": "¿Sabes qué tarifa de luz tienes contratada?",
 "tipo": "pregunta",
 "mensajes": [],
@@ -3019,6 +5132,61 @@
 "lider": "No",
 "valor": 53.7,
 "archivo": "43ec07d4698f35a9.json",
+"comparar": null
+},
+{
+"pregunta": "¿Te preocupa la factura del gas este invierno?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "Poco",
+"valor": 54.9,
+"archivo": "599a1be7635edf19.json",
+"comparar": null
+},
+{
+"pregunta": "¿Tienes una mascota que te hace compañía?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No",
+"valor": 56.2,
+"archivo": "8aa10003812b0ce7.json",
+"comparar": null
+},
+{
+"pregunta": "¿Tienes una tarifa de luz con precios distintos según la hora?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No",
+"valor": 46.6,
+"archivo": "d6e36a864ecee4de.json",
+"comparar": null
+},
+{
+"pregunta": "¿Vivirías en un piso de menos de 40 metros cuadrados?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No",
+"valor": 46.3,
+"archivo": "81ae9d4f8d2843ac.json",
+"comparar": null
+},
+{
+"pregunta": "¿Vivirías en una casa prefabricada si fuera más barata?",
+"tipo": "pregunta",
+"mensajes": [],
+"tema": "Vivienda",
+"modo": "simulacion",
+"lider": "No",
+"valor": 61.8,
+"archivo": "199b14d85a36ed7d.json",
 "comparar": null
 },
 {
