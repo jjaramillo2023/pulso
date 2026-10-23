@@ -466,6 +466,12 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
 .uc-cta p.uc-b { margin-top: 0; font-weight: 600; color: var(--navy); }
 
 .tm-name small { display: block; margin-top: 6px; font-size: 17px; font-weight: 500; line-height: 1.25; letter-spacing: 0; color: var(--slate); }
+
+.seals.seals4 { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 34px; left: 140px; right: 140px; }
+.seals4 .seal { font-size: 19px; gap: 14px; }
+.seals4 .seal b { font-size: 23px; }
+.seals4 .seal i { width: 40px; height: 40px; }
+.seals4 .seal i::after { left: 13px; top: 6px; width: 9px; height: 18px; }
 </style>
 </head>
 <body data-theme="dark" data-variant="light" class="v-light">
@@ -639,10 +645,11 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
     <div class="frow"><span>Tecnología</span>Usa IA e internet a diario</div>
     <div class="stamp">Sintética</div>
   </div>
-  <div class="seals">
+  <div class="seals seals4">
     <div class="seal rv"><i></i><div><b>Sin identidades individuales</b>Perfiles generados a partir de estadísticas agregadas, no de personas concretas.</div></div>
     <div class="seal rv"><i></i><div><b>Datos abiertos</b>INE (CC BY 4.0) y CIS permiten reutilizarlos citando la fuente.</div></div>
     <div class="seal rv"><i></i><div><b>Transparencia</b>Cada resultado indica cómo se obtuvo y con qué nivel de confianza.</div></div>
+    <div class="seal rv"><i></i><div><b>Reglamento Europeo de IA</b>Alineado con su art. 50: los resultados se presentan como simulaciones hechas con IA.</div></div>
   </div>
   <div class="blk"><b>3/5</b> Cómo funciona</div>
   <div class="src">Perfiles imputados a partir de datos agregados del INE y del CIS · Aviso legal INE · Condiciones de reutilización CIS · Reglamento (UE) 2024/1689, art. 50</div>
@@ -973,7 +980,7 @@ function show(n) {
   s.querySelectorAll('.type').forEach(typeOut);
   if (i !== VID) vid.pause(); else { vid.currentTime = 0; playIntro(); stopLoops(); }
   document.querySelectorAll('video.auto').forEach(v => v.pause());
-  const dv = s.querySelector('video.auto'); if (dv) { dv.currentTime = 0; dv.play().catch(() => {}); }
+  const dv = s.querySelector('video.auto'); if (dv) { dv.currentTime = 0; dv.play().then(() => { dv.controls = false; }).catch(() => { dv.controls = true; }); }
   if (i < MAIN) lastMain = i;
   document.getElementById('progress').style.width = (i < MAIN ? i / (MAIN - 1) * 100 : 100) + '%';
   notes.innerHTML = '<b>Slide ' + i + '</b><br>' + (s.dataset.notes || '');
