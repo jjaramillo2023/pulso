@@ -650,7 +650,7 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
 
 <!-- =================== BLOQUE 4 · LA PRUEBA =================== -->
 <section class="slide" data-theme="dark" data-form="dim" data-sfx="bars" data-blk="4"
-  data-notes="[BLOQUE 4 · PERSONA 4 · 2:00] Pregunta al jurado, sin mirar la pantalla: «¿Cuántos mayores de 60 creen que están muy preocupados por el cambio climático?» Pausa. «Una IA sin datos, como las herramientas de personas sintéticas que ya se venden, dice que el 12 %. El dato real del CIS: el 60 %. Son los que más se preocupan. pulso da el 60 %, porque usa un modelo entrenado con el CIS.» Señala la derecha: «Y no es un caso aislado: en 98 preguntas reales, una IA sin datos se equivoca de media 21 puntos y pierde en 97. pulso, de media 1 punto.» Sigue: «Y ahora, vamos a diseñar nuestra propia encuesta.»">
+  data-notes="[BLOQUE 4 · PERSONA 4 · 2:00] Pregunta al jurado, sin mirar la pantalla: «¿Cuántos mayores de 60 creen que están muy preocupados por el cambio climático?» Pausa. «Una IA sin datos, como las herramientas de personas sintéticas que ya se venden, dice que el 12 %. El dato real del CIS: el 60 %. Son los que más se preocupan. pulso da el 60 %, porque usa un modelo entrenado con el CIS.» Señala la derecha: «Y no es un caso aislado: en 176 preguntas reales, una IA sin datos se equivoca de media 20 puntos y pierde en 174. pulso, de media menos de 1 punto.» Sigue: «Y ahora, vamos a diseñar nuestra propia encuesta.»">
   <h2 class="sp">Una IA sin datos se inventa a España.</h2>
   <p class="lead rv" style="margin-top:18px">¿Cuántos mayores de 60 están <b style="color:var(--cream)">muy</b> preocupados por el cambio climático?</p>
   <div style="display:flex; gap:110px; align-items:flex-end; margin-top:56px">
@@ -664,12 +664,12 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
       <div class="labels rv" style="gap:90px"><div>IA sin datos</div><div style="color:var(--cream); font-weight:600">pulso</div></div>
     </div>
     <div class="mini" style="flex-direction:column; gap:44px; margin:0 0 56px">
-      <div class="rv" style="max-width:520px"><b style="color:var(--mist)">21 pp</b>de error medio de una IA sin datos en 98 preguntas reales del CIS (máximo 51,2)</div>
-      <div class="rv" style="max-width:520px"><b style="color:var(--coral)">1,0 pp</b>de error medio de pulso en esas mismas 98 (máximo 4,1)</div>
+      <div class="rv" style="max-width:520px"><b style="color:var(--mist)">20 pp</b>de error medio de una IA sin datos en 176 preguntas reales del CIS (máximo 71,0)</div>
+      <div class="rv" style="max-width:520px"><b style="color:var(--coral)">0,9 pp</b>de error medio de pulso en esas mismas 176 (máximo 4,1)</div>
     </div>
   </div>
   <div class="blk"><b>4/5</b> La prueba</div>
-  <div class="src">98 preguntas reales del CIS · Mismos perfiles sintéticos · Llama 3.1 8B sin respuestas del CIS, frente a Pulso y al dato real.</div>
+  <div class="src">176 preguntas reales del CIS · Mismos perfiles sintéticos · Llama 3.1 8B sin respuestas del CIS, frente a Pulso y al dato real.</div>
 </section>
 
 <section class="slide center" data-theme="coral" data-form="crowdc" data-sfx="chime"
@@ -803,14 +803,14 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
 </section>
 
 <section class="slide reserve" data-res="2" data-theme="dark" data-form="still"
-  data-notes="[RESERVA 2] «Lo comparamos en 98 preguntas con respuesta real del CIS. pulso se equivoca de media un punto, como mucho 4. Un LLM sin datos, de media 21 y hasta 51. Pierde en 97 de 98. Y no es solo nivel: reproduce estereotipos, como creer que a los mayores no les preocupa el clima.»">
+  data-notes="[RESERVA 2] «Lo comparamos en 176 preguntas con respuesta real del CIS. pulso se equivoca de media menos de un punto, como mucho 4. Un LLM sin datos, de media 20 y hasta 71. Pierde en 174 de 176. Y no es solo nivel: reproduce estereotipos, como creer que a los mayores no les preocupa el clima.»">
   <div class="res-h">Reserva · 2/8</div>
   <h2>pulso frente a un LLM sin datos</h2>
-  <p class="res-sub">98 preguntas con respuesta real del CIS · error por opción</p>
+  <p class="res-sub">176 preguntas con respuesta real del CIS · error por opción</p>
   <div class="stats2">
-    <div class="cd rv"><small>pulso · error medio</small><b style="color:var(--coral)">1,0 pp</b><span>máximo 4,1 pp</span></div>
-    <div class="cd rv"><small>LLM sin datos · error medio</small><b>21 pp</b><span>máximo 51,2 pp</span></div>
-    <div class="cd rv"><small>Resultado</small><b>97 de 98</b><span>preguntas en las que pierde el LLM</span></div>
+    <div class="cd rv"><small>pulso · error medio</small><b style="color:var(--coral)">0,9 pp</b><span>máximo 4,1 pp</span></div>
+    <div class="cd rv"><small>LLM sin datos · error medio</small><b>20 pp</b><span>máximo 71,0 pp</span></div>
+    <div class="cd rv"><small>Resultado</small><b>174 de 176</b><span>preguntas en las que pierde el LLM</span></div>
   </div>
   <table class="rt rv"><tr><th>Pregunta</th><th>LLM sin datos</th><th>pulso</th></tr>
     <tr><td>«¿Usas la banca online?»</td><td class="n">51,2 pp</td><td class="n c">1,5 pp</td></tr>
@@ -818,7 +818,7 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
     <tr><td>«¿Te da miedo perder a un familiar cercano?»</td><td class="n">46,8 pp</td><td class="n c">0,2 pp</td></tr>
   </table>
   <div class="rbox rv"><b>Estereotipo:</b> en el clima, el LLM sin datos da un 12 % de mayores de 60 «muy preocupados». En el CIS son un 60 %.</div>
-  <div class="src" style="bottom:86px">Consultas de la web de pulso · 98 preguntas con respuesta real del CIS</div>
+  <div class="src" style="bottom:86px">Consultas de la web de pulso · 176 preguntas con respuesta real del CIS</div>
   <div class="res-k">1-8 salta · R índice · Esc vuelve</div>
 </section>
 
@@ -851,14 +851,14 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
 </section>
 
 <section class="slide reserve" data-res="5" data-theme="dark" data-form="still"
-  data-notes="[RESERVA 5] «Revisamos nuestro propio trabajo. Los estudios básicos salían a la mitad de lo real, y lo corregimos. Los extranjeros no tenían ideología y desviaban 6 puntos, y ahora se estiman con encuestados parecidos. Detectamos preguntas mal reescritas por el LLM, como la de renovables. Y apartamos 28 respuestas de la IA que no eran creíbles antes de publicarlas.»">
+  data-notes="[RESERVA 5] «Revisamos nuestro propio trabajo. Los estudios básicos salían a la mitad de lo real, y lo corregimos. Los extranjeros no tenían ideología y desviaban 6 puntos, y ahora se estiman con encuestados parecidos. Detectamos preguntas mal reescritas por el LLM, como la de renovables. Y apartamos 41 respuestas de la IA que no eran creíbles antes de publicarlas.»">
   <div class="res-h">Reserva · 5/8</div>
   <h2>Errores que encontramos y corregimos</h2>
   <div class="rl">
     <div class="rv"><b>Estudios básicos:</b> 20 % en la columna procesada frente al 40 % real (ECV y CIS). Ahora se usa la columna original.</div>
     <div class="rv"><b>Extranjeros sin ideología ni religión:</b> desviaban los resultados unos 6 pp. Ahora se promedian con encuestados del CIS del mismo sexo, edad y estudios.</div>
     <div class="rv"><b>Preguntas del CIS mal reescritas por el LLM:</b> en renovables, de 51 % «Nada» simulado a 73 % «Mucho o bastante» con el modelo entrenado con el CIS.</div>
-    <div class="rv"><b>28 respuestas de la IA apartadas</b> antes de publicar, por opciones mal propuestas o resultados inverosímiles.</div>
+    <div class="rv"><b>41 respuestas de la IA apartadas</b> antes de publicar, por opciones mal propuestas o resultados inverosímiles.</div>
   </div>
   <div class="src" style="bottom:86px">INE ECV · CIS · Revisión de las consultas de la web de pulso</div>
   <div class="res-k">1-8 salta · R índice · Esc vuelve</div>
@@ -897,13 +897,13 @@ body.v-light .jp, body.v-purple .jp { background: rgba(255,255,255,.35); }
 </section>
 
 <section class="slide reserve" data-res="8" data-theme="dark" data-form="still"
-  data-notes="[RESERVA 8] «Hoy todo corre en un portátil, con modelos abiertos y sin sacar datos fuera. Una pregunta en verde tarda unos 10 segundos; en ámbar o rojo, uno o dos minutos, y repetirla es instantáneo. Ya hay una web con 270 consultas y una API. Y escala con datos: cada estudio del CIS añade preguntas en verde, y el mismo método sirve para Europa.»">
+  data-notes="[RESERVA 8] «Hoy todo corre en un portátil, con modelos abiertos y sin sacar datos fuera. Una pregunta en verde tarda unos 10 segundos; en ámbar o rojo, uno o dos minutos, y repetirla es instantáneo. Ya hay una web con más de 550 consultas y una API. Y escala con datos: cada estudio del CIS añade preguntas en verde, y el mismo método sirve para Europa.»">
   <div class="res-h">Reserva · 8/8</div>
   <h2>¿Escala?</h2>
   <div class="rl">
     <div class="rv"><b>Todo corre en un portátil</b> (Mac de 16 GB), con modelos open source y sin enviar datos fuera.</div>
     <div class="rv"><b>Verde:</b> unos 10 segundos. <b>Ámbar y rojo:</b> 1-2 minutos. Las consultas repetidas son instantáneas gracias a la caché.</div>
-    <div class="rv"><b>Web pública con 270 consultas</b> ya calculadas y API para conectarse a las herramientas del cliente.</div>
+    <div class="rv"><b>Web pública con más de 550 consultas</b> ya calculadas y API para conectarse a las herramientas del cliente.</div>
     <div class="rv"><b>Cada nuevo estudio del CIS suma decenas de preguntas en verde.</b> Mismo método para Europa (ESS y Eurostat).</div>
   </div>
   <div class="src" style="bottom:86px">Web y API de pulso · ESS · Eurostat</div>
