@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pulso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="estilos.css?v=20261020o">
+</head>
+<body class="home">
+<div class="aura"><i></i><i></i><i></i></div>
+<canvas id="cv" aria-hidden="true"></canvas>
+
+<header class="top">
+  <a class="logo" href="index.html" aria-label="Ir a la pantalla principal de pulso">puls<span class="dot" id="ldot"></span></a>
+  <span class="sp"></span>
+  <button class="ibtn only-app" id="snd" type="button" aria-label="Silenciar sonido"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path id="sndW" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+  <button class="ibtn only-app" id="cfgBtn" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span class="lbl-l">Filtros</span><span class="lbl-s">Filtros</span><b class="nfil" id="nFil" hidden></b></button>
+  <button class="ibtn" id="disBtn" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span class="lbl-l">Diseña tu encuesta</span><span class="lbl-s">Encuesta</span></button>
+  <button class="link" id="histBtn" type="button"><span class="lbl-l">Consultas anteriores</span><span class="lbl-s">Historial</span> ↗</button>
+</header>
+
+<!-- inicio -->
+<div class="hero">
+  <h1><span class="rise" style="animation-delay:.9s">Pregúntale a</span> <span class="rise c" style="animation-delay:1.05s">España.</span></h1>
+  <p class="rise" style="animation-delay:1.25s">1.200 personas sintéticas calibradas con INE y CIS</p>
+</div>
+<div class="home-below">
+  <div class="home-gap"></div>
+  <div class="chips" id="homeChips"></div>
+  <small>Perfiles sintéticos · Resultados experimentales · Modelos entrenados con encuestas del CIS hasta septiembre de 2026</small>
+</div>
+
+<!-- resultados -->
+<main class="grid">
+  <section class="chat" aria-label="Chat">
+    <div class="msgs" id="msgs" aria-live="polite"></div>
+    <div class="chips" id="sugg"></div>
+    <div class="aviso-llm mini" id="avisoChat"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Escribir preguntas nuevas está desactivado: esta versión no tiene LLM. Elijan una de las preguntas disponibles.</span></div>
+    <form id="ask" autocomplete="off">
+      <textarea id="q" rows="1" placeholder="Pregunta algo sobre la sociedad española…" aria-label="Pregunta"></textarea>
+      <button id="send" type="submit" aria-label="Enviar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+    </form>
+  </section>
+
+  <section class="stage" aria-label="Resultados">
+    <div class="stage-top">
+      <div class="qtitle"><span class="eyebrow"><i></i><span id="eyT">Tema</span></span><h2 id="qt">Pregúntale a España.</h2></div>
+      <nav class="views" id="views" aria-label="Vista">
+        <span class="pill"></span>
+        <button type="button" data-v="hemi">Total</button>
+        <button type="button" data-v="map">Comunidades</button>
+        <button type="button" data-v="sex">Sexo</button>
+        <button type="button" data-v="age">Edad</button>
+      </nav>
+    </div>
+    <div class="canvas-wrap" id="cw">
+      <div class="steps" id="steps">
+        <div><i></i><span>Interpretando la pregunta</span></div>
+        <div><i></i><span>Convocando a 1.200 personas sintéticas</span></div>
+        <div><i></i><span>Cada persona responde<em id="stProg"></em></span></div>
+        <div><i></i><span>Midiendo la confianza</span></div>
+      </div>
+      <div class="ccp" id="ccp" aria-label="Detalle por comunidad"></div>
+      <button class="volver" id="volverMapa" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Ver toda España</button>
+      <div class="count" id="count"><small>Escrutado</small><b id="cPct">0 %</b><span id="cN">0 de 1.200 respuestas</span><div class="pb"><i id="cBar"></i></div></div>
+    </div>
+    <div class="results wait" id="res">
+      <div class="r-main"><b id="big">--</b><span id="bigL">Esperando respuestas</span></div>
+      <div class="r-bar"><div class="stack" id="stack"></div><div class="legend" id="legend"></div></div>
+      <div class="r-trust">
+        <span class="sema" id="sema" data-l="0"><span class="lights"><i></i><i></i><i></i></span><span id="semaT">Confianza</span></span>
+        <span class="mono" id="moe">±-- pp · n = --</span>
+        <span class="mono base" id="base"></span>
+      </div>
+      <div class="r-insight" id="insight"><small>Lectura rápida</small>Las diferencias entre grupos aparecerán aquí.</div>
+    </div>
+  </section>
+
+  <aside class="cfg" id="cfg" aria-label="Filtros">
+    <h3>Filtros <button class="ibtn" id="cfgClose" type="button" aria-label="Cerrar">✕</button></h3>
+    <div class="fld"><label for="fReg">Comunidad autónoma</label><select id="fReg"></select></div>
+    <div class="fld"><span class="lb">Sexo</span><div class="seg" id="fSex"><button type="button" data-v="all" class="on">Todos</button><button type="button" data-v="F">Mujeres</button><button type="button" data-v="M">Hombres</button></div></div>
+    <div class="fld"><span class="lb">Edad <em id="ageLbl">18 - 90+ años</em></span>
+      <div class="range2"><div class="tr"><i id="ageTr"></i></div>
+        <input type="range" id="aMin" min="18" max="90" value="18" aria-label="Edad mínima">
+        <input type="range" id="aMax" min="18" max="90" value="90" aria-label="Edad máxima"></div></div>
+    <button id="quitarFil" type="button">Quitar filtros</button>
+  </aside>
+</main>
+
+<aside class="drawer" id="hist" aria-label="Consultas anteriores">
+  <h3>Consultas anteriores <button class="ibtn" id="histClose" type="button" aria-label="Cerrar">✕</button></h3>
+  <div id="histList"></div>
+</aside>
+<aside class="drawer wide" id="comp" aria-label="LLM sin datos frente a pulso">
+  <h3>LLM sin datos vs pulso <button class="ibtn" id="compClose" type="button" aria-label="Cerrar">✕</button></h3>
+  <div id="compBody"></div>
+</aside>
+<aside class="drawer wide" id="valid" aria-label="Cómo lo sabemos">
+  <h3>¿Cómo lo sabemos? <button class="ibtn" id="validClose" type="button" aria-label="Cerrar">✕</button></h3>
+  <div id="validBody"><p class="mono" style="font-size:12px;color:var(--mute)">Cargando…</p></div>
+</aside>
+<div class="modal" id="diseno" role="dialog" aria-modal="true" aria-labelledby="disT">
+  <h3 id="disT">Diseña tu encuesta <button class="ibtn" id="disClose" type="button" aria-label="Cerrar">✕</button></h3>
+  <p class="sub">Escriban una pregunta, una campaña o dos mensajes para un test A/B.</p>
+  <div class="cols">
+    <div class="col">
+    <div class="fld"><span class="lb">Tipo de encuesta</span><div class="seg coral" id="fTipo"><button type="button" data-v="pregunta" class="on">Pregunta</button><button type="button" data-v="campana">Campaña</button><button type="button" data-v="ab">Test A/B</button></div></div>
+    <div class="fld"><label for="cq" id="cqLbl">Pregunta</label><textarea id="cq" rows="3" placeholder="Por ejemplo: ¿Prohibirías los pisos turísticos en el centro de tu ciudad?"></textarea></div>
+    <div class="fld" id="fldB" hidden><label for="cq2">Mensaje B</label><textarea id="cq2" rows="3" placeholder="El segundo mensaje que quieren comparar"></textarea></div>
+    <div class="fld"><span class="lb">Tema <em id="topicAuto">se detecta automáticamente</em></span><div class="seg coral" id="topics"></div></div>
+    </div>
+    <div class="col">
+    <div class="fld" id="fldOpts"><span class="lb">Respuestas posibles</span><div class="opts" id="opts"></div><button id="addOpt" type="button">+ Añadir opción</button></div>
+    <div class="fld"><span class="lb">Tamaño de la población <em id="tamLbl">25.000 personas</em></span>
+      <div class="seg" id="fTam"><button type="button" data-v="1000">1.000</button><button type="button" data-v="25000" class="on">25.000</button><button type="button" data-v="100000">100.000</button><button type="button" data-v="200000">200.000</button></div>
+      <a class="descarga" id="dlPob" href="/api/poblacion?n=25000">Descargar esta población (CSV) ↓</a></div>
+    </div>
+  </div>
+  <button id="launch" type="button">Lanzar encuesta <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div>
+<!-- versión publicada sin LLM: catálogo de preguntas ya calculadas -->
+<div class="modal cat" id="catalogo" role="dialog" aria-modal="true" aria-labelledby="catT">
+  <h3 id="catT">Preguntas disponibles <button class="ibtn" id="catClose" type="button" aria-label="Cerrar">✕</button></h3>
+  <div class="aviso-llm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    <span><b>Preguntas nuevas desactivadas en esta versión.</b> Responder a una pregunta nueva necesita el motor con el modelo de lenguaje (LLM), que corre en local. Aquí están las <b id="catN">--</b> consultas que pulso ya calculó.</span></div>
+  <div class="cat-ctl">
+    <input id="catBuscar" type="search" placeholder="Buscar entre las preguntas…" aria-label="Buscar entre las preguntas" autocomplete="off">
+    <div class="cat-temas" id="catTemas"></div>
+    <div class="cat-ley"><span><i class="s-evidencia"></i>Modelo entrenado con el CIS</span><span><i class="s-analogia"></i>LLM anclado en el CIS</span><span><i class="s-simulacion"></i>LLM con perfiles españoles</span></div>
+  </div>
+  <div class="cat-lista" id="catLista"></div>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="tip" id="tip"></div>
+<div class="grain"></div>
+
+<script src="mapa_datos.js?v=20261020o"></script>
+<script src="mapa_ccaa.js?v=20261020o"></script>
+<script src="app.js?v=20261020o"></script>
+</body>
+</html>
